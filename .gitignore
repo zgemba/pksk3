@@ -1,0 +1,54 @@
+*.py[cod]
+
+# C extensions
+*.so
+
+# Packages
+*.egg
+*.egg-info
+dist
+build
+eggs
+parts
+bin
+var
+sdist
+develop-eggs
+.installed.cfg
+lib
+lib64
+
+# Installer logs
+pip-log.txt
+
+# Unit test / coverage reports
+.coverage
+.tox
+nosetests.xml
+
+# Translations
+*.mo
+
+# Mr Developer
+.mr.developer.cfg
+.project
+.pydevproject
+
+# Flask stuff, bfs
+venv/
+flask/
+tmp/
+apache2/
+log/
+Thumbs.db
+app.db
+test.db
+pksk.proj
+run.bat
+run_nodebug.bat
+app/static/img/uploads/
+db_create.py
+db_upgrade.py
+db_downgrade.py
+db_migrate.py
+external_config.py
