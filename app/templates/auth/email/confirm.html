@@ -1,0 +1,8 @@
+<p>Pozdravljen/a  {{ user.username }}!</p>
+<p>Dobrodošli na straneh <b>Plezalnega Kluba Slovenske Konjice</b>!</p>
+<p>Vašo registracijo potrdite s klikom <a href="{{ url_for('auth.confirm', token=token, _external=True) }}">na to povezavo</a>.</p>
+<p>Lahko pa tudi prekopirate spodnjo povezavo v brskalnik:</p>
+<p>{{ url_for('auth.confirm', token=token, _external=True) }}</p>
+<p>Upoštevajte, da vam mora polne pravice dodeliti še administrator, kar lahko traja nekaj časa (odvisno od vremena in razmer za plezanje).</p>
+<p>Lep pozdrav,</p>
+<p>Ekipa PKSK</p>

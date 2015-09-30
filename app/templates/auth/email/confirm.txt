@@ -1,0 +1,12 @@
+Pozdravljen/a {{ user.username }}!
+
+Dobrodošli na straneh Plezalnega Kluba Slovenske Konjice!
+
+Vašo registracijo potrdite s klikom na spodnjo povezavo:
+
+{{ url_for('auth.confirm', token=token, _external=True) }}
+
+Upoštevajte, da vam mora polne pravice dodeliti še administrator, kar lahko traja nekaj časa.
+
+Lep pozdrav, ekipa PKSK
+

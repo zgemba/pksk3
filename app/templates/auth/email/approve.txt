@@ -1,0 +1,13 @@
+Pozdravljen!
+
+Uporabnik {{ user.username }} je zahteval in potrdil registracijo, potrebno mu je še dodeliti pravice.
+Podatki:
+    Id: {{ user.id }}
+    Email: {{ user.email }}
+    Uporabniško ime: {{ user.username }}
+
+Za potrditev novega email naslova klikni spodnjo povezavo:
+
+{{ url_for('auth.approve', user_id = user.id, _external=True) }}
+
+Lep pozdrav, Ekipa PKSK

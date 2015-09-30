@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}PKSK - potrdite registracijo{% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+    <h1>
+        Pozdravljen/a, {{ current_user.username }}!
+    </h1>
+    <h3>Vaša registracija še ni potrjena</h3>
+    <p>
+        Pred polnopravnm članstvom na naši strani morate najprej potrditi zahtevano prijavo.
+        Preverite vaš poštni nabiralnik in kliknite na povezavo v mailu. Če maila ne najdete, je morda zašel med neželjeno pošto (spam)?
+    </p>
+    <p>
+        Potrebujete novo zahtevo za registracijo?
+        <a href="{{ url_for('auth.resend_confirmation') }}">Zahtevajte jo tukaj</a>
+    </p>
+</div>
+{% endblock %}

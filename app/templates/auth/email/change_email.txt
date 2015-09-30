@@ -1,0 +1,7 @@
+Pozdravljen/a {{ user.username }}!
+
+Za potrditev novega email naslova kliknite spodnjo povezavo:
+
+{{ url_for('auth.change_email', token=token, _external=True) }}
+
+Lep pozdrav, Ekipa PKSK

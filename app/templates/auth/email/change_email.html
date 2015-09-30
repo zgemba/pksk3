@@ -1,0 +1,7 @@
+<p>Pozdravljen/a  {{ user.username }}!</p>
+<p>Za potrditev novega email naslova <a href="{{ url_for('auth.change_email', token=token, _external=True) }}">kliknite tukaj</a>.</p>
+<p>Lahko tudi prekopirate spodnjo povezavo v brskalnik:</p>
+<p>{{ url_for('auth.change_email', token=token, _external=True) }}</p>
+<p>Če niste zahtevali menjave email naslova lahko to sporočilo mirno ignorirate.</p>
+<p>Lep pozdrav,</p>
+<p>Ekipa PKSK</p>

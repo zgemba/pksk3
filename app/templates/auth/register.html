@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}PKSK - Registracija novega uporabnika{% endblock %}
+
+{% block page_content %}
+    <div class="page-header">
+        <h1>Registracija novega uporabnika</h1>
+    </div>
+    <div class="col-md-4">
+        {{ wtf.quick_form(form) }}
+    </div>
+{% endblock %}
+{% block scripts %}
+    {{ super() }}
+    <script src='https://www.google.com/recaptcha/api.js'></script>
+{% endblock %}

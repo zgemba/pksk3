@@ -1,3 +1,5 @@
+/db-test.sqlite
+/db-devel.sqlite
 *.py[cod]
 
 # C extensions
@@ -46,7 +48,7 @@ test.db
 pksk.proj
 run.bat
 run_nodebug.bat
-app/static/img/uploads/
+app/static/img/upload/
 db_create.py
 db_upgrade.py
 db_downgrade.py
