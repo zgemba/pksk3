@@ -13,7 +13,7 @@ from app import db
 
 @main.route("/")
 def index():
-    return render_template("index.html", Permission=Permission)
+    return render_template("index.html")
 
 
 @main.route('/user/<user_id>')

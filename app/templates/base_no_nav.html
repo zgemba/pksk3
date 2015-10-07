@@ -1,0 +1,37 @@
+{% extends "bootstrap/base.html" %}
+
+{% block title %}PKSK{% endblock %}
+
+{% block head %}
+{{ super() }}
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Plezalni klub Slovenske Konjice - športno plezanje, alpinizem, turno smučanje">
+    <meta name="author" content="bfs">
+
+{% endblock %}
+
+{% block navbar %}
+<img class="img-responsive center-block" src="{{ url_for('main.random_banner') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    {% for message in get_flashed_messages() %}
+    <div class="alert alert-warning">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        {{ message }}
+    </div>
+    {% endfor %}
+
+    {% block page_content %}{% endblock %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    {{ moment.include_moment() }}
+    {{ moment.lang("sl") }}
+{% endblock %}

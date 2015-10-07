@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base_no_nav.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 
 {% block title %}PKSK - Prijava{% endblock %}
@@ -8,9 +8,9 @@
         <h1>Prijava</h1>
     </div>
     <div class="col-md-4">
-        {{ wtf.quick_form(form) }}
+        {{ wtf.quick_form(form, form_type="horizontal", horizontal_columns=('lg', 2, 10)) }}
         <br/>
-        <p>Pozabljeno geslo? <a href="{{ url_for('auth.password_reset_request') }}">Tukaj zahtevajte novo geslo</a>.</p>
-        <p>Nov uporabnik? <a href="{{ url_for('auth.register') }}">Tukaj zahtevajte registracijo</a>.</p>
+        <p>Pozabljeno geslo? <a href="{{ url_for('auth.password_reset_request') }}">Zahtevajte novo geslo</a>.</p>
+        <p>Nov uporabnik? <a href="{{ url_for('auth.register') }}">Tukaj izpolnite registracijo</a>.</p>
     </div>
 {% endblock %}
