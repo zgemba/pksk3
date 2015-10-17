@@ -4,13 +4,15 @@
 {% block title %}PKSK - Prijava{% endblock %}
 
 {% block page_content %}
-    <div class="page-header">
-        <h1>Prijava</h1>
-    </div>
-    <div class="col-md-4">
-        {{ wtf.quick_form(form, form_type="horizontal", horizontal_columns=('lg', 2, 10)) }}
-        <br/>
-        <p>Pozabljeno geslo? <a href="{{ url_for('auth.password_reset_request') }}">Zahtevajte novo geslo</a>.</p>
-        <p>Nov uporabnik? <a href="{{ url_for('auth.register') }}">Tukaj izpolnite registracijo</a>.</p>
+        <div class="page-header">
+            <h1>Prijava</h1>
+        </div>
+    <div class="container-fluid">
+        <div class="col-md-6">
+            {{ wtf.quick_form(form, form_type="horizontal", horizontal_columns=('lg', 3, 9)) }}
+            <br>
+            <p>Pozabljeno geslo? <a href="{{ url_for('auth.password_reset_request') }}">Zahtevajte novo geslo</a>.</p>
+            <p>Nov uporabnik? <a href="{{ url_for('auth.register') }}">Tukaj izpolnite registracijo</a>.</p>
+        </div>
     </div>
 {% endblock %}

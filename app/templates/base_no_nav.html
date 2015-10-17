@@ -14,7 +14,7 @@
 {% endblock %}
 
 {% block navbar %}
-<img class="img-responsive center-block" src="{{ url_for('main.random_banner') }}">
+    <a href="{{ url_for("main.index") }}"><img class="img-responsive center-block" src="{{ url_for('main.random_banner') }}"></a>
 {% endblock %}
 
 {% block content %}
@@ -26,9 +26,19 @@
     </div>
     {% endfor %}
 
-    {% block page_content %}{% endblock %}
+    <div class="container-fluid">
+        {% block page_content %}{% endblock %}
+        <br>
+        <div class="container-fluid">
+            {% block footer %}
+                {% include "_footer.html" %}
+            {% endblock footer %}
+        </div>
+    </div>
+
 </div>
 {% endblock %}
+
 
 {% block scripts %}
     {{ super() }}

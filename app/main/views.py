@@ -16,6 +16,11 @@ def index():
     return render_template("index.html")
 
 
+@main.route('/tester')
+def tester():
+    return render_template("tester.html")
+
+
 @main.route('/user/<user_id>')
 def user(user_id):
     try:
@@ -80,3 +85,7 @@ def random_banner():
     banner = random.choice(banners)
     return send_from_directory(current_app.config['BANNER_FOLDER'],
                                banner)
+
+@main.route("/informacije")
+def informacije():
+    return render_template("informacije.html")
