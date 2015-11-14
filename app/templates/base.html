@@ -4,19 +4,20 @@
 
 {% block head %}
     {{ super() }}
-
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Plezalni klub Slovenske Konjice - športno plezanje, alpinizem, turno smučanje">
     <meta name="author" content="bfs">
-
 {% endblock %}
 
 {% block navbar %}
-    <a href="{{ url_for("main.index") }}"><img class="img-responsive center-block"
-                                               src="{{ url_for('main.random_banner') }}"></a>
-    <!-- Static navbar -->
+    <div class="container-fluid">
+        <a href="{{ url_for("main.index") }}"><img class="img-responsive center-block"
+                                                   src="{{ url_for('main.random_banner') }}"></a>
+    </div>
+
+
     <nav class="navbar navbar-default">
         <div class="container-fluid">
             <div class="navbar-header">
@@ -36,16 +37,16 @@
                            aria-expanded="false">O klubu <span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li><a href="{{ url_for("main.informacije") }}">Splošne informacije</a></li>
-                            <li><a href="#">Balvanska stena</a></li>
-                            <li><a href="#">Visoka plezalna stena</a></li>
-                            <li><a href="#">Galerija</a></li>
+                            <li class="disabled"><a href="#">Balvanska stena</a></li>
+                            <li class="disabled"><a href="#">Visoka plezalna stena</a></li>
+                            {# <li><a href="#">Galerija</a></li> #}
                             <li><a href="#">Kontaktirajte nas</a></li>
                         </ul>
                     </li>
-                    <li><a href="#">Urniki in rekreacija</a></li>
-                    <li><a href="#">Šola športnega plezanja</a></li>
-                    <li><a href="#">Tekmovalci</a></li>
-                    <li><a href="#">Vzponi</a></li>
+                    <li><a href="{{ url_for("main.urnik") }}">Urniki in rekreacija</a></li>
+                    {# <li><a href="#">Šola športnega plezanja</a></li> #}
+                    {# <li><a href="#">Tekmovalci</a></li> #}
+                    {# <li><a href="#">Vzponi</a></li>  #}
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                            aria-expanded="false">Za člane <span class="caret"></span></a>
@@ -55,7 +56,7 @@
                                     <span class="glyphicon glyphicon-log-in" aria-hidden="true"></span> Prijava</a>
                                 </li>
                             {% else %}
-                                <li><a href="#">
+                                <li><a href="{{ url_for("main.dodaj_novico") }}">
                                     <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Dodaj novico</a>
                                 </li>
                                 <li><a href="#">
@@ -113,13 +114,13 @@
 
 {% block content %}
     <div class="container-fluid">
-    {% for message in get_flashed_messages() %}
-        <div class="alert alert-warning">
-            <button type="button" class="close" data-dismiss="alert">&times;</button>
-            {{ message }}
-        </div>
-    {% endfor %}
-
+        {% for message in get_flashed_messages() %}
+            <div class="alert alert-warning">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
     <div class="container-fluid">
         {% block page_content %}{% endblock %}
         <div class="container-fluid">
@@ -130,8 +131,6 @@
     </div>
 
 {% endblock %}
-
-</div>
 
 {% block scripts %}
     {{ super() }}

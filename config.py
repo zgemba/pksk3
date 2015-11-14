@@ -18,8 +18,10 @@ class Config:
     WORDS_PER_SHORT_ITEM = 100
 
     # nastavitve za upload
-    UPLOAD_FOLDER = os.path.join(basedir, 'app/static/img/upload')
-    BANNER_FOLDER = os.path.join(basedir, 'app/static/img/banner')
+    BASE_FOLDER = basedir
+    UPLOAD_SAVE_FOLDER = os.path.join(basedir, "app/static/img/upload")
+    UPLOAD_FOLDER = "/static/img/upload"
+    BANNER_FOLDER = os.path.join(basedir, "app/static/img/banner")
     ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
     MAX_UPLOAD_DIMENSION = 1200
     THUMBNAIL_SIZE = 225
@@ -30,7 +32,6 @@ class Config:
     RECAPTCHA_PRIVATE_KEY = os.environ.get("RECAPTCHA_PRIVATE_KEY") or "recaptha private"
 
     MIGRATIONS_FOLDER = os.path.join(basedir, "app/migrations")
-
 
     @staticmethod
     def init_app(app):
@@ -43,6 +44,7 @@ class DevelopmentConfig(Config):
     MAIL_SERVER = 'smtp.googlemail.com'
     MAIL_PORT = 587
     MAIL_USE_TLS = True
+
 
 class TestingConfig(Config):
     TESTING = True

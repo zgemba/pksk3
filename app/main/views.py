@@ -1,19 +1,43 @@
 import os
 import random
-
+from datetime import datetime
 from flask import render_template, redirect, url_for, abort, flash, send_from_directory, current_app, app
 from flask.ext.login import login_required, current_user
-
+from sqlalchemy import desc
 from . import main
-from ..models import Permission, User, Role
-from ..decorators import admin_required
-from .forms import EditProfileForm, EditProfileAdminForm
+from ..models import User, Role, Post, PostImage, Comment
+from ..decorators import admin_required, member_required
+from .forms import EditProfileForm, EditProfileAdminForm, DodajNovicoForm, DodajKomentarForm
 from app import db
+from werkzeug.utils import secure_filename
+from ..myutils import allowed_file, make_unique_filename
 
 
 @main.route("/")
 def index():
     return render_template("index.html")
+
+
+@main.route("/novice")
+@main.route("/novice/<int:page>")
+def novice(page=1):
+    #    posts = Post.query.order_by(desc(Post.id)).paginate(page, current_app.config["ITEMS_PER_PAGE"], False)
+    post = Post.query.order_by(Post.id).first()
+    imgs = post.has_images
+    return render_template("post.html", post=post)
+
+
+@main.route("/post/<int:id>", methods=['GET', 'POST'])
+def post(id):
+    form = DodajKomentarForm()
+    pt = Post.query.get_or_404(id)
+    if form.validate_on_submit():
+        comment = Comment(body=form.body.data, author=current_user._get_current_object(), timestamp=datetime.utcnow(),
+                          post=pt)
+        db.session.add(comment)
+        return redirect(url_for(".post", id=id))
+    comments = Comment.query.all()
+    return render_template("post.html", post=pt, form=form)
 
 
 @main.route('/tester')
@@ -86,6 +110,39 @@ def random_banner():
     return send_from_directory(current_app.config['BANNER_FOLDER'],
                                banner)
 
+
 @main.route("/informacije")
 def informacije():
     return render_template("informacije.html")
+
+
+@main.route("/urnik")
+def urnik():
+    return render_template("urnik.html")
+
+
+@main.route("/dodaj_novico", methods=["GET", "POST"])
+@login_required
+@member_required
+def dodaj_novico():
+    form = DodajNovicoForm()
+    if form.validate_on_submit():
+        title = form.title.data
+        body = form.body.data
+        p = Post(title=title, body=body, author=current_user._get_current_object(), timestamp=datetime.utcnow())
+        db.session.add(p)
+
+        # imamo sliko?
+        if form.img1.data.filename != "":
+            i1_file_name = os.path.join(current_app.config["UPLOAD_SAVE_FOLDER"], secure_filename(form.img1.data.filename))
+            if allowed_file(i1_file_name):
+                i1_file_name = make_unique_filename(i1_file_name)
+                form.img1.data.save(i1_file_name)
+                image1 = PostImage(filename=i1_file_name, timestamp=datetime.utcnow(),
+                                   comment=form.img1comment.data, post=p)
+                db.session.add(image1)
+
+        db.session.commit()
+        return redirect(url_for(".index"))
+
+    return render_template("dodaj_novico.html", form=form)

@@ -1,0 +1,209 @@
+{% extends "base.html" %}
+
+{% block styles %}
+    <style>
+        .urnik-off {
+            color: #fff;
+            background-color: #aa0000;
+        }
+
+        .urnik-on {
+            color: #000;
+            background-color: #00aa00;
+        }
+
+        .urnik-maybe {
+            color: #000;
+            background-color: #ffaa00;
+        }
+
+        .urnik-rekreacija {
+            color: #000;
+            background-color: #00aaff;
+        }
+    </style>
+    {{ super() }}
+{% endblock %}
+
+{% block title %}PKSK - urnik {% endblock %}
+
+{% block page_content %}
+    <div class="page-header">
+        <h1>Urniki in rekreacija</h1>
+    </div>
+
+    <h2>Rekreacija za občane</h2>
+    <p>Kot društvo v okviru zavoda za šport nudimo rekracijo za občane, ki želijo poskusiti športno plezanje in
+        balvaniranje. Rekreacija je odprta za vse in poteka ob torkih med 18:00 in 20:00 na nizki plezalni steni.
+        <br>V klubu imamo na voljo tudi nekaj plezalnih čevljev različnih številk, ki si jih lahko izposodite, če nimate
+        svojih.</p>
+    <p><em>Kljub temum, da se bo klub trudil zagotavljati maksimalno varnost in podporo se morate zavedati, da je
+        plezanje lahko nevarno! <br>Med rekreacijo uporabljate steno na lastno odgovornost!</em></p>
+
+    <p class="lead">V novembru je udeležba na rekreaciji brezplačna!</p>
+    <p>Paket 10 kart za sezono 2015-2016 stane 45€ in ni vezan na posamezno osebo.</p>
+
+    <h2>Urniki plezanja za člane</h2>
+    <p>Člani lahko plezajo na visoki steni v športni dvoran in na nizki steni v plezalnem centru vsak dan, kot
+        je to označeno na urnikih spodaj.</p>
+    <p>Uporabo stene člani plačajo ob plačilu članarine. Višina je odvisna od tega, koliko časa član že pleza, oziroma
+        koliko sezon je že plačal uporabo stene:</p>
+
+    <ul>
+        <li> prvo leto 130€</li>
+        <li> drugo leto 70€</li>
+        <li> tretje in vsako naslednje leto 50€</li>
+    </ul>
+
+
+
+
+
+    <h3>Športna dvorana</h3>
+
+    <p>Termini plezanja v športni dvorani se zaradi ostalih uporabnikov dvorane pogosto spreminjajo. Zato morda
+        objavljen urnik ni povsem pravilen. <br>
+        Najbolj točne informacije ima na voljo običajno Bogdan ali pa hišnik v športni dvorani.</p>
+    <p><em>Člani kluba lahko samostojno plezajo na visoki steni v športni dvorani, ko opravijo tečaj športnega
+        plezanja.</em></p>
+
+    <table class="table-condensed table-bordered">
+        <tr>
+            <td class="urnik-on">Plezanje je mogoče</td>
+        </tr>
+        <tr>
+            <td class="urnik-maybe">Plezanje po dogovoru</td>
+        </tr>
+        <tr>
+            <td class="urnik-off">Plezanje NI MOGOČE</td>
+        </tr>
+        <tr>
+            <td class="urnik-rekreacija">Rekreacija</td>
+        </tr>
+    </table>
+
+    <br>
+    <table class="table-condensed table-bordered">
+        <tr>
+            <td width="10%"></td>
+            <th width="18%">PONEDELJEK</th>
+            <th width="18%">TOREK</th>
+            <th width="18%">SREDA</th>
+            <th width="18%">ČETRTEK</th>
+            <th width="18%">PETEK</th>
+        </tr>
+        <tr>
+            <td><strong>18:00</strong></td>
+            <td class="urnik-maybe">boks</td>
+            <td class="urnik-off"></td>
+            <td class="urnik-off"></td>
+            <td class="urnik-maybe">boks</td>
+            <td class="urnik-on"></td>
+        </tr>
+        <tr>
+            <th><strong>18:30</strong></th>
+            <td class="urnik-maybe"></td>
+            <td class="urnik-off"></td>
+            <td class="urnik-off"></td>
+            <td class="urnik-maybe"></td>
+            <td class="urnik-on"></td>
+        </tr>
+        <tr>
+            <td><strong>19:00</strong></td>
+            <td class="urnik-on"></td>
+            <td class="urnik-on"></td>
+            <td class="urnik-off"></td>
+            <td class="urnik-on"></td>
+            <td class="urnik-on"></td>
+        </tr>
+        <tr>
+            <td><strong>19:30</strong></td>
+            <td class="urnik-on"></td>
+            <td class="urnik-on"></td>
+            <td class="urnik-off"></td>
+            <td class="urnik-on"></td>
+            <td class="urnik-on"></td>
+        </tr>
+        <tr>
+            <td><strong>20:00</strong></td>
+            <td class="urnik-on"></td>
+            <td class="urnik-on"></td>
+            <td class="urnik-off"></td>
+            <td class="urnik-on"></td>
+            <td class="urnik-on"></td>
+        </tr>
+        <tr>
+            <td><strong>20:30</strong></td>
+            <td class="urnik-on"></td>
+            <td class="urnik-on"></td>
+            <td class="urnik-on"></td>
+            <td class="urnik-on"></td>
+            <td class="urnik-on"></td>
+        </tr>
+        <tr>
+            <td><strong>21:00</strong></td>
+            <td class="urnik-on"></td>
+            <td class="urnik-on"></td>
+            <td class="urnik-on"></td>
+            <td class="urnik-on"></td>
+            <td class="urnik-on"></td>
+        </tr>
+        <tr>
+            <td><strong>21:30</strong></td>
+            <td class="urnik-on"></td>
+            <td class="urnik-on"></td>
+            <td class="urnik-on"></td>
+            <td class="urnik-on"></td>
+            <td class="urnik-on"></td>
+        </tr>
+    </table>
+
+    <h3>Bolder</h3>
+
+    <p>Med tednom je plezanje na bolderju možno vsak dan od 18:00 do 20:00, večinoma pa še dlje.</p>
+    <p>Po predhodnem dogovoru je mogoče plezati tudi izven teh terminov.</p>
+    <br>
+    <table class="table-condensed table-bordered">
+        <tr>
+            <td width="10%"></td>
+            <th width="18%">PONEDELJEK</th>
+            <th width="18%">TOREK</th>
+            <th width="18%">SREDA</th>
+            <th width="18%">ČETRTEK</th>
+            <th width="18%">PETEK</th>
+        </tr>
+        <tr>
+            <td><strong>18:00</strong></td>
+            <td class="urnik-on"></td>
+            <td class="urnik-rekreacija"></td>
+            <td class="urnik-on"></td>
+            <td class="urnik-on"></td>
+            <td class="urnik-on"></td>
+        </tr>
+        <tr>
+            <td><strong>19:00</strong></td>
+            <td class="urnik-on"></td>
+            <td class="urnik-rekreacija"></td>
+            <td class="urnik-on"></td>
+            <td class="urnik-on"></td>
+            <td class="urnik-on"></td>
+        </tr>
+        <tr>
+            <td><strong>20:00</strong></td>
+            <td class="urnik-maybe"></td>
+            <td class="urnik-maybe"></td>
+            <td class="urnik-maybe"></td>
+            <td class="urnik-maybe"></td>
+            <td class="urnik-maybe"></td>
+        </tr>
+        <tr>
+            <td><strong>21:00</strong></td>
+            <td class="urnik-maybe"></td>
+            <td class="urnik-maybe"></td>
+            <td class="urnik-maybe"></td>
+            <td class="urnik-maybe"></td>
+            <td class="urnik-maybe"></td>
+        </tr>
+    </table>
+
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block title %}PKSK - {{ post.title }} {% endblock %}
+
+{% block page_content %}
+    <div class="well">
+        <p class="panel-title">{{ post.title }}
+            objavil: {{ post.author.username }} {{ moment(post.timestamp).fromNow() }}</p>
+        {% if post.body_html %}
+            {{ post.body_html | safe }}
+        {% else %}
+            {{ post.body }}
+        {% endif %}
+
+        {% if post.has_images %}
+            {% for i in post.images %}
+                <img src="{{ i.filename }}">
+            {% endfor %}
+        {% endif %}
+
+        <a name="comments"></a>
+        {% if post.has_comments %}
+            {% for comment in post.comments %}
+                <p>{{ comment.body_html }}</p>
+            {% endfor %}
+        {% endif %}
+
+        <hr>
+
+        {% if current_user.is_approved %}
+            {{ wtf.quick_form(form) }}
+        {% endif %}
+
+    </div>
+{% endblock %}

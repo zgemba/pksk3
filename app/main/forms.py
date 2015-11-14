@@ -1,10 +1,11 @@
 from flask.ext.wtf import Form
 from wtforms import StringField, TextAreaField, BooleanField, SelectField, \
-    SubmitField
+    SubmitField, FileField
 from wtforms.validators import InputRequired, Length, Email, Regexp
 from wtforms import ValidationError
 from ..models import Role, User
 from flask_login import current_user
+from flask.ext.pagedown.fields import PageDownField
 
 
 class EditProfileForm(Form):
@@ -49,3 +50,15 @@ class EditProfileAdminForm(Form):
     def validate_username(self, field):
         if field.data != self.user.username and User.query.filter_by(username=field.data).first():
             raise ValidationError('Uporabniško ime je zasedeno.')
+
+
+class DodajNovicoForm(Form):
+    title = StringField("Naslov", validators=[InputRequired(message="Obvezno vpiši naslov")])
+    body = PageDownField("Vsebina", validators=[InputRequired(message="Obvezno vpiši vsebino")])
+    img1 = FileField("Slika 1")
+    img1comment = StringField("Opis")
+
+
+class DodajKomentarForm(Form):
+    body = PageDownField("Tvoj Komentar", validators=[InputRequired(message="Če želiš komentirati, moraš vpisati vsebino!")])
+    submit = SubmitField("Dodaj komentar")

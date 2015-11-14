@@ -1,6 +1,6 @@
+import os
 from datetime import datetime
 import hashlib
-
 from flask.ext.login import UserMixin, AnonymousUserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
@@ -8,7 +8,6 @@ from flask import current_app, request
 from markdown import markdown
 import bleach
 from PIL import Image
-
 from . import db, login_manager
 
 
@@ -75,7 +74,7 @@ class User(UserMixin, db.Model):
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
     password_hash = db.Column(db.String(128))
     confirmed = db.Column(db.Boolean, default=False)
-    approved = db.Column(db.Boolean, default=False)                 # potrjen od admina
+    approved = db.Column(db.Boolean, default=False)  # potrjen od admina
     name = db.Column(db.String(64))
     about_me = db.Column(db.Text())
     member_since = db.Column(db.DateTime(), default=datetime.utcnow)
@@ -88,7 +87,7 @@ class User(UserMixin, db.Model):
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
         if self.role is None:
-            if self.email in current_app.config['ADMIN_EMAIL']:            # možnih je več adminov!
+            if self.email in current_app.config['ADMIN_EMAIL']:  # možnih je več adminov!
                 self.role = Role.query.filter_by(permissions=0xff).first()
             if self.role is None:
                 self.role = Role.query.filter_by(default=True).first()
@@ -123,7 +122,7 @@ class User(UserMixin, db.Model):
         db.session.add(self)
         return True
 
-    def approve(self):                          # to ročno uredi admin na zaščiteni routi
+    def approve(self):  # to ročno uredi admin na zaščiteni routi
         self.approved = True
         db.session.add(self)
         return True
@@ -173,6 +172,9 @@ class User(UserMixin, db.Model):
 
     def is_administrator(self):
         return self.can(Permission.ADMINISTER)
+
+    def is_approved(self):
+        return self.approved
 
     def ping(self):
         self.last_seen = datetime.utcnow()
@@ -235,7 +237,6 @@ class Post(db.Model):
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     comments = db.relationship('Comment', backref='post', lazy='dynamic')
     images = db.relationship("PostImage", backref="post", lazy="dynamic")
-    # images
 
     @staticmethod
     def on_changed_body(target, value, oldvalue, initiator):
@@ -245,6 +246,19 @@ class Post(db.Model):
         target.body_html = bleach.linkify(bleach.clean(
             markdown(value, output_format='html'),
             tags=allowed_tags, strip=True))
+
+    @property
+    def has_images(self):
+        return self.images is not None
+
+    @property
+    def comments_count(self):
+        return self.comments.count()
+
+    @property
+    def has_comments(self):
+        return self.comments_count > 0
+
 
 db.event.listen(Post.body, 'set', Post.on_changed_body)
 
@@ -278,9 +292,61 @@ db.event.listen(Comment.body, 'set', Comment.on_changed_body)
 # IMAGES
 #
 class PostImage(db.Model):
-    id = db.Column(db.Integer, primary_key = True)
+    id = db.Column(db.Integer, primary_key=True)
     filename = db.Column(db.String(100))
     timestamp = db.Column(db.DateTime)
     comment = db.Column(db.String(200))
     post_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
+
+    def __init__(self, filename, timestamp, comment, post):
+        self.filename = os.path.split(filename)[1]             # hranim samo ime fajla, ostalo dela getter automagično
+        self.timestamp = timestamp
+        self.comment = comment
+        self.post = post
+
+        if self._is_oversize:
+            self._resize(current_app.config["MAX_UPLOAD_DIMENSION"], self._file_on_disk)
+
+        self._create_thumbnail()
+
+    @property
+    def _file_on_disk(self):
+        return os.path.join(current_app.config["UPLOAD_SAVE_FOLDER"], self.filename)
+
+    @property
+    def file(self):
+        return os.path.join(current_app.config["UPLOAD_FOLDER"], self.filename)
+
+    @property
+    def thumbnail(self):
+        (name, ext) = os.path.splitext(self.filename)
+        thumb_name = name + "-thumbnail" + ext
+        return os.path.join(current_app.config["UPLOAD_FOLDER"], thumb_name)
+
+    @property
+    def _is_oversize(self):
+        max_size = current_app.config["MAX_UPLOAD_DIMENSION"]
+        im = Image.open(self._file_on_disk)
+        return max(im.size) > max_size
+
+    def _resize(self, max_dim, new_filename):
+        im = Image.open(self._file_on_disk)
+        (px, py) = im.size
+
+        if px > py:  # horizontalno skaliram
+            scale = max_dim / float(px)
+        else:  # vertikalno skaliram
+            scale = max_dim / float(py)
+
+        npx = int(px * scale)
+        npy = int(py * scale)
+        new = im.resize((npx, npy), Image.ANTIALIAS)
+        new.save(new_filename)
+
+    def _create_thumbnail(self):
+        (name, ext) = os.path.splitext(self.filename)
+        (path, file) = os.path.split(self._file_on_disk)
+        new_name = os.path.join(path, name + "-thumbnail" + ext)
+        thumb_size = current_app.config["THUMBNAIL_SIZE"]
+        self._resize(thumb_size, new_name)
 
