@@ -4,8 +4,28 @@
 
 {% block page_content %}
     <div class="well">
-        <p class="panel-title">{{ post.title }}
-            objavil: {{ post.author.username }} {{ moment(post.timestamp).fromNow() }}</p>
+        <div class="row">
+            <div class="col-lg-6">
+                <h1>{{ post.title }}</h1>
+
+                <p class="small">
+                    Objavil
+                    <a href='{{ url_for("main.user", user_id=post.author.username) }}'>
+                        {{ post.author.username }}</a>
+                    {{ moment(post.timestamp).fromNow() }}</p>
+            </div>
+            <div class="col-lg-6 text-right">
+                {% if current_user.is_administrator() or post.author == current_user %}
+                    <!-- <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> -->
+                    <a href="{{ url_for('main.delete_post', id=post.id) }}">
+                        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
+                    <!-- <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> -->
+                {% endif %}
+
+
+            </div>
+        </div>
+
         {% if post.body_html %}
             {{ post.body_html | safe }}
         {% else %}
@@ -14,14 +34,16 @@
 
         {% if post.has_images %}
             {% for i in post.images %}
-                <img src="{{ i.filename }}">
+                <a href="{{ i.file }}"><img class="thumbnail center-block" src="{{ i.thumbnail }}"
+                                            alt="{{ i.comment }}"></a>
+                <p class="text-center"><em>{{ i.comment }}</em></p>
             {% endfor %}
         {% endif %}
 
         <a name="comments"></a>
         {% if post.has_comments %}
             {% for comment in post.comments %}
-                <p>{{ comment.body_html }}</p>
+                {% include "_comment.html" %}
             {% endfor %}
         {% endif %}
 

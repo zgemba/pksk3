@@ -1,0 +1,37 @@
+<div class="row table-bordered">
+    <div class="col-lg-1">
+        <p class="small">
+            <a href='{{ url_for("main.user", user_id=comment.author.username) }}'>
+                {{ comment.author.username }}</a>
+            {{ moment(comment.timestamp).fromNow() }}</p>
+        <a href='{{ url_for("main.user", user_id=comment.author.username) }}'>
+            <img class=" img-rounded center-block" src="{{ comment.author.gravatar(50) }}">
+        </a>
+    </div>
+    {% if comment.disabled %}
+        <div class="col-lg-10"><span class="alert-warning">Komentar je zaradi kršitve pravil skrit</span></div>
+        {% if current_user.is_administrator() %}
+            <div class="col-lg-10">{{ comment.body_html | safe }}</div>
+        {% endif %}
+    {% else %}
+        <div class="col-lg-10">{{ comment.body_html | safe }}</div>
+    {% endif %}
+    <div class="col-lg-1">
+        {% if current_user.is_administrator() %}
+            <!-- <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> -->
+            <a href="{{ url_for('main.delete_comment', id=comment.id) }}">
+                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+            </a>
+            {% if comment.disabled %}
+                <a href="{{ url_for('main.enable_comment', id=comment.id) }}">
+            {% else %}
+                <a href="{{ url_for('main.disable_comment', id=comment.id) }}">
+            {% endif %}
+        <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
+        </a>
+        {% elif comment.author == current_user and not comment.disabled %}
+            <!-- <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> -->
+            <a href="{{ url_for('main.delete_comment', id=comment.id) }}"><span class="glyphicon glyphicon-trash"
+        {% endif %}
+    </div>
+</div>

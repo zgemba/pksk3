@@ -3,7 +3,6 @@ import random
 from datetime import datetime
 from flask import render_template, redirect, url_for, abort, flash, send_from_directory, current_app, app
 from flask.ext.login import login_required, current_user
-from sqlalchemy import desc
 from . import main
 from ..models import User, Role, Post, PostImage, Comment
 from ..decorators import admin_required, member_required
@@ -121,10 +120,13 @@ def urnik():
     return render_template("urnik.html")
 
 
-@main.route("/dodaj_novico", methods=["GET", "POST"])
+#
+# POST views
+#
+@main.route("/add_post", methods=["GET", "POST"])
 @login_required
 @member_required
-def dodaj_novico():
+def add_post():
     form = DodajNovicoForm()
     if form.validate_on_submit():
         title = form.title.data
@@ -145,4 +147,60 @@ def dodaj_novico():
         db.session.commit()
         return redirect(url_for(".index"))
 
-    return render_template("dodaj_novico.html", form=form)
+    return render_template("add_post.html", form=form)
+
+
+@login_required
+@main.route('/delete_post/<int:id>', methods=["GET", "POST"])
+def delete_post(id):
+    pst = Post.query.get_or_404(id)
+    if current_user.is_administrator() or pst.author == current_user:
+        imgs = PostImage.query.filter_by(post=pst)
+        for i in imgs:
+            i.remove()
+        db.session.delete(pst)
+        flash("Prispevek izbrisan")
+        return redirect(url_for("main.index"))
+    else:
+        flash("Brišete lahko samo svoje prospevke¸")
+
+
+#
+# COMMENT views
+#
+@login_required
+@main.route('/delete_comment/<int:id>', methods=["GET", "POST"])
+def delete_comment(id):
+    cmt = Comment.query.get_or_404(id)
+    if current_user.is_administrator() or cmt.author == current_user:
+        db.session.delete(cmt)
+        flash("Komentar izbrisan")
+        return redirect(url_for("main.post", id=cmt.post.id))
+    else:
+        flash("Brišete lahko samo svoje komentarje")
+
+
+@login_required
+@admin_required
+@main.route('/disable_comment/<int:id>', methods=["GET", "POST"])
+def disable_comment(id):
+    cmt = Comment.query.get_or_404(id)
+    if current_user.is_administrator():
+        cmt.disabled = True
+        flash("Komentar je sktit")
+        return redirect(url_for("main.post", id=cmt.post.id))
+    else:
+        flash("Samo za administratorje")
+
+
+@login_required
+@admin_required
+@main.route('/enable_comment/<int:id>', methods=["GET", "POST"])
+def enable_comment(id):
+    cmt = Comment.query.get_or_404(id)
+    if current_user.is_administrator():
+        cmt.disabled = False
+        flash("Komentar je spet prikazan")
+        return redirect(url_for("main.post", id=cmt.post.id))
+    else:
+        flash("Samo za administratorje")

@@ -235,7 +235,7 @@ class Post(db.Model):
     body_html = db.Column(db.Text)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    comments = db.relationship('Comment', backref='post', lazy='dynamic')
+    comments = db.relationship('Comment', backref='post', lazy='dynamic', cascade="save-update, merge, delete")
     images = db.relationship("PostImage", backref="post", lazy="dynamic")
 
     @staticmethod
@@ -314,6 +314,12 @@ class PostImage(db.Model):
         return os.path.join(current_app.config["UPLOAD_SAVE_FOLDER"], self.filename)
 
     @property
+    def _thumbnail_on_disk(self):
+        (name, ext) = os.path.splitext(self.filename)
+        thumb_name = name + "-thumbnail" + ext
+        return os.path.join(current_app.config["UPLOAD_SAVE_FOLDER"], thumb_name)
+
+    @property
     def file(self):
         return os.path.join(current_app.config["UPLOAD_FOLDER"], self.filename)
 
@@ -350,3 +356,9 @@ class PostImage(db.Model):
         thumb_size = current_app.config["THUMBNAIL_SIZE"]
         self._resize(thumb_size, new_name)
 
+    def remove(self):
+        try:
+            os.remove(self._file_on_disk)
+            os.remove(self._thumbnail_on_disk)
+        except FileNotFoundError:
+            pass                        # silent ignore
