@@ -236,7 +236,7 @@ class Post(db.Model):
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     comments = db.relationship('Comment', backref='post', lazy='dynamic', cascade="save-update, merge, delete")
-    images = db.relationship("PostImage", backref="post", lazy="dynamic")
+    images = db.relationship("PostImage", backref="post", lazy="dynamic", cascade="save-update, merge, delete")
 
     @staticmethod
     def on_changed_body(target, value, oldvalue, initiator):

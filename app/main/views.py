@@ -155,8 +155,7 @@ def add_post():
 def delete_post(id):
     pst = Post.query.get_or_404(id)
     if current_user.is_administrator() or pst.author == current_user:
-        imgs = PostImage.query.filter_by(post=pst)
-        for i in imgs:
+        for i in PostImage.query.filter_by(post=pst):
             i.remove()
         db.session.delete(pst)
         flash("Prispevek izbrisan")
