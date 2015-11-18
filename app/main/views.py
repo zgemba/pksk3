@@ -161,7 +161,7 @@ def delete_post(id):
         flash("Prispevek izbrisan")
         return redirect(url_for("main.index"))
     else:
-        flash("Brišete lahko samo svoje prospevke¸")
+        flash("Brišete lahko samo svoje prispevke¸")
 
 
 #
