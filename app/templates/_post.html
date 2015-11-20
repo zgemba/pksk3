@@ -1,0 +1,53 @@
+<div class="well">
+    <div class="row">
+        <div class="col-lg-6">
+            <h1>{{ post.title }}</h1>
+
+            <p class="small">
+                Objavil
+                <a href='{{ url_for("main.user", user_id=post.author.username) }}'>
+                    {{ post.author.username }}</a>
+                {{ moment(post.timestamp).fromNow() }}</p>
+        </div>
+        <div class="col-lg-6 text-right">
+            {% if current_user.is_administrator() or post.author == current_user %}
+                <!-- <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> -->
+                <a href="{{ url_for('main.delete_post', id=post.id) }}">
+                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
+                <!-- <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> -->
+            {% endif %}
+        </div>
+    </div>
+
+    {% if post.has_images %}
+        <div class="row">
+            <div class="col-lg-10">
+                {% if post.body_html %}
+                    {{ post.body_html | safe }}
+                {% else %}
+                    {{ post.body }}
+                {% endif %}
+            </div>
+            <div class="col-lg-2">
+                <a href="{{ url_for('main.post', id=post.id) }}">
+                    <img class="thumbnail center-block" src="{{ post.headline_thumbnail }}"
+                         alt="thumb"></a>
+            </div>
+        </div>
+    {% else %}
+        {% if post.body_html %}
+            {{ post.body_html | safe }}
+        {% else %}
+            {{ post.body }}
+        {% endif %}
+    {% endif %}
+
+    <a href="{{ url_for("main.post", id=post.id, _anchor='comments') }}">
+        {% if post.has_comments %}
+            Komentarjev <span class="badge">{{ post.comments_count }}</span>
+        {% else %}
+            Dodaj komentar
+        {% endif %}
+    </a>
+
+</div>

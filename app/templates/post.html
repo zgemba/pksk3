@@ -40,6 +40,7 @@
             {% endfor %}
         {% endif %}
 
+        <h2>Komentarji ({{ post.comments_count }})</h2>
         <a name="comments"></a>
         {% if post.has_comments %}
             {% for comment in post.comments %}

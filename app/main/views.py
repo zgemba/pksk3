@@ -3,6 +3,8 @@ import random
 from datetime import datetime
 from flask import render_template, redirect, url_for, abort, flash, send_from_directory, current_app, app
 from flask.ext.login import login_required, current_user
+from sqlalchemy import desc
+
 from . import main
 from ..models import User, Role, Post, PostImage, Comment
 from ..decorators import admin_required, member_required
@@ -14,34 +16,16 @@ from ..myutils import allowed_file, make_unique_filename
 
 @main.route("/")
 def index():
-    return render_template("index.html")
+    return redirect(url_for(".novice"))
 
 
 @main.route("/novice")
 @main.route("/novice/<int:page>")
 def novice(page=1):
-    #    posts = Post.query.order_by(desc(Post.id)).paginate(page, current_app.config["ITEMS_PER_PAGE"], False)
-    post = Post.query.order_by(Post.id).first()
-    imgs = post.has_images
-    return render_template("post.html", post=post)
-
-
-@main.route("/post/<int:id>", methods=['GET', 'POST'])
-def post(id):
-    form = DodajKomentarForm()
-    pt = Post.query.get_or_404(id)
-    if form.validate_on_submit():
-        comment = Comment(body=form.body.data, author=current_user._get_current_object(), timestamp=datetime.utcnow(),
-                          post=pt)
-        db.session.add(comment)
-        return redirect(url_for(".post", id=id))
-    comments = Comment.query.all()
-    return render_template("post.html", post=pt, form=form)
-
-
-@main.route('/tester')
-def tester():
-    return render_template("tester.html")
+    pagination = Post.query.order_by(desc(Post.id)).paginate(page, per_page=current_app.config["ITEMS_PER_PAGE"],
+                                                             error_out=False)
+    posts = pagination.items
+    return render_template("novice.html", posts=posts, pagination=pagination)
 
 
 @main.route('/user/<user_id>')
@@ -123,6 +107,18 @@ def urnik():
 #
 # POST views
 #
+@main.route("/post/<int:id>", methods=['GET', 'POST'])
+def post(id):
+    form = DodajKomentarForm()
+    pt = Post.query.get_or_404(id)
+    if form.validate_on_submit():
+        comment = Comment(body=form.body.data, author=current_user._get_current_object(), timestamp=datetime.utcnow(),
+                          post=pt)
+        db.session.add(comment)
+        return redirect(url_for(".post", id=id))
+    return render_template("post.html", post=pt, form=form)
+
+
 @main.route("/add_post", methods=["GET", "POST"])
 @login_required
 @member_required
@@ -136,7 +132,8 @@ def add_post():
 
         # imamo sliko?
         if form.img1.data.filename != "":
-            i1_file_name = os.path.join(current_app.config["UPLOAD_SAVE_FOLDER"], secure_filename(form.img1.data.filename))
+            i1_file_name = os.path.join(current_app.config["UPLOAD_SAVE_FOLDER"],
+                                        secure_filename(form.img1.data.filename))
             if allowed_file(i1_file_name):
                 i1_file_name = make_unique_filename(i1_file_name)
                 form.img1.data.save(i1_file_name)

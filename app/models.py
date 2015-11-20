@@ -259,6 +259,9 @@ class Post(db.Model):
     def has_comments(self):
         return self.comments_count > 0
 
+    @property
+    def headline_thumbnail(self):
+        return self.images[0].thumbnail if self.has_images else None
 
 db.event.listen(Post.body, 'set', Post.on_changed_body)
 
