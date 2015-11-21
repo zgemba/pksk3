@@ -118,37 +118,44 @@ def post(id):
     return render_template("post.html", post=pt, form=form)
 
 
-@main.route("/add_post<int:id>", methods=["GET", "POST"])
+@main.route("/edit_post/<int:id>", methods=["GET", "POST"])
 @login_required
 @member_required
-def add_post(id = -1):
+def edit_post(id=-1):
     form = DodajNovicoForm()
-    if id != -1:
-        post = Post.query.get_or_404(id)
-        form.title.data = post.title
-        form.body.data = post.data
-        # TODO slike
     if form.validate_on_submit():
         title = form.title.data
         body = form.body.data
-        p = Post(title=title, body=body, author=current_user._get_current_object(), timestamp=datetime.utcnow())
-        db.session.add(p)
+        if id == -1:                # dodajam nov post
+            p = Post(title=title, body=body, author=current_user._get_current_object(), timestamp=datetime.utcnow())
+            db.session.add(p)
 
-        # imamo sliko?
-        if form.img1.data.filename != "":
-            i1_file_name = os.path.join(current_app.config["UPLOAD_SAVE_FOLDER"],
-                                        secure_filename(form.img1.data.filename))
-            if allowed_file(i1_file_name):
-                i1_file_name = make_unique_filename(i1_file_name)
-                form.img1.data.save(i1_file_name)
-                image1 = PostImage(filename=i1_file_name, timestamp=datetime.utcnow(),
-                                   comment=form.img1comment.data, post=p)
-                db.session.add(image1)
+            # imamo sliko?
+            if form.img1.data.filename != "":
+                i1_file_name = os.path.join(current_app.config["UPLOAD_SAVE_FOLDER"],
+                                            secure_filename(form.img1.data.filename))
+                if allowed_file(i1_file_name):
+                    i1_file_name = make_unique_filename(i1_file_name)
+                    form.img1.data.save(i1_file_name)
+                    image1 = PostImage(filename=i1_file_name, timestamp=datetime.utcnow(),
+                                       comment=form.img1comment.data, post=p)
+                    db.session.add(image1)
+
+        else:                       # editiram obstoječega
+            p = Post.query.get_or_404(id)
+            p.body = body
+            p.title = title
 
         db.session.commit()
         return redirect(url_for(".index"))
 
-    return render_template("add_post.html", form=form)
+    if id != -1:  # preload forme
+        p = Post.query.get_or_404(id)
+        form.title.data = p.title
+        form.body.data = p.body
+        # TODO slike
+
+    return render_template("edit_post.html", form=form)
 
 
 @login_required
