@@ -4,7 +4,6 @@ from datetime import datetime
 from flask import render_template, redirect, url_for, abort, flash, send_from_directory, current_app, app
 from flask.ext.login import login_required, current_user
 from sqlalchemy import desc
-
 from . import main
 from ..models import User, Role, Post, PostImage, Comment
 from ..decorators import admin_required, member_required
@@ -119,11 +118,16 @@ def post(id):
     return render_template("post.html", post=pt, form=form)
 
 
-@main.route("/add_post", methods=["GET", "POST"])
+@main.route("/add_post<int:id>", methods=["GET", "POST"])
 @login_required
 @member_required
-def add_post():
+def add_post(id = -1):
     form = DodajNovicoForm()
+    if id != -1:
+        post = Post.query.get_or_404(id)
+        form.title.data = post.title
+        form.body.data = post.data
+        # TODO slike
     if form.validate_on_submit():
         title = form.title.data
         body = form.body.data
