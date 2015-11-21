@@ -121,12 +121,13 @@ def post(id):
 @main.route("/edit_post/<int:id>", methods=["GET", "POST"])
 @login_required
 @member_required
-def edit_post(id=-1):
+def edit_post(id):
+    editing = False
     form = DodajNovicoForm()
     if form.validate_on_submit():
         title = form.title.data
         body = form.body.data
-        if id == -1:                # dodajam nov post
+        if id == 0:                # dodajam nov post
             p = Post(title=title, body=body, author=current_user._get_current_object(), timestamp=datetime.utcnow())
             db.session.add(p)
 
@@ -149,13 +150,14 @@ def edit_post(id=-1):
         db.session.commit()
         return redirect(url_for(".index"))
 
-    if id != -1:  # preload forme
+    if id != 0:  # preload forme
+        editing = True
         p = Post.query.get_or_404(id)
         form.title.data = p.title
         form.body.data = p.body
         # TODO slike
 
-    return render_template("edit_post.html", form=form)
+    return render_template("edit_post.html", form=form, edit=editing)
 
 
 @login_required
