@@ -37,10 +37,20 @@
 
             <div class="form-group">
                 <label for="img1" class="col-sm-2 control-label">Slika 1:</label>
+
                 <div class="col-sm-10">
+                    {% if images %}
+                        <img class="thumbnail" src="{{ images[0].thumbnail }}">
+                        Zbriši sliko: {{ form.img1delete() }}
+                    {% endif %}
+
                     {{ form.img1(class="form-control") }}
+                    {% for e in form.errors.img1 %}
+                        <span class="alert-danger">[{{ e }}]</span>
+                    {% endfor %}
                 </div>
                 <label for="img1comment" class="col-sm-2 control-label">Opis:</label>
+
                 <div class="col-sm-10">
                     {{ form.img1comment(class="form-control") }}
                 </div>

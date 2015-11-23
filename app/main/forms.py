@@ -6,6 +6,7 @@ from wtforms import ValidationError
 from ..models import Role, User
 from flask_login import current_user
 from flask.ext.pagedown.fields import PageDownField
+from ..myutils import allowed_file
 
 
 class EditProfileForm(Form):
@@ -57,6 +58,11 @@ class DodajNovicoForm(Form):
     body = PageDownField("Vsebina", validators=[InputRequired(message="Obvezno vpiši vsebino")])
     img1 = FileField("Slika 1")
     img1comment = StringField("Opis")
+    img1delete = BooleanField("Briši sliko")
+
+    def validate_img1(self, field):
+        if field.data.filename != "" and not allowed_file(field.data.filename):
+            raise ValidationError("Tip datoteke ni podprt.")
 
 
 class DodajKomentarForm(Form):

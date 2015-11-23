@@ -123,15 +123,19 @@ def post(id):
 @member_required
 def edit_post(id):
     editing = False
+    images = None
     form = DodajNovicoForm()
     if form.validate_on_submit():
         title = form.title.data
         body = form.body.data
+        comment = form.img1comment.data
+
         if id == 0:                # dodajam nov post
             p = Post(title=title, body=body, author=current_user._get_current_object(), timestamp=datetime.utcnow())
             db.session.add(p)
 
-            # imamo sliko?
+            # imamo sliko? tole daj v metodo, ki vrne PostImage objekt ali None, če je napaka
+            # naredi generično za več slik
             if form.img1.data.filename != "":
                 i1_file_name = os.path.join(current_app.config["UPLOAD_SAVE_FOLDER"],
                                             secure_filename(form.img1.data.filename))
@@ -141,11 +145,19 @@ def edit_post(id):
                     image1 = PostImage(filename=i1_file_name, timestamp=datetime.utcnow(),
                                        comment=form.img1comment.data, post=p)
                     db.session.add(image1)
+                else:
+                    flash("Neveljaven format slike " + form.img1.data.filename + ".")
 
         else:                       # editiram obstoječega
             p = Post.query.get_or_404(id)
             p.body = body
             p.title = title
+            if form.img1delete.data:
+                img = p.images[0]
+                img.remove()
+                db.session.delete(img)
+            if p.has_images:
+                p.images[0].comment = comment
 
         db.session.commit()
         return redirect(url_for(".index"))
@@ -155,9 +167,11 @@ def edit_post(id):
         p = Post.query.get_or_404(id)
         form.title.data = p.title
         form.body.data = p.body
-        # TODO slike
+        if p.has_images:
+            form.img1comment.data = p.images[0].comment
+            images = p.images.all()
 
-    return render_template("edit_post.html", form=form, edit=editing)
+    return render_template("edit_post.html", form=form, edit=editing, images=images)
 
 
 @login_required

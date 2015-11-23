@@ -249,15 +249,19 @@ class Post(db.Model):
 
     @property
     def has_images(self):
-        return self.images is not None
+        return self.images_count > 0
 
     @property
-    def comments_count(self):
-        return self.comments.count()
+    def images_count(self):
+        return self.images.count()
 
     @property
     def has_comments(self):
         return self.comments_count > 0
+
+    @property
+    def comments_count(self):
+        return self.comments.count()
 
     @property
     def headline_thumbnail(self):
