@@ -130,34 +130,29 @@ def edit_post(id):
         body = form.body.data
         comment = form.img1comment.data
 
-        if id == 0:                # dodajam nov post
+        if id == 0:  # dodajam nov post
             p = Post(title=title, body=body, author=current_user._get_current_object(), timestamp=datetime.utcnow())
             db.session.add(p)
 
-            # imamo sliko? tole daj v metodo, ki vrne PostImage objekt ali None, če je napaka
-            # naredi generično za več slik
+            # imamo sliko?
             if form.img1.data.filename != "":
-                i1_file_name = os.path.join(current_app.config["UPLOAD_SAVE_FOLDER"],
-                                            secure_filename(form.img1.data.filename))
-                if allowed_file(i1_file_name):
-                    i1_file_name = make_unique_filename(i1_file_name)
-                    form.img1.data.save(i1_file_name)
-                    image1 = PostImage(filename=i1_file_name, timestamp=datetime.utcnow(),
-                                       comment=form.img1comment.data, post=p)
-                    db.session.add(image1)
-                else:
-                    flash("Neveljaven format slike " + form.img1.data.filename + ".")
+                save_image(form.img1, p, comment)
 
-        else:                       # editiram obstoječega
+        else:  # editiram obstoječega
             p = Post.query.get_or_404(id)
             p.body = body
             p.title = title
-            if form.img1delete.data:
+            # nova slika?
+            if form.img1.data.filename != "":
+                if p.has_images:        # zbrišem staro, ne glede na kljukico
+                    img = p.images[0]
+                    img.remove()
+                    db.session.delete(img)
+                save_image(form.img1, p, form.img1comment.data)
+            if form.img1delete.data and form.img1.data.filename == "" and p.has_images:      # samo brisanje
                 img = p.images[0]
                 img.remove()
                 db.session.delete(img)
-            if p.has_images:
-                p.images[0].comment = comment
 
         db.session.commit()
         return redirect(url_for(".index"))
@@ -172,6 +167,18 @@ def edit_post(id):
             images = p.images.all()
 
     return render_template("edit_post.html", form=form, edit=editing, images=images)
+
+
+def save_image(field, pst, comment):
+    i1_file_name = os.path.join(current_app.config["UPLOAD_SAVE_FOLDER"],
+                                secure_filename(field.data.filename))
+    if allowed_file(i1_file_name):
+        i1_file_name = make_unique_filename(i1_file_name)
+        field.data.save(i1_file_name)
+        image1 = PostImage(filename=i1_file_name, timestamp=datetime.utcnow(), comment=comment, post=pst)
+        db.session.add(image1)
+    else:
+        flash("napačen format slike")
 
 
 @login_required
