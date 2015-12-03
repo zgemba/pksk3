@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}PKSK - Administracija uporabnikov{% endblock %}
+
+{% block page_content %}
+    <div class="page-header">
+        <h1>Uporabniki</h1>
+    </div>
+
+    <table class="table table-hover table-condensed">
+        <tr>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Name</th>
+            <th>About me</th>
+            <th>Role</th>
+            <th>Confirmed</th>
+            <th>Approved</th>
+            <th>Akcija</th>
+        </tr>
+        {% for user in users %}
+            <tr>
+                <td>{{ user.username }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.name }}</td>
+                <td>{{ user.about_me }}</td>
+                <td>{{ user.role.name }}</td>
+                <td>{{ user.confirmed }}</td>
+                {% if not user.approved %}
+                    <td class="alert-danger">False <a href={{ url_for("admin.approve_user", id=user.id) }}><span
+                            class="glyphicon glyphicon-check" data-toggle="tooltip" title="Potrdi uporabnika"></span></a></td>
+                {% else %}
+                    <td>True</td>
+                {% endif %}
+                <td>
+                    <a href={{ url_for("main.edit_profile_admin", id=user.id) }}><span class="glyphicon glyphicon-edit"
+                                                                                       data-toggle="tooltip"
+                                                                                       title="Popravi uporabnika"></span></a>
+                    <span class="glyphicon glyphicon-trash"></span>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+{% endblock %}
