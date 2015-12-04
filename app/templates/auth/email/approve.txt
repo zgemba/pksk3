@@ -8,6 +8,6 @@ Podatki:
 
 Za potrditev novega email naslova klikni spodnjo povezavo:
 
-{{ url_for('auth.approve', user_id = user.id, _external=True) }}
+{{ url_for('admin.approve_user', user_id = user.id, _external=True) }}
 
 Lep pozdrav, Ekipa PKSK

@@ -1,10 +1,8 @@
 from . import admin
-from .. import db
-from flask import render_template, redirect, request, url_for, flash, current_app
+from flask import render_template, redirect, url_for, flash, current_app
 from flask.ext.login import login_required
 from app.decorators import admin_required
 from ..models import User
-from ..email import send_email
 
 
 @admin.route("/users")
@@ -20,5 +18,5 @@ def users():
 def approve_user(id):
     user = User.query.get_or_404(id)
     user.approve()
-    flash("Uporabnik je potrjen")
+    flash("Uporabnik {u} je potrjen".format(u=user.username))
     return redirect(url_for("admin.users"))

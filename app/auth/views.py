@@ -2,7 +2,6 @@ from flask import render_template, redirect, request, url_for, flash, current_ap
 from flask.ext.login import login_user, login_required, logout_user, current_user
 from . import auth
 from .. import db
-from app.decorators import admin_required
 from ..models import User
 from ..email import send_email
 from .forms import LoginForm, RegistrationForm, ChangePasswordForm, PasswordResetRequestForm, PasswordResetForm, \
@@ -164,17 +163,4 @@ def change_email(token):
         flash("Email naslov je bil spremenjen.")
     else:
         flash("Napačna zahteva.")
-    return redirect(url_for("main.index"))
-
-
-@auth.route('/approve/<int:user_id>')
-@login_required
-@admin_required
-def approve(user_id):
-    user = User.query.filter_by(id=user_id).first()
-    if user is None:
-        flash("Uporabnik ne obstaja?")
-        return redirect(url_for("main.index"))
-    user.approve()
-    flash("Uporabnik je potrjen")
     return redirect(url_for("main.index"))

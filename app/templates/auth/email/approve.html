@@ -7,5 +7,5 @@
     <li>Uporabniško ime: {{ user.username }}</li>
 </ul>
 <p>Za dodelitev pravic uporabniku klikni spodnjo povezavo:</p>
-<p>{{ url_for('auth.approve', user_id = user.id, _external=True) }}</p>
+<p>{{ url_for('admin.approve_user', user_id = user.id, _external=True) }}</p>
 <p>Lep pozdrav, Ekipa PKSK</p>
