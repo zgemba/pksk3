@@ -46,7 +46,9 @@
         {% if post.has_comments %}
             Komentarjev <span class="badge">{{ post.comments_count }}</span>
         {% else %}
-            Dodaj komentar
+            {% if current_user.can(Permission.COMMENT) %}
+                Dodaj komentar
+            {% endif %}
         {% endif %}
     </a>
 

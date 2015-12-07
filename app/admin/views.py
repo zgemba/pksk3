@@ -25,6 +25,17 @@ def approve_user(id):
     return redirect(url_for("admin.users"))
 
 
+@admin.route('/delete_user/<int:id>', methods=['GET', 'POST'])
+@admin_required
+@login_required
+def delete_user(id):
+    user = User.query.get_or_404(id)
+    user.delete()
+    flash("Uporabnik je bil izbrisan")
+    return redirect(url_for("admin.users"))
+
+
+
 @admin.route('/bulk_email', methods=['GET', 'POST'])
 @admin_required
 @login_required

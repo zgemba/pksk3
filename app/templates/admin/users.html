@@ -28,7 +28,8 @@
                 <td>{{ user.confirmed }}</td>
                 {% if not user.approved %}
                     <td class="alert-danger">False <a href={{ url_for("admin.approve_user", id=user.id) }}><span
-                            class="glyphicon glyphicon-check" data-toggle="tooltip" title="Potrdi uporabnika"></span></a></td>
+                            class="glyphicon glyphicon-check" data-toggle="tooltip"
+                            title="Potrdi uporabnika"></span></a></td>
                 {% else %}
                     <td>True</td>
                 {% endif %}
@@ -36,7 +37,9 @@
                     <a href={{ url_for("main.edit_profile_admin", id=user.id) }}><span class="glyphicon glyphicon-edit"
                                                                                        data-toggle="tooltip"
                                                                                        title="Popravi uporabnika"></span></a>
-                    <span class="glyphicon glyphicon-trash"></span>
+                    <a href={{ url_for("admin.delete_user", id=user.id) }}><span
+                            class="glyphicon glyphicon-trash" data-toggle="tooltip"
+                            title="Briši uporabnika"></span>
                 </td>
             </tr>
         {% endfor %}

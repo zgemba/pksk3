@@ -94,6 +94,7 @@ class User(UserMixin, db.Model):
         if self.email is not None and self.avatar_hash is None:
             self.avatar_hash = hashlib.md5(
                 self.email.encode('utf-8')).hexdigest()
+        self.username = self.email.split("@")[0]                # nastavim na nek default
 
     @property
     def password(self):
@@ -120,10 +121,12 @@ class User(UserMixin, db.Model):
             return False
         self.confirmed = True
         db.session.add(self)
+        db.session.commit()             # zaradi debuga rabim takojšen commit
         return True
 
     def approve(self):  # to ročno uredi admin na zaščiteni routi
         self.approved = True
+        self.role = Role.query.filter_by(name="User").first()
         db.session.add(self)
         return True
 
@@ -207,12 +210,19 @@ class User(UserMixin, db.Model):
     def __repr__(self):
         return '<User %r>' % self.username
 
+    def delete(self):
+        # tu uredimo kaskado ali kaj naj se naredi z posti ipd izbrisanega?
+        db.session.delete(self)
+
 
 class AnonymousUser(AnonymousUserMixin):
     def can(self, permissions):
         return False
 
     def is_administrator(self):
+        return False
+
+    def is_approved(self):
         return False
 
 

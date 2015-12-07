@@ -50,7 +50,7 @@
 
         <hr>
 
-        {% if current_user.is_approved %}
+        {% if current_user.can(Permission.COMMENT) %}
             {{ wtf.quick_form(form) }}
         {% endif %}
 

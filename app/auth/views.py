@@ -55,7 +55,7 @@ def register():
         db.session.commit()
         token = new_user.generate_confirmation_token()
         send_template_email([new_user.email], "Potrdite svoj račun",
-                   "auth/email/confirm", user=new_user, token=token)
+                            "auth/email/confirm", user=new_user, token=token)
         flash("Registracija je bila uspešno oddana, poslali smo vam email z navodili za potrditev.")
         return redirect(url_for("auth.login"))
     return render_template("auth/register.html", form=form)
@@ -70,8 +70,8 @@ def confirm(token):
         flash("Potrdili ste vašo prijavo. Hvala!")
         flash("Administrator vam bo dodelil še vse ostale pravice.")
         send_template_email(current_app.config['ADMIN_EMAIL'],
-                   "Zahteva za registracijo",
-                   "auth/email/approve",
+                            "Zahteva za registracijo",
+                            "auth/email/approve",
                             user=current_user)
     else:
         flash("Potrditvena povezava je napačna ali pa je že potekla (60 minut).")
@@ -83,7 +83,7 @@ def confirm(token):
 def resend_confirmation():
     token = current_user.generate_confirmation_token()
     send_template_email([current_user.email], "Potrdite svoj račun",
-               "auth/email/confirm", user=current_user, token=token)
+                        "auth/email/confirm", user=current_user, token=token)
     flash("Poslali smo vam nov potrditveni email.")
     return redirect(url_for("main.index"))
 
@@ -113,7 +113,7 @@ def password_reset_request():
         if user:
             token = user.generate_reset_token()
             send_template_email([user.email], "Ponovno nastavite svoje geslo",
-                       "auth/email/reset_password",
+                                "auth/email/reset_password",
                                 user=user, token=token,
                                 next=request.args.get("next"))
         flash("Poslali smo vam email z navodili za spremembo gesla.")
@@ -147,7 +147,7 @@ def change_email_request():
             new_email = form.email.data
             token = current_user.generate_email_change_token(new_email)
             send_template_email([new_email], "Spreemenite svoj email naslov",
-                       "auth/email/change_email",
+                                "auth/email/change_email",
                                 user=current_user, token=token)
             flash("Poslali smo vam email z navodili za spremembo vašega email naslova ")
             return redirect(url_for("main.index"))

@@ -144,12 +144,12 @@ def edit_post(id):
             p.title = title
             # nova slika?
             if form.img1.data.filename != "":
-                if p.has_images:        # zbrišem staro, ne glede na kljukico
+                if p.has_images:  # zbrišem staro, ne glede na kljukico
                     img = p.images[0]
                     img.remove()
                     db.session.delete(img)
                 save_image(form.img1, p, form.img1comment.data)
-            if form.img1delete.data and form.img1.data.filename == "" and p.has_images:      # samo brisanje
+            if form.img1delete.data and form.img1.data.filename == "" and p.has_images:  # samo brisanje
                 img = p.images[0]
                 img.remove()
                 db.session.delete(img)

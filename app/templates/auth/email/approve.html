@@ -1,11 +1,10 @@
 <p>Pozdravljen!</p>
-<p>Uporabnik {{ user.username }} je zahteval in potrdil registracijo, potrebno mu je še dodeliti pravice.</p>
+<p>Nov uporabnik {{ user.username }} je zahteval in potrdil registracijo, potrebno mu je še dodeliti pravice.</p>
 <ul>
     <lh>Podatki:</lh>
     <li>Id: {{ user.id }}</li>
     <li>Email: {{ user.email }}</li>
-    <li>Uporabniško ime: {{ user.username }}</li>
 </ul>
 <p>Za dodelitev pravic uporabniku klikni spodnjo povezavo:</p>
-<p>{{ url_for('admin.approve_user', user_id = user.id, _external=True) }}</p>
+<p>{{ url_for('admin.approve_user', id=user.id, _external=True) }}</p>
 <p>Lep pozdrav, Ekipa PKSK</p>
