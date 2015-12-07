@@ -53,7 +53,7 @@ class TestingConfig(Config):
 
 class ProductionConfig(Config):
     PRODUCTION = True
-    SQLALCHEMY_DATABASE_URI = os.environ.get("DEV_DATABASE_URI") or "sqlite:///" + os.path.join(basedir, "db-production.sqlite")
+    SQLALCHEMY_DATABASE_URI = os.environ.get("PRODUCTION_DATABASE_URI") or "sqlite:///" + os.path.join(basedir, "db-production.sqlite")
     # tu daj naknadno postgres database uri
 
 

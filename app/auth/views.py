@@ -3,7 +3,7 @@ from flask.ext.login import login_user, login_required, logout_user, current_use
 from . import auth
 from .. import db
 from ..models import User
-from ..email import send_email
+from ..email import send_template_email
 from .forms import LoginForm, RegistrationForm, ChangePasswordForm, PasswordResetRequestForm, PasswordResetForm, \
     ChangeEmailForm
 
@@ -54,7 +54,7 @@ def register():
         db.session.add(new_user)
         db.session.commit()
         token = new_user.generate_confirmation_token()
-        send_email([new_user.email], "Potrdite svoj račun",
+        send_template_email([new_user.email], "Potrdite svoj račun",
                    "auth/email/confirm", user=new_user, token=token)
         flash("Registracija je bila uspešno oddana, poslali smo vam email z navodili za potrditev.")
         return redirect(url_for("auth.login"))
@@ -69,10 +69,10 @@ def confirm(token):
     if current_user.confirm(token):
         flash("Potrdili ste vašo prijavo. Hvala!")
         flash("Administrator vam bo dodelil še vse ostale pravice.")
-        send_email(current_app.config['ADMIN_EMAIL'],
+        send_template_email(current_app.config['ADMIN_EMAIL'],
                    "Zahteva za registracijo",
                    "auth/email/approve",
-                   user=current_user)
+                            user=current_user)
     else:
         flash("Potrditvena povezava je napačna ali pa je že potekla (60 minut).")
     return redirect(url_for("main.index"))
@@ -82,7 +82,7 @@ def confirm(token):
 @login_required
 def resend_confirmation():
     token = current_user.generate_confirmation_token()
-    send_email([current_user.email], "Potrdite svoj račun",
+    send_template_email([current_user.email], "Potrdite svoj račun",
                "auth/email/confirm", user=current_user, token=token)
     flash("Poslali smo vam nov potrditveni email.")
     return redirect(url_for("main.index"))
@@ -112,10 +112,10 @@ def password_reset_request():
         user = User.query.filter_by(email=form.email.data).first()
         if user:
             token = user.generate_reset_token()
-            send_email([user.email], "Ponovno nastavite svoje geslo",
+            send_template_email([user.email], "Ponovno nastavite svoje geslo",
                        "auth/email/reset_password",
-                       user=user, token=token,
-                       next=request.args.get("next"))
+                                user=user, token=token,
+                                next=request.args.get("next"))
         flash("Poslali smo vam email z navodili za spremembo gesla.")
         return redirect(url_for("auth.login"))
     return render_template("auth/reset_password.html", form=form)
@@ -146,9 +146,9 @@ def change_email_request():
         if current_user.verify_password(form.password.data):
             new_email = form.email.data
             token = current_user.generate_email_change_token(new_email)
-            send_email([new_email], "Spreemenite svoj email naslov",
+            send_template_email([new_email], "Spreemenite svoj email naslov",
                        "auth/email/change_email",
-                       user=current_user, token=token)
+                                user=current_user, token=token)
             flash("Poslali smo vam email z navodili za spremembo vašega email naslova ")
             return redirect(url_for("main.index"))
         else:
