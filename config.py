@@ -53,7 +53,9 @@ class TestingConfig(Config):
 
 class ProductionConfig(Config):
     PRODUCTION = True
-    SQLALCHEMY_DATABASE_URI = os.environ.get("PRODUCTION_DATABASE_URI") or "sqlite:///" + os.path.join(basedir, "db-production.sqlite")
+    # FIXME
+    SQLALCHEMY_DATABASE_URI = os.environ.get("PRODUCTION_DATABASE_URI") or "sqlite:///" + os.path.join(basedir, "db-devel.sqlite")
+    MAIL_SERVER = "smtp.webfaction.com"
     # tu daj naknadno postgres database uri
 
 
