@@ -31,7 +31,8 @@
         </a>
         {% elif comment.author == current_user and not comment.disabled %}
             <!-- <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> -->
-            <a href="{{ url_for('main.delete_comment', id=comment.id) }}"><span class="glyphicon glyphicon-trash"
+            <a href="{{ url_for('main.delete_comment', id=comment.id) }}"><span
+                    class="glyphicon glyphicon-trash"></span></a>
         {% endif %}
     </div>
 </div>
