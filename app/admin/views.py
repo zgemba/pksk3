@@ -1,12 +1,11 @@
 from . import admin
 from flask import render_template, redirect, url_for, flash, current_app
-from flask.ext.login import login_required
+from flask.ext.login import login_required, current_user
 from app.decorators import admin_required
 from ..models import User
 from .forms import BulkEmailForm
 from flask.ext.mail import Message
 from ..email import send_message
-
 
 @admin.route("/users")
 @admin_required
@@ -30,10 +29,17 @@ def approve_user(id):
 @login_required
 def delete_user(id):
     user = User.query.get_or_404(id)
-    user.delete()
-    flash("Uporabnik je bil izbrisan")
-    return redirect(url_for("admin.users"))
+    if user == current_user:
+        flash("Samega sebe ne smeš izbrisati!")
+        return redirect(url_for("admin.users"))
 
+    if user.posts.count() == 0 and user.comments.count() == 0:
+        user.delete()
+        flash("Uporabnik je bil izbrisan")
+    else:
+        flash("Ne morem izbrisati uporabnika, ima prispevke ali komentarje!")
+
+    return redirect(url_for("admin.users"))
 
 
 @admin.route('/bulk_email', methods=['GET', 'POST'])
