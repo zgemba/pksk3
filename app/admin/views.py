@@ -7,6 +7,7 @@ from .forms import BulkEmailForm
 from flask.ext.mail import Message
 from ..email import send_message
 
+
 @admin.route("/users")
 @admin_required
 def users():

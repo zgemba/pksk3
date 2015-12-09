@@ -89,6 +89,7 @@ class User(UserMixin, db.Model):
         if self.role is None:
             if self.email in current_app.config['ADMIN_EMAIL']:  # možnih je več adminov!
                 self.role = Role.query.filter_by(permissions=0xff).first()
+                self.approved = True
             if self.role is None:
                 self.role = Role.query.filter_by(default=True).first()
         if self.email is not None and self.avatar_hash is None:

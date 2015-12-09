@@ -40,6 +40,15 @@ class Config:
 
 class DevelopmentConfig(Config):
     DEBUG = True
+    SQLALCHEMY_DATABASE_URI = os.environ.get("DEV_DATABASE_URI") or "postgresql://pksk:pksk@localhost:5432/test"
+    MAIL_SERVER = 'smtp.googlemail.com'
+    MAIL_PORT = 587
+    MAIL_USE_TLS = True
+    MIGRATIONS_FOLDER = os.path.join(basedir, "app/post_migrations")
+
+
+class DevelopmentSqliteConfig(Config):
+    DEBUG = True
     SQLALCHEMY_DATABASE_URI = os.environ.get("DEV_DATABASE_URI") or "sqlite:///" + os.path.join(basedir, "db-devel.sqlite")
     MAIL_SERVER = 'smtp.googlemail.com'
     MAIL_PORT = 587
@@ -63,5 +72,6 @@ config = {
     "development": DevelopmentConfig,
     "testing": TestingConfig,
     "production": ProductionConfig,
+    "sqlite": DevelopmentSqliteConfig,
     "default": DevelopmentConfig
 }
