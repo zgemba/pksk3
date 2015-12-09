@@ -53,7 +53,7 @@ def register():
                         password=form.password.data)
         db.session.add(new_user)
         db.session.commit()
-        if not (new_user.email in current_app.config['ADMIN_EMAIL']):  # adminom ne pošiljamo maila
+        if not (new_user.email in current_app.config['ADMIN_EMAIL']):  #
             token = new_user.generate_confirmation_token()
             send_template_email([new_user.email], "Potrdite svoj račun",
                                 "auth/email/confirm", user=new_user, token=token)
