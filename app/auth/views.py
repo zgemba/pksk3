@@ -53,10 +53,11 @@ def register():
                         password=form.password.data)
         db.session.add(new_user)
         db.session.commit()
-        token = new_user.generate_confirmation_token()
-        send_template_email([new_user.email], "Potrdite svoj račun",
-                            "auth/email/confirm", user=new_user, token=token)
-        flash("Registracija je bila uspešno oddana, poslali smo vam email z navodili za potrditev.")
+        if not (new_user.email in current_app.config['ADMIN_EMAIL']):  # adminom ne pošiljamo maila
+            token = new_user.generate_confirmation_token()
+            send_template_email([new_user.email], "Potrdite svoj račun",
+                                "auth/email/confirm", user=new_user, token=token)
+            flash("Registracija je bila uspešno oddana, poslali smo vam email z navodili za potrditev.")
         return redirect(url_for("auth.login"))
     return render_template("auth/register.html", form=form)
 
