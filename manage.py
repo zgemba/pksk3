@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#
 import os
 
 from flask.ext.script import Manager, Shell

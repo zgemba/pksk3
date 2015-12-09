@@ -63,7 +63,6 @@ class TestingConfig(Config):
 class ProductionConfig(Config):
     PRODUCTION = True
     # FIXME
-    SQLALCHEMY_DATABASE_URI = os.environ.get("DEV_DATABASE_URI") or ""
     MAIL_SERVER = "smtp.webfaction.com"
     # tu daj naknadno postgres database uri
 
