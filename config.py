@@ -62,7 +62,6 @@ class TestingConfig(Config):
 
 class ProductionConfig(Config):
     PRODUCTION = True
-    # FIXME
     MAIL_SERVER = "smtp.webfaction.com"
     SQLALCHEMY_DATABASE_URI = os.environ.get("PRODUCTION_DATABASE_URI") or ""
 

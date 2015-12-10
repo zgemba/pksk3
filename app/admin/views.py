@@ -11,7 +11,7 @@ from ..email import send_message
 @admin.route("/users")
 @admin_required
 def users():
-    usrs = User.query.all()
+    usrs = User.query.order_by(User.id)
     return render_template("admin/users.html", users=usrs)
 
 
