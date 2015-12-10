@@ -64,7 +64,7 @@ class ProductionConfig(Config):
     PRODUCTION = True
     # FIXME
     MAIL_SERVER = "smtp.webfaction.com"
-    # tu daj naknadno postgres database uri
+    SQLALCHEMY_DATABASE_URI = os.environ.get("PRODUCTION_DATABASE_URI") or ""
 
 
 config = {
