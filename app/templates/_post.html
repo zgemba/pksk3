@@ -10,10 +10,10 @@
                 {{ moment(post.timestamp).fromNow() }}</p>
         </div>
         <div class="col-lg-6 text-right">
-            {% if current_user.is_administrator() or post.author == current_user %}
+            {% if current_user.can(Permission.ADMINISTER) or post.author == current_user %}
                 <a href="{{ url_for('main.edit_post', id=post.id) }}">
                     <span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>
-                <a href="{{ url_for('main.delete_post', id=post.id) }}">
+                <a onclick="confirmDeletePost({{ post.id }})" href="#">
                     <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
             {% endif %}
         </div>

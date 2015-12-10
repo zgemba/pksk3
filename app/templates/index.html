@@ -9,3 +9,9 @@
 
 </div>
 {% endblock %}
+{% block scripts %}
+    {{ super() }}
+    <script>
+        {% include "js/pkskstuff.js" %}
+    </script>
+{% endblock %}

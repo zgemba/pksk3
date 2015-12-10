@@ -37,7 +37,7 @@
                     <a href={{ url_for("main.edit_profile_admin", id=user.id) }}><span class="glyphicon glyphicon-edit"
                                                                                        data-toggle="tooltip"
                                                                                        title="Popravi uporabnika"></span></a>
-                    <a href={{ url_for("admin.delete_user", id=user.id) }}><span
+                    <a onclick="confirmDeleteUser({{ user.id }}, '{{ user.username }}')" href="#"><span
                             class="glyphicon glyphicon-trash" data-toggle="tooltip"
                             title="Briši uporabnika"></span>
                 </td>
@@ -48,4 +48,7 @@
 
 {% block scripts %}
     {{ super() }}
+    <script>
+        {% include "js/pkskstuff.js" %}
+    </script>
 {% endblock %}

@@ -25,6 +25,7 @@ def approve_user(id):
     return redirect(url_for("admin.users"))
 
 
+@admin.route('/delete_user/')                                        # za route sestavljene z js :-/
 @admin.route('/delete_user/<int:id>', methods=['GET', 'POST'])
 @admin_required
 @login_required

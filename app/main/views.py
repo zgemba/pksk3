@@ -182,6 +182,7 @@ def save_image(field, pst, comment):
 
 
 @login_required
+@main.route('/delete_post/')                                        # za js route
 @main.route('/delete_post/<int:id>', methods=["GET", "POST"])
 def delete_post(id):
     pst = Post.query.get_or_404(id)
