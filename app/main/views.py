@@ -5,7 +5,7 @@ from flask import render_template, redirect, url_for, abort, flash, send_from_di
 from flask.ext.login import login_required, current_user
 from sqlalchemy import desc
 from . import main
-from ..models import User, Role, Post, PostImage, Comment
+from ..models import User, Role, Post, PostImage, Comment, Permission
 from ..decorators import admin_required, member_required
 from .forms import EditProfileForm, EditProfileAdminForm, DodajNovicoForm, DodajKomentarForm
 from app import db
@@ -186,7 +186,7 @@ def save_image(field, pst, comment):
 @main.route('/delete_post/<int:id>', methods=["GET", "POST"])
 def delete_post(id):
     pst = Post.query.get_or_404(id)
-    if current_user.is_administrator() or pst.author == current_user:
+    if current_user.can(Permission.ADMINISTER) or pst.author == current_user:
         for i in PostImage.query.filter_by(post=pst):
             i.remove()
         db.session.delete(pst)
@@ -200,10 +200,11 @@ def delete_post(id):
 # COMMENT views
 #
 @login_required
+@main.route('/delete_comment/')                                     # za js route
 @main.route('/delete_comment/<int:id>', methods=["GET", "POST"])
 def delete_comment(id):
     cmt = Comment.query.get_or_404(id)
-    if current_user.is_administrator() or cmt.author == current_user:
+    if current_user.can(Permission.ADMINISTER) or cmt.author == current_user:
         db.session.delete(cmt)
         flash("Komentar izbrisan")
         return redirect(url_for("main.post", id=cmt.post.id))

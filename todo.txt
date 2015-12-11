@@ -1,8 +1,11 @@
-Postgres config
 headline slike v postu
 več slik v postih (3?)
-confirm dialog za brisanje, glej stari .js
 obveščanje po mailu glede na nastavitve v profilu, post, comment...
 editor za nastavitve obveščanja v profilu, checkbox polje
 error logging in mail adminu
+deploy iz git
+
+narejeno:
+Postgres config
+confirm dialog za brisanje, glej stari .js
 
