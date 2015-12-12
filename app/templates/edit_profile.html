@@ -8,8 +8,83 @@
         <h1>Urejanje profila</h1>
     </div>
     <div class="container-fluid">
-        <div class="col-md-4">
-            {{ wtf.quick_form(form) }}
-        </div>
+        <form enctype="multipart/form-data" action="" method="post" name="edit_profile" class="form-horizontal"
+              role="form">
+            {{ form.hidden_tag() }}
+
+            <div class="form-group">
+                <label for="name" class="col-sm-2 control-label">Ime in priimek <a onclick="unhide('#name-tt')"
+                                                                                   href="#"><span
+                        class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></a>:</label>
+
+                <div class="col-sm-10">
+                    {{ form.name(class="form-control", id="name") }}
+                    <span style="display:none" id="name-tt">Ime in priimek kot je na izkaznici PZS. Vidno samo prijavljenim članom.</span>
+                    {% for e in form.errors.name %}
+                        <span class="alert-danger">[{{ e }}]</span>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="username" class="col-sm-2 control-label">Vzdevek <a onclick="unhide('#username-tt')"
+                                                                                href="#"><span
+                        class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></a>:</label>
+
+                <div class="col-sm-10">
+                    {{ form.username(class="form-control", id="username") }}
+                    <span style="display:none" id="username-tt">Z vzdevkom bodo podpisani prispevki. Vidno vsem.</span>
+                    {% for e in form.errors.username %}
+                        <span class="alert-danger">[{{ e }}]</span>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="about_me" class="col-sm-2 control-label">O meni <a onclick="unhide('#about_me-tt')"
+                                                                               href="#"><span
+                        class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></a>:</label>
+
+                <div class="col-sm-10">
+                    {{ form.about_me(class="form-control", id="about_me") }}
+                    <span style="display:none" id="about_me-tt">Tu lahko napišeš kaj več o sebi ali kar pač meniš, da bi zanimalo ostale člane kluba. Vidno samo prijavljenim članom.</span>
+                    {% for e in form.errors.about_me %}
+                        <span class="alert-danger">[{{ e }}]</span>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="notify_news" class="col-sm-2 control-label">Obveščaj me o <a
+                        onclick="unhide('#notify-tt')"
+                        href="#"><span
+                        class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></a>:</label>
+
+                <div class="col-sm-10">
+                    <p>{{ form.notfy_news(id="notfy_news") }} Novih objavah na strani</p>
+
+                    <p>{{ form.notfy_comments(id="notfy_comments") }} Komentarjih na moje objave</p>
+
+                    <p>{{ form.notfy_news(id="notfy_announcements") }} Posebnih in nujnih obvestilih</p>
+                    <span style="display:none" id="notify-tt">Po elektronski pošti pošiljamo različna obvestila o dogajanju na tej strani.</span>
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="submit" class="btn">Shrani profil</button>
+                </div>
+            </div>
+
+
+        </form>
     </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script>
+        {% include "js/pkskstuff.js" %}
+    </script>
 {% endblock %}

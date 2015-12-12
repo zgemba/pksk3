@@ -16,6 +16,9 @@ class EditProfileForm(Form):
                                                          "Vzdevek je lahko sestavljen samo samo iz črk, "
                                                          "številk, pike in podčrtaja.")])
     about_me = TextAreaField('O meni')
+    notfy_news = BooleanField('Novice')
+    notfy_comments = BooleanField('Komentarji na moje prispevke')
+    notfy_announcements = BooleanField('Posebna obvestila')
     submit = SubmitField('Shrani')
 
     def validate_username(self, field):
@@ -36,6 +39,9 @@ class EditProfileAdminForm(Form):
     role = SelectField('Role', coerce=int)
     name = StringField('Ime', validators=[Length(0, 64)])
     about_me = TextAreaField('O meni')
+    notfy_news = BooleanField('Novice')
+    notfy_comments = BooleanField('Komentarji na moje prispevke')
+    notfy_announcements = BooleanField('Posebna obvestila')
     submit = SubmitField('Shrani')
 
     def __init__(self, user, *args, **kwargs):

@@ -15,3 +15,9 @@ function confirmDeleteUser(id, username) {
         window.location.replace(url);
     }
 }
+
+function unhide(id) {
+    var elem = $(id);
+    elem.show();
+    elem.addClass("small");
+}

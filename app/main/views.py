@@ -5,7 +5,7 @@ from flask import render_template, redirect, url_for, abort, flash, send_from_di
 from flask.ext.login import login_required, current_user
 from sqlalchemy import desc
 from . import main
-from ..models import User, Role, Post, PostImage, Comment, Permission
+from ..models import User, Role, Post, PostImage, Comment, Permission, MailNotification
 from ..decorators import admin_required, member_required
 from .forms import EditProfileForm, EditProfileAdminForm, DodajNovicoForm, DodajKomentarForm
 from app import db
@@ -49,12 +49,20 @@ def edit_profile():
         current_user.name = form.name.data
         current_user.about_me = form.about_me.data
         current_user.username = form.username.data
+        current_user.mail_notify = (int((form.notfy_announcements.data and MailNotification.ANNOUNCEMENTS)) +
+                                    int((form.notfy_news.data and MailNotification.NEWS)) +
+                                    int((form.notfy_comments.data and MailNotification.COMMENTS)))
         db.session.add(current_user)
         flash('Profil je bil popravljen.')
         return redirect(url_for('.user', user_id=current_user.username))
+
     form.name.data = current_user.name
     form.about_me.data = current_user.about_me
     form.username.data = current_user.username
+    form.notfy_announcements.data = (current_user.mail_notify & MailNotification.ANNOUNCEMENTS)
+    form.notfy_comments.data = (current_user.mail_notify & MailNotification.COMMENTS)
+    form.notfy_news.data = (current_user.mail_notify & MailNotification.NEWS)
+
     return render_template('edit_profile.html', form=form)
 
 
@@ -72,6 +80,9 @@ def edit_profile_admin(id):
         user.role = Role.query.get(form.role.data)
         user.name = form.name.data
         user.about_me = form.about_me.data
+        current_user.mail_notify = (int((form.notfy_announcements.data and MailNotification.ANNOUNCEMENTS)) +
+                                    int((form.notfy_news.data and MailNotification.NEWS)) +
+                                    int((form.notfy_comments.data and MailNotification.COMMENTS)))
         db.session.add(user)
         flash('Profil je bil popravljen.')
         return redirect(url_for('.user', user_id=user.username))
@@ -82,7 +93,10 @@ def edit_profile_admin(id):
     form.role.data = user.role_id
     form.name.data = user.name
     form.about_me.data = user.about_me
-    return render_template('edit_profile.html', form=form, user=user)
+    form.notfy_announcements.data = (current_user.mail_notify & MailNotification.ANNOUNCEMENTS)
+    form.notfy_comments.data = (current_user.mail_notify & MailNotification.COMMENTS)
+    form.notfy_news.data = (current_user.mail_notify & MailNotification.NEWS)
+    return render_template('edit_profile_admin.html', form=form, user=user)
 
 
 @main.route("/random_banner")
@@ -182,7 +196,7 @@ def save_image(field, pst, comment):
 
 
 @login_required
-@main.route('/delete_post/')                                        # za js route
+@main.route('/delete_post/')  # za js route
 @main.route('/delete_post/<int:id>', methods=["GET", "POST"])
 def delete_post(id):
     pst = Post.query.get_or_404(id)
@@ -200,7 +214,7 @@ def delete_post(id):
 # COMMENT views
 #
 @login_required
-@main.route('/delete_comment/')                                     # za js route
+@main.route('/delete_comment/')  # za js route
 @main.route('/delete_comment/<int:id>', methods=["GET", "POST"])
 def delete_comment(id):
     cmt = Comment.query.get_or_404(id)
