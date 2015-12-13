@@ -181,6 +181,9 @@ class User(UserMixin, db.Model):
     def is_approved(self):
         return self.approved
 
+    def notify(self, notification):
+        return bool(self.mail_notify & notification)
+
     def ping(self):
         self.last_seen = datetime.utcnow()
         db.session.add(self)

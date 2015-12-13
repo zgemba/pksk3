@@ -81,9 +81,9 @@ def edit_profile_admin(id):
         user.role = Role.query.get(form.role.data)
         user.name = form.name.data
         user.about_me = form.about_me.data
-        current_user.mail_notify = (int((form.notfy_announcements.data and MailNotification.ANNOUNCEMENTS)) +
-                                    int((form.notfy_news.data and MailNotification.NEWS)) +
-                                    int((form.notfy_comments.data and MailNotification.COMMENTS)))
+        user.mail_notify = (int((form.notfy_announcements.data and MailNotification.ANNOUNCEMENTS)) +
+                            int((form.notfy_news.data and MailNotification.NEWS)) +
+                            int((form.notfy_comments.data and MailNotification.COMMENTS)))
         db.session.add(user)
         flash('Profil je bil popravljen.')
         return redirect(url_for('.user', user_id=user.username))
@@ -94,9 +94,9 @@ def edit_profile_admin(id):
     form.role.data = user.role_id
     form.name.data = user.name
     form.about_me.data = user.about_me
-    form.notfy_announcements.data = (user.mail_notify & MailNotification.ANNOUNCEMENTS)
-    form.notfy_comments.data = (user.mail_notify & MailNotification.COMMENTS)
-    form.notfy_news.data = (user.mail_notify & MailNotification.NEWS)
+    form.notfy_announcements.data = bool(user.mail_notify & MailNotification.ANNOUNCEMENTS)
+    form.notfy_comments.data = bool(user.mail_notify & MailNotification.COMMENTS)
+    form.notfy_news.data = bool(user.mail_notify & MailNotification.NEWS)
     return render_template('edit_profile_admin.html', form=form, user=user)
 
 
@@ -126,9 +126,14 @@ def post(id):
     form = DodajKomentarForm()
     pt = Post.query.get_or_404(id)
     if form.validate_on_submit():
-        comment = Comment(body=form.body.data, author=current_user._get_current_object(), timestamp=datetime.utcnow(),
+        author=current_user._get_current_object()
+        comment = Comment(body=form.body.data, author=author, timestamp=datetime.utcnow(),
                           post=pt)
         db.session.add(comment)
+        # a je treba obvestiti avtorja o koemtarjih?
+        if pt.author.notify(MailNotification.COMMENTS):
+            send_template_email([pt.author.email], "Nov komentar", "admin/email/new_comment", post=pt, comment=comment)
+
         return redirect(url_for(".post", id=id))
     return render_template("post.html", post=pt, form=form)
 
@@ -159,7 +164,7 @@ def edit_post(id):
             if current_user.email in emails:  # samemu sebi ne pošiljamo mailov!
                 emails.remove(current_user.email)
             for email in emails:
-                send_template_email(None, "Nova objava", "admin/email/new_post.html", recipients=[email], post=p)
+                send_template_email([email], "Nova objava", "admin/email/new_post", post=p)
 
         else:  # editiram obstoječega
             p = Post.query.get_or_404(id)

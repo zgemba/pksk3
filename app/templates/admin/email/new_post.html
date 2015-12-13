@@ -1,0 +1,6 @@
+<p>Pozdravljen!</p>
+<p>Pravkar je {{ post.author.username }} na strani PKSK objavil nov
+    <a href="{{ url_for('main.post', id=post.id, _external=True) }}">prispevek z naslovom {{ post.title }}</a>.</p>
+    <br><br>
+<p>Če ne želiš več prejemati obvestil o novih prispevkih lahko to izklopiš v tvojem profilu.</p>
+<p>Lep pozdrav, Ekipa PKSK</p>

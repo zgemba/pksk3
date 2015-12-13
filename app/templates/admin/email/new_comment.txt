@@ -1,0 +1,7 @@
+Pozdravljen!
+Pravkar je {{ comment.author.username }} na strani PKSK objavil nov komentar na tvojo temo {{ post.title }}.
+    Povezava: {{ url_for('main.post', id=post.id, _external=True) }}
+
+
+Če ne želiš več prejemati obvestil o novih prispevkih lahko to izklopiš v tvojem profilu.
+Lep pozdrav, Ekipa PKSK
