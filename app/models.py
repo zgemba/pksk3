@@ -216,6 +216,11 @@ class User(UserMixin, db.Model):
         # tu uredimo kaskado ali kaj naj se naredi z posti ipd izbrisanega?
         db.session.delete(self)
 
+    @staticmethod
+    def users_to_notify(level):
+        users = User.query.filter(User.mail_notify.op('&')(level) > 0).all()
+        return [u.email for u in users]
+
 
 class AnonymousUser(AnonymousUserMixin):
     def can(self, permissions):

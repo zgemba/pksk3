@@ -11,6 +11,7 @@ from .forms import EditProfileForm, EditProfileAdminForm, DodajNovicoForm, Dodaj
 from app import db
 from werkzeug.utils import secure_filename
 from ..myutils import allowed_file, make_unique_filename
+from ..email import send_template_email
 
 
 @main.route("/")
@@ -59,9 +60,9 @@ def edit_profile():
     form.name.data = current_user.name
     form.about_me.data = current_user.about_me
     form.username.data = current_user.username
-    form.notfy_announcements.data = (current_user.mail_notify & MailNotification.ANNOUNCEMENTS)
-    form.notfy_comments.data = (current_user.mail_notify & MailNotification.COMMENTS)
-    form.notfy_news.data = (current_user.mail_notify & MailNotification.NEWS)
+    form.notfy_announcements.data = bool(current_user.mail_notify & MailNotification.ANNOUNCEMENTS)
+    form.notfy_comments.data = bool(current_user.mail_notify & MailNotification.COMMENTS)
+    form.notfy_news.data = bool(current_user.mail_notify & MailNotification.NEWS)
 
     return render_template('edit_profile.html', form=form)
 
@@ -93,9 +94,9 @@ def edit_profile_admin(id):
     form.role.data = user.role_id
     form.name.data = user.name
     form.about_me.data = user.about_me
-    form.notfy_announcements.data = (current_user.mail_notify & MailNotification.ANNOUNCEMENTS)
-    form.notfy_comments.data = (current_user.mail_notify & MailNotification.COMMENTS)
-    form.notfy_news.data = (current_user.mail_notify & MailNotification.NEWS)
+    form.notfy_announcements.data = (user.mail_notify & MailNotification.ANNOUNCEMENTS)
+    form.notfy_comments.data = (user.mail_notify & MailNotification.COMMENTS)
+    form.notfy_news.data = (user.mail_notify & MailNotification.NEWS)
     return render_template('edit_profile_admin.html', form=form, user=user)
 
 
@@ -145,12 +146,20 @@ def edit_post(id):
         comment = form.img1comment.data
 
         if id == 0:  # dodajam nov post
-            p = Post(title=title, body=body, author=current_user._get_current_object(), timestamp=datetime.utcnow())
+            author = current_user._get_current_object()
+            p = Post(title=title, body=body, author=author, timestamp=datetime.utcnow())
             db.session.add(p)
 
             # imamo sliko?
             if form.img1.data.filename != "":
                 save_image(form.img1, p, comment)
+
+            # obvestim še tiste, ki so naročeni na maile o novih postih
+            emails = User.users_to_notify(MailNotification.NEWS)
+            if current_user.email in emails:  # samemu sebi ne pošiljamo mailov!
+                emails.remove(current_user.email)
+            for email in emails:
+                send_template_email(None, "Nova objava", "admin/email/new_post.html", recipients=[email], post=p)
 
         else:  # editiram obstoječega
             p = Post.query.get_or_404(id)
@@ -250,3 +259,9 @@ def enable_comment(id):
         return redirect(url_for("main.post", id=cmt.post.id))
     else:
         flash("Samo za administratorje")
+
+
+@main.route('/test')
+def test():
+    emails = User.users_to_notify(MailNotification.ANNOUNCEMENTS)
+    return redirect(url_for('main.novice'))
