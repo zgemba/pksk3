@@ -20,7 +20,7 @@
         </tr>
         {% for user in users %}
             <tr>
-                <td>{{ user.username }}</td>
+                <td><a href="{{ url_for('main.user', user_id=user.id) }}">{{ user.username }}</a></td>
                 <td>{{ user.email }}</td>
                 <td>{{ user.name }}</td>
                 <td>{{ user.about_me }}</td>
