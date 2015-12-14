@@ -121,6 +121,11 @@ def urnik():
     return render_template("urnik.html")
 
 
+@main.route("/urnik_otroci")
+def urnik_otroci():
+    return render_template("urnik_otroci.html")
+
+
 #
 # POST views
 #
