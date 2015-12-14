@@ -25,8 +25,7 @@ def novice(page=1):
     pagination = Post.query.order_by(desc(Post.id)).paginate(page, per_page=current_app.config["ITEMS_PER_PAGE"],
                                                              error_out=False)
     posts = pagination.items
-    pw = (current_user.username is None or current_user.name is None or
-          current_user.username == "" or current_user.name == "")
+    pw = (current_user.name is None or current_user.name.strip() == "")
     return render_template("novice.html", posts=posts, pagination=pagination, profile_warn=pw)
 
 
