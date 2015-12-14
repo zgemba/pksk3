@@ -25,7 +25,9 @@ def novice(page=1):
     pagination = Post.query.order_by(desc(Post.id)).paginate(page, per_page=current_app.config["ITEMS_PER_PAGE"],
                                                              error_out=False)
     posts = pagination.items
-    return render_template("novice.html", posts=posts, pagination=pagination)
+    pw = (current_user.username is None or current_user.name is None or
+          current_user.username == "" or current_user.name == "")
+    return render_template("novice.html", posts=posts, pagination=pagination, profile_warn=pw)
 
 
 @main.route('/user/<user_id>')
@@ -126,7 +128,7 @@ def post(id):
     form = DodajKomentarForm()
     pt = Post.query.get_or_404(id)
     if form.validate_on_submit():
-        author=current_user._get_current_object()
+        author = current_user._get_current_object()
         comment = Comment(body=form.body.data, author=author, timestamp=datetime.utcnow(),
                           post=pt)
         db.session.add(comment)

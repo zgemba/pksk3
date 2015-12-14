@@ -6,6 +6,12 @@
     <div class="page-header">
         <h1>Novice</h1>
     </div>
+
+    {% if profile_warn %}
+        <h3 class="alert-danger">Prosim popravi <a href="{{ url_for('main.edit_profile') }}">tvoj profil</a> in vpiši
+            podatke. Hvala.</h3>
+    {% endif %}
+
     {% for post in posts %}
         {% include "_post.html" %}
     {% endfor %}
