@@ -4,7 +4,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 
 class Config:
-    SECRET_KEY = os.environ.get("SECRET_KEY") or "superskirvnostniključ"
+    SECRET_KEY = os.environ.get("SECRET_KEY") or "superskirvnostnikljuc"
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
     ADMIN_EMAIL = ["blaz.selih@gmail.com", "info@pksk.si"]
     EMAIL_SUBJECT_PREFIX = "[PKSK] "
@@ -65,6 +65,12 @@ class ProductionConfig(Config):
     MAIL_SERVER = "smtp.webfaction.com"
     SQLALCHEMY_DATABASE_URI = os.environ.get("PRODUCTION_DATABASE_URI") or ""
 
+    @classmethod
+    def init_app(cls, app):
+        import logging
+        from logging.handlers import SMTPHandler, RotatingFileHandler, SysLogHandler
+
+        pass
 
 config = {
     "development": DevelopmentConfig,

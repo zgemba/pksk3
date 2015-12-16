@@ -1,4 +1,3 @@
-preveri dvakratni email in email regex pri registraciji?
 headline slike v postu
 več slik v postih (3?)
 error logging in mail adminu
@@ -14,3 +13,4 @@ profil editor za nastavitve obveščanja
 editor za nastavitve obveščanja v profilu, checkbox polje
 14.12. obveščanje po mailu glede na nastavitve v profilu, post, comment...
 14.12. urnik treningov otrok
+15.12. preveri dvakratni email in email regex pri registraciji? (videti je OK)

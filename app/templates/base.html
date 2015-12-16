@@ -14,7 +14,7 @@
 {% block navbar %}
     <div class="container-fluid">
         <a href="{{ url_for("main.index") }}"><img class="img-responsive center-block"
-                                                   src="{{ url_for('main.random_banner') }}"></a>
+                                                   src="{{ url_for("main.random_banner") }}"></a>
     </div>
 
 
@@ -48,10 +48,11 @@
                            aria-expanded="false">Urniki in rekreacija <span class="caret"></span></a>
                         <ul class="dropdown-menu">
                             <li><a href="{{ url_for("main.urnik_otroci") }}">Treningi otrok</a></li>
-                            <li><a href="{{ url_for("main.urnik") }}">Urnik na balvanski steni in v športni dvorani</a></li>
+                            <li><a href="{{ url_for("main.urnik") }}">Urnik na balvanski steni in v športni dvorani</a>
+                            </li>
                         </ul>
                     </li>
-                        {# <li><a href="#">Šola športnega plezanja</a></li> #}
+                    {# <li><a href="#">Šola športnega plezanja</a></li> #}
                     {# <li><a href="#">Tekmovalci</a></li> #}
                     {# <li><a href="#">Vzponi</a></li>  #}
                     <li class="dropdown">

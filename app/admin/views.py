@@ -5,7 +5,7 @@ from app.decorators import admin_required
 from ..models import User
 from .forms import BulkEmailForm
 from flask.ext.mail import Message
-from ..email import send_message
+from ..email import send_message, send_template_email
 
 
 @admin.route("/users")
@@ -21,6 +21,8 @@ def users():
 def approve_user(id):
     user = User.query.get_or_404(id)
     user.approve()
+    # pošlji še mail uporabniku
+    send_template_email([user.email], "Prijava je potrjena!", "admin/email/approved")
     flash("Uporabnik {u} je potrjen".format(u=user.username))
     return redirect(url_for("admin.users"))
 

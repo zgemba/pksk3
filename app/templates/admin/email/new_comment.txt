@@ -1,4 +1,4 @@
-Pozdravljen!
+Pozdravljen/a!
 Pravkar je {{ comment.author.username }} na strani PKSK objavil nov komentar na tvojo temo {{ post.title }}.
     Povezava: {{ url_for('main.post', id=post.id, _external=True) }}
 

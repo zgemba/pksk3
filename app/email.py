@@ -13,6 +13,9 @@ def send_template_email(to, subject, template, **kwargs):
     """
     Pošlje sporočilo iz template, template polja so v kwargs.
     """
+    if type(to) is not list:
+        to = [to]
+
     app = current_app._get_current_object()
     msg = Message(app.config['EMAIL_SUBJECT_PREFIX'] + ' ' + subject,
                   sender=app.config['EMAIL_SENDER'], recipients=to)
