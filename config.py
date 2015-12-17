@@ -63,14 +63,27 @@ class TestingConfig(Config):
 class ProductionConfig(Config):
     PRODUCTION = True
     MAIL_SERVER = "smtp.webfaction.com"
+    MAIL_PORT = 25
     SQLALCHEMY_DATABASE_URI = os.environ.get("PRODUCTION_DATABASE_URI") or ""
 
     @classmethod
     def init_app(cls, app):
         import logging
-        from logging.handlers import SMTPHandler, RotatingFileHandler, SysLogHandler
+        from logging.handlers import SMTPHandler, RotatingFileHandler
 
-        pass
+        app.logger.setLevel(logging.ERROR)
+
+        credentials = (MAIL_USERNAME, MAIL_PASSWORD)
+        mail_handler = SMTPHandler((MAIL_SERVER, MAIL_PORT), "info@pksk.si", ADMIN_EMAIL, "PKSK failure", credentials)
+        mail_handler.setLevel(logging.ERROR)
+        app.logger.addHandler(mail_handler)
+
+        log_file = os.path.join(basedir, 'log', '') + 'pksk.log'
+        file_handler = RotatingFileHandler(log_file, "a", 1*1024*1024, 10)
+        file_handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'))
+        file_handler.setLevel(logging.ERROR)
+        app.logger.addHandler(file_handler)
+
 
 config = {
     "development": DevelopmentConfig,
