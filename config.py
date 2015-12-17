@@ -73,6 +73,12 @@ class ProductionConfig(Config):
 
         app.logger.setLevel(logging.ERROR)
 
+        MAIL_SERVER = "smtp.webfaction.com"
+        MAIL_PORT = 25
+        MAIL_USERNAME = os.environ.get('MAIL_USERNAME') or "username"
+        MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD') or "password"
+        ADMIN_EMAIL = ["blaz.selih@gmail.com", "info@pksk.si"]
+
         credentials = (MAIL_USERNAME, MAIL_PASSWORD)
         mail_handler = SMTPHandler((MAIL_SERVER, MAIL_PORT), "info@pksk.si", ADMIN_EMAIL, "PKSK failure", credentials)
         mail_handler.setLevel(logging.ERROR)
