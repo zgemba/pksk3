@@ -1,5 +1,6 @@
 from flask import current_app
 import os
+import gspread
 
 
 def allowed_file(filename):
@@ -20,5 +21,3 @@ def make_unique_filename(filename):
         version += 1
     # noinspection PyUnboundLocalVariable
     return new_file
-
-

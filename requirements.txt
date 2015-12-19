@@ -21,9 +21,11 @@ alembic==0.8.3
 bleach==1.4.2
 blinker==1.4
 dominate==2.1.16
+gspread==0.3.0
 html5lib==0.9999999
 itsdangerous==0.24
 psycopg2==2.6.1
 python-editor==0.5
+requests==2.9.0
 six==1.9.0
 visitor==0.1.2

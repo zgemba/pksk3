@@ -64,8 +64,3 @@ def bulk_email():
     return render_template("admin/bulk_email.html", form=form)
 
 
-@admin.route('/error')
-@admin_required
-@login_required
-def error():
-    return render_template("neostaja")      # forsiram error, da testiram logger

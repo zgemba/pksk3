@@ -41,7 +41,7 @@ venv/
 flask/
 tmp/
 apache2/
-log/
+logs/
 Thumbs.db
 app.db
 test.db
