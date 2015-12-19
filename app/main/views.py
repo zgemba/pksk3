@@ -10,7 +10,7 @@ from ..decorators import admin_required, member_required
 from .forms import EditProfileForm, EditProfileAdminForm, DodajNovicoForm, DodajKomentarForm
 from app import db
 from werkzeug.utils import secure_filename
-from ..myutils import allowed_file, make_unique_filename, get_from_drive
+from ..myutils import allowed_file, make_unique_filename
 from ..email import send_template_email
 
 

@@ -14,8 +14,7 @@
             <th>Name</th>
             <th>About me</th>
             <th>Role</th>
-            <th>Confirmed</th>
-            <th>Approved</th>
+            <th>Last seen</th>
             <th>Akcija</th>
         </tr>
         {% for user in users %}
@@ -25,14 +24,7 @@
                 <td>{{ user.name }}</td>
                 <td>{{ user.about_me }}</td>
                 <td>{{ user.role.name }}</td>
-                <td>{{ user.confirmed }}</td>
-                {% if not user.approved %}
-                    <td class="alert-danger">False <a href={{ url_for("admin.approve_user", id=user.id) }}><span
-                            class="glyphicon glyphicon-check" data-toggle="tooltip"
-                            title="Potrdi uporabnika"></span></a></td>
-                {% else %}
-                    <td>True</td>
-                {% endif %}
+                <td>{{ moment(user.last_seen).fromNow() }}</td>
                 <td>
                     <a href={{ url_for("main.edit_profile_admin", id=user.id) }}><span class="glyphicon glyphicon-edit"
                                                                                        data-toggle="tooltip"
