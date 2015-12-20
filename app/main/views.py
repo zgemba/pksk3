@@ -6,11 +6,11 @@ from flask.ext.login import login_required, current_user
 from sqlalchemy import desc
 from . import main
 from ..models import User, Role, Post, PostImage, Comment, Permission, MailNotification
-from ..decorators import admin_required, member_required
+from ..decorators import admin_required, member_required, cached
 from .forms import EditProfileForm, EditProfileAdminForm, DodajNovicoForm, DodajKomentarForm
 from app import db
 from werkzeug.utils import secure_filename
-from ..myutils import allowed_file, make_unique_filename
+from ..myutils import allowed_file, make_unique_filename, get_from_gdrive
 from ..email import send_template_email
 
 
@@ -217,9 +217,9 @@ def save_image(field, pst, comment):
         flash("napačen format slike")
 
 
-@login_required
 @main.route('/delete_post/')  # za js route
 @main.route('/delete_post/<int:id>', methods=["GET", "POST"])
+@login_required
 def delete_post(id):
     pst = Post.query.get_or_404(id)
     if current_user.can(Permission.ADMINISTER) or pst.author == current_user:
@@ -235,9 +235,9 @@ def delete_post(id):
 #
 # COMMENT views
 #
-@login_required
 @main.route('/delete_comment/')  # za js route
 @main.route('/delete_comment/<int:id>', methods=["GET", "POST"])
+@login_required
 def delete_comment(id):
     cmt = Comment.query.get_or_404(id)
     if current_user.can(Permission.ADMINISTER) or cmt.author == current_user:
@@ -248,9 +248,9 @@ def delete_comment(id):
         flash("Brišete lahko samo svoje komentarje")
 
 
+@main.route('/disable_comment/<int:id>', methods=["GET", "POST"])
 @login_required
 @admin_required
-@main.route('/disable_comment/<int:id>', methods=["GET", "POST"])
 def disable_comment(id):
     cmt = Comment.query.get_or_404(id)
     if current_user.is_administrator():
@@ -261,9 +261,9 @@ def disable_comment(id):
         flash("Samo za administratorje")
 
 
+@main.route('/enable_comment/<int:id>', methods=["GET", "POST"])
 @login_required
 @admin_required
-@main.route('/enable_comment/<int:id>', methods=["GET", "POST"])
 def enable_comment(id):
     cmt = Comment.query.get_or_404(id)
     if current_user.is_administrator():
@@ -272,6 +272,16 @@ def enable_comment(id):
         return redirect(url_for("main.post", id=cmt.post.id))
     else:
         flash("Samo za administratorje")
+
+
+@main.route("/ciscenje")
+@login_required
+@member_required
+@cached()
+def razpored_ciscenja():
+    sheet = get_from_gdrive("1KnfSG-v6JwLDW0vFe9E_hgDi17PfsZTPk7LuiCL9ybU")
+    vals = sheet.sheet1.get_all_values()[1:]    # odstranim header row
+    return render_template("razpored_ciscenja.html", members=vals)
 
 
 @main.route('/test')

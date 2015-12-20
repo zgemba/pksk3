@@ -1,6 +1,9 @@
 from flask import current_app
 import os
+import json
 import gspread
+from oauth2client.client import SignedJwtAssertionCredentials
+from config import basedir
 
 
 def allowed_file(filename):
@@ -21,3 +24,13 @@ def make_unique_filename(filename):
         version += 1
     # noinspection PyUnboundLocalVariable
     return new_file
+
+
+def get_from_gdrive(key):
+    keyfile = os.path.join(basedir, current_app.config['JSON_KEY_FILE'])
+    json_key = json.load(open(keyfile))
+    scope = ['https://spreadsheets.google.com/feeds']
+    credentials = SignedJwtAssertionCredentials(json_key['client_email'], json_key['private_key'].encode(), scope)
+    gc = gspread.authorize(credentials)
+    wks = gc.open_by_key(key)
+    return wks

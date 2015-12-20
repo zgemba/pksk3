@@ -7,6 +7,7 @@ from config import config
 from flask_wtf.csrf import CsrfProtect
 from flask.ext.moment import Moment
 from flask.ext.pagedown import PageDown
+from werkzeug.contrib.cache import SimpleCache
 
 
 bootstrap = Bootstrap()
@@ -15,6 +16,7 @@ db = SQLAlchemy()
 csrf = CsrfProtect()
 moment = Moment()
 pagedown = PageDown()
+cache = SimpleCache()
 
 login_manager = LoginManager()
 login_manager.session_protection = "basic"  # zaradi flask login csrf!

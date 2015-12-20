@@ -1,4 +1,5 @@
 import os
+from werkzeug.contrib.cache import SimpleCache
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -32,6 +33,10 @@ class Config:
     RECAPTCHA_PRIVATE_KEY = os.environ.get("RECAPTCHA_PRIVATE_KEY") or "recaptha private"
 
     MIGRATIONS_FOLDER = os.path.join(basedir, "app/migrations")
+
+    # google drive api credentials
+    JSON_KEY_FILE = os.environ.get("JSON_KEY_FILE") or ""
+    CACHE = SimpleCache()
 
     @staticmethod
     def init_app(app):
