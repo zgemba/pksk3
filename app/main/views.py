@@ -279,7 +279,7 @@ def enable_comment(id):
 @member_required
 @cached()
 def razpored_ciscenja():
-    sheet = get_from_gdrive("1KnfSG-v6JwLDW0vFe9E_hgDi17PfsZTPk7LuiCL9ybU")
+    sheet = get_from_gdrive("1KnfSG-v6JwLDW0vFe9E_hgDi17PfsZTPk7LuiCL9ybU")     # key dobiš v URL-ju na driveu!
     vals = sheet.sheet1.get_all_values()[1:]    # odstranim header row
     return render_template("razpored_ciscenja.html", members=vals)
 

@@ -36,6 +36,8 @@ class Config:
 
     # google drive api credentials
     JSON_KEY_FILE = os.environ.get("JSON_KEY_FILE") or ""
+
+    # produkcija to overrida z memcachedd?
     CACHE = SimpleCache()
 
     @staticmethod
