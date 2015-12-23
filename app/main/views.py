@@ -289,7 +289,8 @@ def bolder_3d():
     return render_template("bolder_3d.html")
 
 
-
 @main.route('/test')
 def test():
-    return render_template("test.html")
+    return redirect(url_for("main.novice"))
+
+
