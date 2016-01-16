@@ -1,9 +1,8 @@
 from flask import current_app
 import os
-import json
-import gspread
-from oauth2client.client import SignedJwtAssertionCredentials
+import subprocess
 from config import basedir
+import pickle
 
 
 def allowed_file(filename):
@@ -27,10 +26,8 @@ def make_unique_filename(filename):
 
 
 def get_from_gdrive(key):
-    keyfile = os.path.join(basedir, current_app.config['JSON_KEY_FILE'])
-    json_key = json.load(open(keyfile))
-    scope = ['https://spreadsheets.google.com/feeds']
-    credentials = SignedJwtAssertionCredentials(json_key['client_email'], json_key['private_key'].encode(), scope)
-    gc = gspread.authorize(credentials)
-    wks = gc.open_by_key(key)
+    subprocess.call("dget.sh {} {}".format(key, key))
+    wks = pickle.load(os.path.join(basedir, key))
+    # zbrišem picke file
+    os.remove(os.path.join(basedir, key))
     return wks
