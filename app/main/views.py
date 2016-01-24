@@ -286,6 +286,4 @@ def razpored_ciscenja():
 
 @main.route('/test')
 def test():
-    sheet = get_from_gdrive("1KnfSG-v6JwLDW0vFe9E_hgDi17PfsZTPk7LuiCL9ybU")
-    vals = sheet.sheet1.get_all_values()[1:]    # odstranim header row
-    return render_template("razpored_ciscenja.html", members=vals)
+    return redirect(url_for(".novice"))
