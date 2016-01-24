@@ -1,4 +1,4 @@
-gdrive kot eksterni helper (SSL problemi na apacheju)
+mail obvestilo ob lastnem komentarju se ne sme pošiljat!
 headline slike v postu
 več slik v postih (3?)
 deploy iz git
@@ -6,6 +6,7 @@ slike gradnje bolderce
 popis materiala
 
 NAREJENO (ni nujno da je deployano!):
+15.1.  gdrive kot eksterni helper (SSL problemi na apacheju)
 22.12. photosphere, boljša sporočila o napakah
 20.12. gdrive integracija + keširanje (ni deployano)
 17.12. error logging in mail adminu
