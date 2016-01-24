@@ -279,18 +279,13 @@ def enable_comment(id):
 @member_required
 @cached()
 def razpored_ciscenja():
-    sheet = get_from_gdrive("1KnfSG-v6JwLDW0vFe9E_hgDi17PfsZTPk7LuiCL9ybU")     # key dobiš v URL-ju na driveu!
+    sheet = get_from_gdrive("1KnfSG-v6JwLDW0vFe9E_hgDi17PfsZTPk7LuiCL9ybU")
     vals = sheet.sheet1.get_all_values()[1:]    # odstranim header row
     return render_template("razpored_ciscenja.html", members=vals)
 
 
-@main.route('/bolder')
-def bolder_3d():
-    return render_template("bolder_3d.html")
-
-
 @main.route('/test')
 def test():
-    return redirect(url_for("main.novice"))
-
-
+    sheet = get_from_gdrive("1KnfSG-v6JwLDW0vFe9E_hgDi17PfsZTPk7LuiCL9ybU")
+    vals = sheet.sheet1.get_all_values()[1:]    # odstranim header row
+    return render_template("razpored_ciscenja.html", members=vals)

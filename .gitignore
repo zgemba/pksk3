@@ -55,3 +55,4 @@ db_downgrade.py
 db_migrate.py
 external_config.py
 .idea
+PKSK*.json
