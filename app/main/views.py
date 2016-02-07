@@ -138,7 +138,7 @@ def post(id):
         comment = Comment(body=form.body.data, author=author, timestamp=datetime.utcnow(),
                           post=pt)
         db.session.add(comment)
-        # a je treba obvestiti avtorja o koemtarjih?
+        # a je treba obvestiti avtorja o komentarjih?
         if pt.author.notify(MailNotification.COMMENTS):
             send_template_email([pt.author.email], "Nov komentar", "admin/email/new_comment", post=pt, comment=comment)
 
