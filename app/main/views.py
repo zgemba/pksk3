@@ -284,6 +284,11 @@ def razpored_ciscenja():
     return render_template("razpored_ciscenja.html", members=vals)
 
 
+@main.route("/bolder_3d")
+def bolder_3d():
+    return render_template("bolder_3d.html")
+
+
 @main.route('/test')
 def test():
     return redirect(url_for(".novice"))
