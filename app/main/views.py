@@ -138,8 +138,8 @@ def post(id):
         comment = Comment(body=form.body.data, author=author, timestamp=datetime.utcnow(),
                           post=pt)
         db.session.add(comment)
-        # a je treba obvestiti avtorja o komentarjih?
-        if pt.author.notify(MailNotification.COMMENTS):
+        # a je treba obvestiti avtorja o koemtarjih? Samega sebe ne obveščamo!
+        if author != pt.author and pt.author.notify(MailNotification.COMMENTS):
             send_template_email([pt.author.email], "Nov komentar", "admin/email/new_comment", post=pt, comment=comment)
 
         return redirect(url_for(".post", id=id))
@@ -280,8 +280,13 @@ def enable_comment(id):
 @cached()
 def razpored_ciscenja():
     sheet = get_from_gdrive("1KnfSG-v6JwLDW0vFe9E_hgDi17PfsZTPk7LuiCL9ybU")
-    vals = sheet.sheet1.get_all_values()[1:]    # odstranim header row
+    vals = sheet.sheet1.get_all_values()[1:]  # odstranim header row
     return render_template("razpored_ciscenja.html", members=vals)
+
+
+@main.route("/bolder_3d")
+def bolder_3d():
+    return render_template("bolder_3d.html")
 
 
 @main.route('/test')

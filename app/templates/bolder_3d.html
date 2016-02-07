@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block styles %}
+    <style>
+        #pano {
+            height: 480px;
+            width: 640px;
+            margin: auto;
+            padding: 5px
+        }
+    </style>
+    {{ super() }}
+
+{% endblock %}
+
+{% block title %}PKSK - balvanska plezalna stena {% endblock %}
+
+{% block page_content %}
+    <div class="page-header">
+        <h1>Naša balvanska stena</h1>
+    </div>
+    <p>Naš plezalni center z nizko plezalno steno (bolder) je v športnem parku na Cvetlični ulici. Takole pa izgleda od znotraj:</p>
+
+    <div class="container-fluid">
+        <div id="pano"></div>
+    </div>
+
+{% endblock %}
+
+{% block scripts %}
+    <script src="http://maps.google.com/maps/api/js"></script>
+    <script type="text/javascript">
+        function initialize() {
+            google.maps.streetViewViewer = 'photosphere'; // use the new beta viewer
+            var panorama = new google.maps.StreetViewPanorama(
+                    document.getElementById('pano'), {
+                        position: {lat: 46.3360902, lng: 15.4197169},
+                        pov: {heading: 40, pitch: 0, zoom: 0.25}
+                    });
+        }
+        google.maps.event.addDomListener(window, 'load', initialize);
+    </script>
+    {{ super() }}
+{% endblock %}

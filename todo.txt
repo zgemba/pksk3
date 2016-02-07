@@ -1,19 +1,19 @@
+mail obvestilo ob lastnem komentarju se ne sme pošiljat!
 headline slike v postu
 več slik v postih (3?)
 deploy iz git
 slike gradnje bolderce
 popis materiala
-drive integracija
-photosphere
 
-NAREJENO:
+NAREJENO (ni nujno da je deployano!):
+15.1.  gdrive kot eksterni helper (SSL problemi na apacheju)
+22.12. photosphere, boljša sporočila o napakah
+20.12. gdrive integracija + keširanje (ni deployano)
+17.12. error logging in mail adminu
+15.12. preveri dvakratni email in email regex pri registraciji? (videti je OK)
+14.12. obveščanje po mailu glede na nastavitve v profilu, post, comment...
+14.12. urnik treningov otrok
 Postgres config
 confirm dialog za brisanje, glej stari .js
 profil editor za nastavitve obveščanja
 editor za nastavitve obveščanja v profilu, checkbox polje
-14.12. obveščanje po mailu glede na nastavitve v profilu, post, comment...
-14.12. urnik treningov otrok
-15.12. preveri dvakratni email in email regex pri registraciji? (videti je OK)
-17.12. error logging in mail adminu
-
-
