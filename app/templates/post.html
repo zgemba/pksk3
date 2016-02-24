@@ -18,11 +18,10 @@
                 {% if current_user.can(Permission.ADMINISTER) or post.author == current_user %}
                     <a href="{{ url_for('main.edit_post', id=post.id) }}">
                         <span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>
-                    <a onclick="confirmDeletePost({{ post.id }})" href="#">
+                    <a onclick="confirmAction('{{ url_for('main.delete_post', id=post.id) }}', 'Potrdi brisanje prispevka')"
+                       href="#">
                         <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
                 {% endif %}
-
-
             </div>
         </div>
 
@@ -33,10 +32,12 @@
         {% endif %}
 
         {% if post.has_images %}
-            {% for i in post.images %}
-                <a href="{{ i.file }}"><img class="thumbnail center-block" src="{{ i.thumbnail }}"
-                                            alt="{{ i.comment }}"></a>
-                <p class="text-center"><em>{{ i.comment }}</em></p>
+            {% for image in post.images %}
+                <figure class="figure">
+                    <img class="figure-img img-fluid center-block" src="{{ image.file }}"
+                         alt="thumb">
+                    <figcaption class="figure-caption text-center">{{ image.comment }}</figcaption>
+                </figure>
             {% endfor %}
         {% endif %}
 
@@ -60,7 +61,5 @@
 
 {% block scripts %}
     {{ super() }}
-    <script>
-        {% include "js/pkskstuff.js" %}
-    </script>
+    <script src="/static/js/pkskstuff.js"></script>
 {% endblock %}
