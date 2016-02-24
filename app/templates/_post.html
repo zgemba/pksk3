@@ -13,7 +13,8 @@
             {% if current_user.can(Permission.ADMINISTER) or post.author == current_user %}
                 <a href="{{ url_for('main.edit_post', id=post.id) }}">
                     <span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>
-                <a onclick="confirmDeletePost({{ post.id }})" href="#">
+                <a onclick="confirmAction('{{ url_for("main.delete_post", id=post.id) }}', 'Potrdi brisanje prispevka')"
+                   href="#">
                     <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
             {% endif %}
         </div>
@@ -29,9 +30,16 @@
                 {% endif %}
             </div>
             <div class="col-lg-2">
-                <a href="{{ url_for('main.post', id=post.id) }}">
-                    <img class="thumbnail center-block" src="{{ post.headline_thumbnail }}"
-                         alt="thumb"></a>
+                <figure class="figure">
+                    <a href="{{ url_for('main.post', id=post.id) }}">
+                        <img class="figure-img img-fluid img-rounded" src="{{ post.headline_thumbnail }}"
+                             alt="thumb">
+                        {% if post.images_count > 1 %}
+                            <figcaption class="figure-caption text-center">Dodatne
+                                slike: {{ post.images_count - 1 }}</figcaption>
+                        {% endif %}
+                    </a>
+                </figure>
             </div>
         </div>
     {% else %}

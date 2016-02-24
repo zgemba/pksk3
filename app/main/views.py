@@ -7,7 +7,7 @@ from sqlalchemy import desc
 from . import main
 from ..models import User, Role, Post, PostImage, Comment, Permission, MailNotification
 from ..decorators import admin_required, member_required, cached
-from .forms import EditProfileForm, EditProfileAdminForm, DodajNovicoForm, DodajKomentarForm
+from .forms import EditProfileForm, EditProfileAdminForm, DodajNovicoForm, DodajKomentarForm, EditImageForm
 from app import db
 from werkzeug.utils import secure_filename
 from ..myutils import allowed_file, make_unique_filename, get_from_gdrive
@@ -146,6 +146,7 @@ def post(id):
     return render_template("post.html", post=pt, form=form)
 
 
+# refaktoriraj to v dva dela, enega za dodajanje in drugega za editiranje!
 @main.route("/edit_post/<int:id>", methods=["GET", "POST"])
 @login_required
 @member_required
@@ -156,16 +157,21 @@ def edit_post(id):
     if form.validate_on_submit():
         title = form.title.data
         body = form.body.data
-        comment = form.img1comment.data
 
         if id == 0:  # dodajam nov post
             author = current_user._get_current_object()
             p = Post(title=title, body=body, author=author, timestamp=datetime.utcnow())
             db.session.add(p)
 
-            # imamo sliko?
-            if form.img1.data.filename != "":
-                save_image(form.img1, p, comment)
+            # imamo slike?
+            for i in range(1, 4):
+                image_field = eval("form.img{}".format(str(i)))
+                try:
+                    if image_field.data.filename != "":  # imam sliko
+                        comment = eval("form.img{}comment.data".format(str(i)))
+                        save_image(image_field, p, comment)
+                except AttributeError:  # če ni polja v formi, pol dobim AttributeError in kar ignoriram
+                    pass
 
             # obvestim še tiste, ki so naročeni na maile o novih postih
             emails = User.users_to_notify(MailNotification.NEWS)
@@ -178,17 +184,15 @@ def edit_post(id):
             p = Post.query.get_or_404(id)
             p.body = body
             p.title = title
-            # nova slika?
-            if form.img1.data.filename != "":
-                if p.has_images:  # zbrišem staro, ne glede na kljukico
-                    img = p.images[0]
-                    img.remove()
-                    db.session.delete(img)
-                save_image(form.img1, p, form.img1comment.data)
-            if form.img1delete.data and form.img1.data.filename == "" and p.has_images:  # samo brisanje
-                img = p.images[0]
-                img.remove()
-                db.session.delete(img)
+            # imamo nove slike?
+            for i in range(1, 4):
+                image_field = eval("form.img{}".format(str(i)))
+                try:
+                    if image_field.data.filename != "":  # imam sliko
+                        comment = eval("form.img{}comment.data".format(str(i)))
+                        save_image(image_field, p, comment)
+                except AttributeError:  # če ni polja v formi, pol dobim AttributeError in kar ignoriram
+                    pass
 
         db.session.commit()
         return redirect(url_for(".index"))
@@ -199,22 +203,23 @@ def edit_post(id):
         form.title.data = p.title
         form.body.data = p.body
         if p.has_images:
-            form.img1comment.data = p.images[0].comment
             images = p.images.all()
+        else:
+            images = None
 
     return render_template("edit_post.html", form=form, edit=editing, images=images)
 
 
 def save_image(field, pst, comment):
-    i1_file_name = os.path.join(current_app.config["UPLOAD_SAVE_FOLDER"],
-                                secure_filename(field.data.filename))
-    if allowed_file(i1_file_name):
-        i1_file_name = make_unique_filename(i1_file_name)
-        field.data.save(i1_file_name)
-        image1 = PostImage(filename=i1_file_name, timestamp=datetime.utcnow(), comment=comment, post=pst)
-        db.session.add(image1)
+    file_name = os.path.join(current_app.config["UPLOAD_SAVE_FOLDER"],
+                             secure_filename(field.data.filename))
+    if allowed_file(file_name):
+        file_name = make_unique_filename(file_name)
+        field.data.save(file_name)
+        image = PostImage(filename=file_name, timestamp=datetime.utcnow(), comment=comment, post=pst)
+        db.session.add(image)
     else:
-        flash("napačen format slike")
+        flash("Napačen format slike!")
 
 
 @main.route('/delete_post/')  # za js route
@@ -274,6 +279,37 @@ def enable_comment(id):
         flash("Samo za administratorje")
 
 
+#
+# Image views
+#
+@main.route('/edit_image/<int:id>', methods=["GET", "POST"])
+@login_required
+def edit_image(id):
+    image = PostImage.query.get_or_404(id)
+    form = EditImageForm()
+    post = image.post
+    if form.validate_on_submit():
+        if form.delete.data:
+            image.remove()
+            db.session.delete(image)
+            flash("Slika izbrisana!")
+            return redirect(url_for("main.edit_post", id=post.id))
+
+        image.comment = form.comment.data
+        if form.img.data.filename != "":
+            image.remove()  # zbrišem staro sliko ne glede na kljukico
+            db.session.delete(image)
+            save_image(form.img, post, form.comment.data)
+        db.session.commit()
+        return redirect(url_for("main.edit_post", id=post.id))
+
+    form.comment.data = image.comment
+    return render_template('edit_image.html', image=image, form=form)
+
+
+#
+# Ostalo
+#
 @main.route("/ciscenje")
 @login_required
 @member_required
