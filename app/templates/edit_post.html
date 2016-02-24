@@ -9,11 +9,12 @@
     </div>
     <p>
         Za oblikovanje besedila je namenjen <a href="http://en.wikipedia.org/wiki/Markdown">Markdown.</a>
-    <p>
+    </p>
     <div class="container-fluid">
         <form enctype="multipart/form-data" action="" method="post" name="dodaj_novico" class="form-horizontal"
               role="form">
             {{ form.hidden_tag() }}
+            <input type="hidden" name="ImageCount" value="1">
             <div class="form-group">
                 <label for="title" class="col-sm-2 control-label">Naslov:</label>
 
@@ -35,15 +36,30 @@
                 </div>
             </div>
 
+            {% if edit == True and images != None %}
+                <div class="form-group">
+                    <label for="slike" class="col-sm-2 control-label">Slike:</label>
+                    <div id="slike" class="col-sm-10">
+                        {% for image in images %}
+                            <figure class="figure">
+                                <img class="figure-img img-fluid center-block" src="{{ image.file }}"
+                                     alt="thumb">
+                                <figcaption class="figure-caption text-center">{{ image.comment }}
+                                    {% if current_user.can(Permission.ADMINISTER) or post.author == current_user %}
+                                        <a href="{{ url_for('main.edit_image', id=image.id) }}">
+                                            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>
+                                    {% endif %}
+                                </figcaption>
+                            </figure>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
             <div class="form-group">
-                <label for="img1" class="col-sm-2 control-label">Slika 1:</label>
+                <label for="img1" class="col-sm-2 control-label">Dodaj slike:</label>
 
                 <div class="col-sm-10">
-                    {% if images %}
-                        <img class="thumbnail" src="{{ images[0].thumbnail }}">
-                        Zbriši sliko: {{ form.img1delete() }}
-                    {% endif %}
-
                     {{ form.img1(class="form-control") }}
                     {% for e in form.errors.img1 %}
                         <span class="alert-danger">[{{ e }}]</span>
@@ -56,18 +72,31 @@
                 </div>
             </div>
 
+            <div id="expander">     <!-- tu sem gredo dodatne slike -->
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button id="addImageButton" class="btn-sm" type="button" onclick="addImageField()">Dodatna slika
+                    </button>
+                </div>
+            </div>
+
+
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
                     <button type="submit" class="btn">Objavi novico</button>
                 </div>
             </div>
-
         </form>
-
     </div>
 {% endblock %}
 
 {% block scripts %}
     {{ super() }}
     {{ pagedown.include_pagedown() }}
+    <script src="/static/js/pkskstuff.js"></script>
+    <script>
+        $("#expander").data("count", 1);
+    </script>
 {% endblock %}

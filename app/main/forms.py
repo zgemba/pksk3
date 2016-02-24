@@ -62,15 +62,38 @@ class EditProfileAdminForm(Form):
 class DodajNovicoForm(Form):
     title = StringField("Naslov", validators=[InputRequired(message="Obvezno vpiši naslov")])
     body = PageDownField("Vsebina", validators=[InputRequired(message="Obvezno vpiši vsebino")])
+
+    # 3 potencialne slik, ni nujno, da se vse pojavijo
     img1 = FileField("Slika 1")
     img1comment = StringField("Opis")
-    img1delete = BooleanField("Briši sliko")
 
-    def validate_img1(self, field):
-        if field.data.filename != "" and not allowed_file(field.data.filename):
-            raise ValidationError("Tip datoteke ni podprt.")
+    img2 = FileField("Slika 2")
+    img2comment = StringField("Opis")
+
+    img3 = FileField("Slika 3")
+    img3comment = StringField("Opis")
+
+    def validate_all(self, extra_validators=None):
+        # tu naredi neko superduper validacijo čez prisotna polja?
+        for i in range(1, 4):
+            field = eval("self.img" + str(i))
+            if not isinstance(field.data, str):
+                    if field.data.filename != "" and not allowed_file(field.data.filename):
+                        raise ValidationError("Tip datoteke ni podprt.")
 
 
 class DodajKomentarForm(Form):
-    body = PageDownField("Tvoj Komentar", validators=[InputRequired(message="Če želiš komentirati, moraš vpisati vsebino!")])
+    body = PageDownField("Tvoj Komentar",
+                         validators=[InputRequired(message="Če želiš komentirati, moraš vpisati vsebino!")])
     submit = SubmitField("Dodaj komentar")
+
+
+class EditImageForm(Form):
+    img = FileField("Slika")
+    comment = StringField("Opis")
+    delete = BooleanField("Izbriši sliko")
+    submit = SubmitField("Shrani spremembe")
+
+    def validate_img(self, field):
+        if field.data.filename != "" and not allowed_file(field.data.filename):
+            raise ValidationError("Tip datoteke ni podprt.")
