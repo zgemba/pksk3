@@ -2,6 +2,13 @@
  * Created by blaz on 11.12.2015.
  */
 
+function unhide(id) {
+    var elem = $(id);
+    elem.show();
+    elem.addClass("small");
+ }
+
+
 function confirmAction(actionUrl, prompt) {
     if (confirm(prompt)) {
         window.location.replace(actionUrl);

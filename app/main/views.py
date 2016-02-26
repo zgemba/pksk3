@@ -260,7 +260,7 @@ def disable_comment(id):
     cmt = Comment.query.get_or_404(id)
     if current_user.is_administrator():
         cmt.disabled = True
-        flash("Komentar je sktit")
+        flash("Komentar je skrit")
         return redirect(url_for("main.post", id=cmt.post.id))
     else:
         flash("Samo za administratorje")
@@ -286,8 +286,12 @@ def enable_comment(id):
 @login_required
 def edit_image(id):
     image = PostImage.query.get_or_404(id)
-    form = EditImageForm()
     post = image.post
+    if not(current_user.can(Permission.ADMINISTER) or post.author == current_user):
+        flash("Urejate lahko samo svoje slike")
+        return redirect(url_for("main.index"))
+
+    form = EditImageForm()
     if form.validate_on_submit():
         if form.delete.data:
             image.remove()
@@ -303,7 +307,7 @@ def edit_image(id):
         db.session.commit()
         return redirect(url_for("main.edit_post", id=post.id))
 
-    form.comment.data = image.comment
+    form.comment.data = image.comment       # preload
     return render_template('edit_image.html', image=image, form=form)
 
 
@@ -324,6 +328,10 @@ def razpored_ciscenja():
 def bolder_3d():
     return render_template("bolder_3d.html")
 
+
+@main.route("/gradnja")
+def gradnja():
+    return render_template("gradnja.html")
 
 @main.route('/test')
 def test():
