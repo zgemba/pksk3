@@ -21,6 +21,13 @@
                 <div class="col-sm-10">
                     {{ form.comment(class="form-control") }}
                 </div>
+                {% if current_user.can(Permission.ADMINISTER) %}
+                    <!-- samo admin lahko naredi headline sliko -->
+                    <label for="headline" class="col-sm-2 control-label">Uporabi kot veliko naslovnico:</label>
+                    <div class="col-sm-10">
+                        {{ form.headline(class="checkbox") }}
+                    </div>
+                {% endif %}
                 <label for="img" class="col-sm-2 control-label">Naloži novo sliko:</label>
                 <div class="col-sm-10">
                     {{ form.img(class="form-control") }}

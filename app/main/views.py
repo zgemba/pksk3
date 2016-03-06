@@ -300,6 +300,7 @@ def edit_image(id):
             return redirect(url_for("main.edit_post", id=post.id))
 
         image.comment = form.comment.data
+        image.is_headline = form.headline.data
         if form.img.data.filename != "":
             image.remove()  # zbrišem staro sliko ne glede na kljukico
             db.session.delete(image)
@@ -308,6 +309,7 @@ def edit_image(id):
         return redirect(url_for("main.edit_post", id=post.id))
 
     form.comment.data = image.comment       # preload
+    form.headline.data = image.is_headline
     return render_template('edit_image.html', image=image, form=form)
 
 
@@ -332,6 +334,7 @@ def bolder_3d():
 @main.route("/gradnja")
 def gradnja():
     return render_template("gradnja.html")
+
 
 @main.route('/test')
 def test():

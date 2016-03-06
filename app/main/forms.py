@@ -92,6 +92,7 @@ class EditImageForm(Form):
     img = FileField("Slika")
     comment = StringField("Opis")
     delete = BooleanField("Izbriši sliko")
+    headline = BooleanField("Uporabi za veliko naslovnico")
     submit = SubmitField("Shrani spremembe")
 
     def validate_img(self, field):

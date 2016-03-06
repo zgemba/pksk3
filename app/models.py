@@ -96,7 +96,7 @@ class User(UserMixin, db.Model):
         if self.email is not None and self.avatar_hash is None:
             self.avatar_hash = hashlib.md5(
                 self.email.encode('utf-8')).hexdigest()
-        self.username = self.email.split("@")[0]                # nastavim na nek default
+        self.username = self.email.split("@")[0]  # nastavim na nek default
 
     @property
     def password(self):
@@ -123,7 +123,7 @@ class User(UserMixin, db.Model):
             return False
         self.confirmed = True
         db.session.add(self)
-        db.session.commit()             # zaradi debuga rabim takojšen commit
+        db.session.commit()  # zaradi debuga rabim takojšen commit
         return True
 
     def approve(self):  # to ročno uredi admin na zaščiteni routi
@@ -284,8 +284,14 @@ class Post(db.Model):
         return self.comments.count()
 
     @property
-    def headline_thumbnail(self):
+    def post_thumbnail(self):
         return self.images[0].thumbnail if self.has_images else None
+
+    @property
+    def headline_image(self):
+        img = [i.headline for i in self.images if i.is_headline] or None
+        return img[0] if img else None
+
 
 db.event.listen(Post.body, 'set', Post.on_changed_body)
 
@@ -324,17 +330,22 @@ class PostImage(db.Model):
     timestamp = db.Column(db.DateTime)
     comment = db.Column(db.String(200))
     post_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
+    is_headline = db.Column(db.Boolean, default=False)
 
-    def __init__(self, filename, timestamp, comment, post):
-        self.filename = os.path.split(filename)[1]             # hranim samo ime fajla, ostalo dela getter automagično
+    def __init__(self, filename, timestamp, comment, post, is_headline=False):
+        self.filename = os.path.split(filename)[1]  # hranim samo ime fajla, ostalo dela getter automagično
         self.timestamp = timestamp
         self.comment = comment
         self.post = post
+        self.is_headline = is_headline
 
         if self._is_oversize:
             self._resize(current_app.config["MAX_UPLOAD_DIMENSION"], self._file_on_disk)
 
         self._create_thumbnail()
+
+        if self.is_headline:
+            self._create_headline()
 
     @property
     def _file_on_disk(self):
@@ -347,6 +358,12 @@ class PostImage(db.Model):
         return os.path.join(current_app.config["UPLOAD_SAVE_FOLDER"], thumb_name)
 
     @property
+    def _headline_on_disk(self):
+        (name, ext) = os.path.splitext(self.filename)
+        thumb_name = name + "-headline" + ext
+        return os.path.join(current_app.config["UPLOAD_SAVE_FOLDER"], thumb_name)
+
+    @property
     def file(self):
         return os.path.join(current_app.config["UPLOAD_FOLDER"], self.filename)
 
@@ -355,6 +372,12 @@ class PostImage(db.Model):
         (name, ext) = os.path.splitext(self.filename)
         thumb_name = name + "-thumbnail" + ext
         return os.path.join(current_app.config["UPLOAD_FOLDER"], thumb_name)
+
+    @property
+    def headline(self):
+        (name, ext) = os.path.splitext(self.filename)
+        thumb_name = os.path.join(current_app.config["UPLOAD_FOLDER"], name + "-headline" + ext)
+        return thumb_name
 
     @property
     def _is_oversize(self):
@@ -383,9 +406,27 @@ class PostImage(db.Model):
         thumb_size = current_app.config["THUMBNAIL_SIZE"]
         self._resize(thumb_size, new_name)
 
+    def _create_headline(self):
+        (name, ext) = os.path.splitext(self.filename)
+        (path, file) = os.path.split(self._file_on_disk)
+        new_name = os.path.join(path, name + "-headline" + ext)
+        thumb_size = current_app.config["HEADLINE_SIZE"]
+        im = Image.open(self._file_on_disk)
+        if max(im.size) > thumb_size:  # samo če je slika večja
+            self._resize(thumb_size, new_name)
+
     def remove(self):
         try:
             os.remove(self._file_on_disk)
             os.remove(self._thumbnail_on_disk)
+            os.remove(self._headline_on_disk)
         except FileNotFoundError:
-            pass                        # silent ignore
+            pass  # silent ignore
+
+    @staticmethod
+    def on_changed_is_headline(target, value, oldvalue, initiator):  # lazy init headline slike
+        if value and not target.is_headline and not os.path.exists(target.headline):
+            target._create_headline()
+
+
+db.event.listen(PostImage.is_headline, 'set', PostImage.on_changed_is_headline)

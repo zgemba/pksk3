@@ -26,6 +26,7 @@ class Config:
     ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
     MAX_UPLOAD_DIMENSION = 1200
     THUMBNAIL_SIZE = 225
+    HEADLINE_SIZE = 500
 
     RECAPTCHA_PARAMETERS = {"hl": "sl", "render": "explicit"}
     RECAPTCHA_DATA_ATTRS = {'theme': 'light'}
