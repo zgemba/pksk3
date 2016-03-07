@@ -301,6 +301,12 @@ def edit_image(id):
 
         image.comment = form.comment.data
         image.is_headline = form.headline.data
+        if image.is_headline:
+            # zagotovi, da je to edina headline slika
+            for i in post.images:
+                i.is_headline = False
+            image.is_headline = True
+
         if form.img.data.filename != "":
             image.remove()  # zbrišem staro sliko ne glede na kljukico
             db.session.delete(image)

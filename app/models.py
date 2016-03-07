@@ -410,10 +410,16 @@ class PostImage(db.Model):
         (name, ext) = os.path.splitext(self.filename)
         (path, file) = os.path.split(self._file_on_disk)
         new_name = os.path.join(path, name + "-headline" + ext)
+        if os.path.exists(new_name):
+            return  # če slučajno že obstaja?
+
         thumb_size = current_app.config["HEADLINE_SIZE"]
         im = Image.open(self._file_on_disk)
         if max(im.size) > thumb_size:  # samo če je slika večja
             self._resize(thumb_size, new_name)
+        else:
+            # naredi symlink originala, da prihranim disk
+            os.symlink(self._file_on_disk, new_name)
 
     def remove(self):
         try:
