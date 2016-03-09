@@ -328,8 +328,11 @@ def edit_image(id):
 @cached()
 def razpored_ciscenja():
     sheet = get_from_gdrive("1KnfSG-v6JwLDW0vFe9E_hgDi17PfsZTPk7LuiCL9ybU")
-    vals = sheet.sheet1.get_all_values()[1:]  # odstranim header row
-    return render_template("razpored_ciscenja.html", members=vals)
+    if sheet:
+        vals = sheet.sheet1.get_all_values()[1:]  # odstranim header row
+        return render_template("razpored_ciscenja.html", members=vals)
+    else:
+        return redirect(url_for(".novice"))
 
 
 @main.route("/bolder_3d")
@@ -344,4 +347,13 @@ def gradnja():
 
 @main.route('/test')
 def test():
+    import subprocess
+    from config import basedir
+    import shlex
+
+    key = "1KnfSG-v6JwLDW0vFe9E_hgDi17PfsZTPk7LuiCL9ybU"
+    cmdline = basedir + "/dget.sh {}".format(key)
+    out = subprocess.call([basedir + "/dget.sh", '1KnfSG-v6JwLDW0vFe9E_hgDi17PfsZTPk7LuiCL9ybU'])
+#    out = subprocess.call(shlex.split(cmdline))
+    flash(out)
     return redirect(url_for(".novice"))

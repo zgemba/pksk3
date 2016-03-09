@@ -52,7 +52,7 @@ class DevelopmentConfig(Config):
     MAIL_SERVER = 'smtp.googlemail.com'
     MAIL_PORT = 587
     MAIL_USE_TLS = True
-    MIGRATIONS_FOLDER = os.path.join(basedir, "app/post_migrations")
+    MIGRATIONS_FOLDER = os.path.join(basedir, "app/migrations")
 
 
 class DevelopmentSqliteConfig(Config):

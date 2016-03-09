@@ -1,6 +1,7 @@
-from flask import current_app
-import os
+from flask import current_app, flash
 import subprocess
+import shlex
+import os
 from config import basedir
 import pickle
 
@@ -26,8 +27,11 @@ def make_unique_filename(filename):
 
 
 def get_from_gdrive(key):
-    subprocess.call("dget.sh {} {}".format(key, key))
-    wks = pickle.load(os.path.join(basedir, key))
-    # zbrišem picke file
-    os.remove(os.path.join(basedir, key))
+    cmdline = basedir + "/dget.sh {}".format(key)
+    err = subprocess.call(shlex.split(cmdline))
+    if err != 0:
+        flash("Napaka pri pridobivanju datoteke iz gdrive {}".format(err))
+        return None
+    wks = pickle.load(open(os.path.join(basedir, key), "rb"))
+    os.remove(os.path.join(basedir, key))     # zbrišem picke file
     return wks
