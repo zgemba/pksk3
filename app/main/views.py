@@ -345,6 +345,11 @@ def gradnja():
     return render_template("gradnja.html")
 
 
+@main.route("/sola")
+def sola():
+    return render_template("sola.html")
+
+
 @main.route('/test')
 def test():
     import subprocess

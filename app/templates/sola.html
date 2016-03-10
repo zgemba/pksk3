@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block styles %}
+    {{ super() }}
+{% endblock %}
+
+{% block title %}PKSK - šola športnega plezanja{% endblock %}
+
+{% block page_content %}
+    <div class="page-header">
+        <h1>Šola športnega plezanja</h1>
+    </div>
+
+    <p>Kot že nekaj let, bomo tudi letos organizirali šolo športnega plezanja.</p>
+
+    <p>V šoli se boste naučili vseh potrebnih veščin za samostojno in varno plezanje enoraztežajnih
+        športno plezalnih smeri. <br>Šola je sestavljena iz predavanj, predvsem pa iz mnogo praktičnih vaj in prikazov.
+        Najprej poteka na umetni steni v športni dvorani, zaključi pa se z obiski plezališč v naravi.<br>
+        Šola je primerna za vse, ne glede na morebitno (plezalsko) predznanje ali sposobnosti. Edini pogoj je
+        dopolnjenih 16 let.</p>
+
+    <p>Informacijski sestanek bo v <b>ponedeljek, 21.3. ob 20:00</b> v plezalnem centru v <a
+            href="{{ url_for('main.informacije') }}">športnem parku na Cvetlični ulici</a>.</p>
+
+
+    <img class="img-responsive center-block" src="/static/img/kalymnos.jpg">
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+{% endblock %}
