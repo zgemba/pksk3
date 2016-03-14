@@ -1,8 +1,10 @@
 deploy iz git
 slike gradnje bolderce
 popis materiala
+paging news
 
 NAREJENO (ni nujno da je deployano!):
+13.3. confirmation za brisanje komenmtarja
 7.3. mail obvestilo ob lastnem komentarju se ne sme pošiljat!
      headline slike v postu
      več slik v postih (3?)
