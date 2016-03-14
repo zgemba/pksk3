@@ -19,9 +19,9 @@
     <div class="col-lg-1">
         {% if current_user.is_administrator() %}
             <!-- <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> -->
-            <a href="{{ url_for('main.delete_comment', id=comment.id) }}">
-                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-            </a>
+            <a onclick="confirmAction('{{ url_for("main.delete_comment", id=comment.id) }}', 'Potrdi brisanje komentarja')"
+               href="#">
+                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
             {% if comment.disabled %}
                 <a href="{{ url_for('main.enable_comment', id=comment.id) }}">
             {% else %}
