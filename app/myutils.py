@@ -48,8 +48,9 @@ def get_from_gdrive_local(key):
 def get_from_gdrive_remote(key):
     basedir = current_app.config["BASEDIR"]
     # Apache SSL fookup workaround
-    subprocess.call("dget.sh {} {}".format(key, key))
-    wks = pickle.load(os.path.join(basedir, key))
+    subprocess.call([os.path.join(basedir, "dget.sh"), key, key])
+    with open(os.path.join(basedir, key), "rb") as dump:
+        wks = pickle.load(dump)
     # zbrišem picke file
     os.remove(os.path.join(basedir, key))
     return wks
