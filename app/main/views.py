@@ -146,7 +146,6 @@ def post(id):
     return render_template("post.html", post=pt, form=form)
 
 
-# refaktoriraj to v dva dela, enega za dodajanje in drugega za editiranje!
 @main.route("/edit_post/<int:id>", methods=["GET", "POST"])
 @login_required
 @member_required
@@ -350,15 +349,22 @@ def sola():
     return render_template("sola.html")
 
 
+@main.route("/popis_opreme")
+@login_required
+@member_required
+@cached()
+def popis_opreme():
+    sheet = get_from_gdrive("1_qMnVPXiHCwVLBqhHpZYrcFY6wiDCEbepKYY0uJq6DQ")
+    if sheet:
+        vals = sheet.sheet1
+        datum = vals.acell("B1").value
+        vals = vals.get_all_values()
+        items = vals[2:]
+        return render_template("popis_opreme.html", items=items, datum=datum)
+    else:
+        return redirect(url_for(".novice"))
+
+
 @main.route('/test')
 def test():
-    import subprocess
-    from config import basedir
-    import shlex
-
-    key = "1KnfSG-v6JwLDW0vFe9E_hgDi17PfsZTPk7LuiCL9ybU"
-    cmdline = basedir + "/dget.sh {}".format(key)
-    out = subprocess.call([basedir + "/dget.sh", '1KnfSG-v6JwLDW0vFe9E_hgDi17PfsZTPk7LuiCL9ybU'])
-#    out = subprocess.call(shlex.split(cmdline))
-    flash(out)
     return redirect(url_for(".novice"))

@@ -1,9 +1,12 @@
-from flask import current_app, flash
-import subprocess
-import shlex
+import json
+
+import gspread
+from flask import current_app
 import os
-from config import basedir
+import subprocess
 import pickle
+
+from oauth2client.client import SignedJwtAssertionCredentials
 
 
 def allowed_file(filename):
@@ -27,11 +30,26 @@ def make_unique_filename(filename):
 
 
 def get_from_gdrive(key):
-    cmdline = basedir + "/dget.sh {}".format(key)
-    err = subprocess.call(shlex.split(cmdline))
-    if err != 0:
-        flash("Napaka pri pridobivanju datoteke iz gdrive {}".format(err))
-        return None
-    wks = pickle.load(open(os.path.join(basedir, key), "rb"))
-    os.remove(os.path.join(basedir, key))     # zbrišem picke file
+    getter = current_app.config["GDRIVE_GETTER"]
+    return getter(key)
+
+
+def get_from_gdrive_local(key):
+    basedir = current_app.config["BASEDIR"]
+    json_keyfile = os.path.join(basedir, current_app.config["JSON_KEY_FILE"])
+    json_key = json.load(open(json_keyfile))
+    scope = ['https://spreadsheets.google.com/feeds']
+    credentials = SignedJwtAssertionCredentials(json_key['client_email'], json_key['private_key'].encode(), scope)
+    gc = gspread.authorize(credentials)
+    wks = gc.open_by_key(key)
+    return wks
+
+
+def get_from_gdrive_remote(key):
+    basedir = current_app.config["BASEDIR"]
+    # Apache SSL fookup workaround
+    subprocess.call("dget.sh {} {}".format(key, key))
+    wks = pickle.load(os.path.join(basedir, key))
+    # zbrišem picke file
+    os.remove(os.path.join(basedir, key))
     return wks

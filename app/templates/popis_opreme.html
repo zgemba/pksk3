@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}PKSK - popis klubske opreme{% endblock %}
+
+{% block page_content %}
+
+    <div class="page-header">
+        <h1>Popis klubske opreme</h1>
+    </div>
+
+    <p>Stanje opreme na dan {{ datum }}</p>
+    <br>
+    <table class="table table-bordered table-condensed table-striped">
+        <th>Naziv</th>
+        <th>Št. kosov</th>
+        <th>Lokacija</th>
+        <th>Opomba</th>
+        {% for item in items %}
+            <tr>
+                <td>{{ item[0] }}</td>
+                <td>{{ item[1] }}</td>
+                <td>{{ item[2] }}</td>
+                <td>{{ item[3] }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

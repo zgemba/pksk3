@@ -1,6 +1,8 @@
 import os
 from werkzeug.contrib.cache import SimpleCache
 
+from app.myutils import get_from_gdrive_local, get_from_gdrive_remote
+
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 
@@ -41,6 +43,8 @@ class Config:
     # produkcija to overrida z memcachedd?
     CACHE = SimpleCache()
 
+    BASEDIR = basedir
+
     @staticmethod
     def init_app(app):
         pass
@@ -53,6 +57,7 @@ class DevelopmentConfig(Config):
     MAIL_PORT = 587
     MAIL_USE_TLS = True
     MIGRATIONS_FOLDER = os.path.join(basedir, "app/migrations")
+    GDRIVE_GETTER = get_from_gdrive_local
 
 
 class DevelopmentSqliteConfig(Config):
@@ -61,11 +66,13 @@ class DevelopmentSqliteConfig(Config):
     MAIL_SERVER = 'smtp.googlemail.com'
     MAIL_PORT = 587
     MAIL_USE_TLS = True
+    GDRIVE_GETTER = get_from_gdrive_local
 
 
 class TestingConfig(Config):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = os.environ.get("TEST_DATABASE_URI") or "sqlite:///" + os.path.join(basedir, "db-test.sqlite")
+    GDRIVE_GETTER = get_from_gdrive_local
 
 
 class ProductionConfig(Config):
@@ -73,6 +80,7 @@ class ProductionConfig(Config):
     MAIL_SERVER = "smtp.webfaction.com"
     MAIL_PORT = 25
     SQLALCHEMY_DATABASE_URI = os.environ.get("PRODUCTION_DATABASE_URI") or ""
+    GDRIVE_GETTER = get_from_gdrive_remote
 
     @classmethod
     def init_app(cls, app):
