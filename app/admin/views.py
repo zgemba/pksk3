@@ -16,8 +16,8 @@ def users():
 
 
 @admin.route('/approve_user/<int:id>', methods=['GET', 'POST'])
-@admin_required
 @login_required
+@admin_required
 def approve_user(id):
     user = User.query.get_or_404(id)
     user.approve()
@@ -29,8 +29,8 @@ def approve_user(id):
 
 @admin.route('/delete_user/')                                        # za route sestavljene z js :-/
 @admin.route('/delete_user/<int:id>', methods=['GET', 'POST'])
-@admin_required
 @login_required
+@admin_required
 def delete_user(id):
     user = User.query.get_or_404(id)
     if user == current_user:
@@ -47,8 +47,8 @@ def delete_user(id):
 
 
 @admin.route('/bulk_email', methods=['GET', 'POST'])
-@admin_required
 @login_required
+@admin_required
 def bulk_email():
     form = BulkEmailForm()
     if form.validate_on_submit():

@@ -6,9 +6,12 @@ from oauth2client.client import SignedJwtAssertionCredentials
 import pickle
 import traceback
 
+
+basedir = os.path.abspath(os.path.dirname(__file__))
 try:
-    basedir = os.path.abspath(os.path.dirname(__file__))
     jk = os.environ.get('JSON_KEY_FILE')
+    if jk is None:
+        raise TypeError("Nisem dobil jk iz enviromenta!")
     key = sys.argv[1]
     file = key
     json_keyfile = os.path.join(basedir, jk)
@@ -19,5 +22,5 @@ try:
     wks = gc.open_by_key(key)
     pickle.dump(wks, open(os.path.join(basedir, file), "wb"))
 except Exception as err:
-    traceback.print_exc(None, open("drive-getter-error.log", "a"))
+    traceback.print_exc(None, open(os.path.join(basedir, "drive-getter-error.log"), "a"))
     exit(199)

@@ -328,6 +328,10 @@ def edit_image(id):
 def razpored_ciscenja():
     sheet = get_from_gdrive("1KnfSG-v6JwLDW0vFe9E_hgDi17PfsZTPk7LuiCL9ybU")
     if sheet:
+        if type(sheet) is int:
+            flash("Napaka pri pridobivanju podatkov: {}".format(sheet))
+            return redirect(url_for(".novice"))
+
         vals = sheet.sheet1.get_all_values()[1:]  # odstranim header row
         return render_template("razpored_ciscenja.html", members=vals)
     else:
@@ -355,7 +359,12 @@ def sola():
 @cached()
 def popis_opreme():
     sheet = get_from_gdrive("1_qMnVPXiHCwVLBqhHpZYrcFY6wiDCEbepKYY0uJq6DQ")
+    # preveri, če je int in flashaj napako
     if sheet:
+        if type(sheet) is int:
+            flash("Napaka pri pridobivanju podatkov: {}".format(sheet))
+            return redirect(url_for(".novice"))
+
         vals = sheet.sheet1
         datum = vals.acell("B1").value
         vals = vals.get_all_values()
@@ -363,6 +372,13 @@ def popis_opreme():
         return render_template("popis_opreme.html", items=items, datum=datum)
     else:
         return redirect(url_for(".novice"))
+
+
+@main.route('/dokumenti')
+@login_required
+@member_required
+def dokumenti():
+    return render_template("klubski_dokumenti.html")
 
 
 @main.route('/test')
