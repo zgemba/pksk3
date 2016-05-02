@@ -83,6 +83,8 @@ class User(UserMixin, db.Model):
     mail_notify = db.Column(db.Integer, default=MailNotification.DEFAULT)
     posts = db.relationship('Post', backref='author', lazy='dynamic')
     comments = db.relationship('Comment', backref='author', lazy='dynamic')
+    events = db.relationship('CalendarEvent', backref='author', lazy='dynamic')
+
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
@@ -436,3 +438,30 @@ class PostImage(db.Model):
 
 
 db.event.listen(PostImage.is_headline, 'set', PostImage.on_changed_is_headline)
+
+
+#
+# Koledar
+#
+
+class CalendarEvent(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    timestamp = db.Column(db.DateTime)  # datum kreiranja
+    start = db.Column(db.DateTime)
+    end = db.Column(db.DateTime)
+    title = db.Column(db.String(64))
+    body = db.Column(db.Text)
+    body_html = db.Column(db.Text)
+    author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    post_id = db.Column(db.Integer)  # ker je opcionalno polje ne bom delal ORM
+
+    @staticmethod
+    def on_changed_body(target, value, oldvalue, initiator):
+        allowed_tags = ['a', 'abbr', 'acronym', 'b', 'code', 'em', 'i',
+                        'strong']
+        target.body_html = bleach.linkify(bleach.clean(
+            markdown(value, output_format='html'),
+            tags=allowed_tags, strip=True))
+
+
+db.event.listen(CalendarEvent.body, 'set', CalendarEvent.on_changed_body)

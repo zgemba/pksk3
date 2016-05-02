@@ -8,7 +8,7 @@ from flask_wtf.csrf import CsrfProtect
 from flask.ext.moment import Moment
 from flask.ext.pagedown import PageDown
 from werkzeug.contrib.cache import SimpleCache
-
+from .filters import datetimeformat
 
 bootstrap = Bootstrap()
 mail = Mail()
@@ -44,5 +44,7 @@ def create_app(config_name):
 
     from .admin import admin as admin_blueprint
     app.register_blueprint(admin_blueprint, url_prefix="/admin")
+
+    app.add_template_filter(datetimeformat)
 
     return app

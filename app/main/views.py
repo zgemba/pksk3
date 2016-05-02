@@ -5,10 +5,10 @@ from flask import render_template, redirect, url_for, abort, flash, send_from_di
 from flask.ext.login import login_required, current_user
 from sqlalchemy import desc
 from . import main
-from ..models import User, Role, Post, PostImage, Comment, Permission, MailNotification
+from app import db
+from ..models import User, Role, Post, PostImage, Comment, Permission, MailNotification, CalendarEvent
 from ..decorators import admin_required, member_required, cached
 from .forms import EditProfileForm, EditProfileAdminForm, DodajNovicoForm, DodajKomentarForm, EditImageForm
-from app import db
 from werkzeug.utils import secure_filename
 from ..myutils import allowed_file, make_unique_filename, get_from_gdrive
 from ..email import send_template_email
@@ -286,7 +286,7 @@ def enable_comment(id):
 def edit_image(id):
     image = PostImage.query.get_or_404(id)
     post = image.post
-    if not(current_user.can(Permission.ADMINISTER) or post.author == current_user):
+    if not (current_user.can(Permission.ADMINISTER) or post.author == current_user):
         flash("Urejate lahko samo svoje slike")
         return redirect(url_for("main.index"))
 
@@ -313,7 +313,7 @@ def edit_image(id):
         db.session.commit()
         return redirect(url_for("main.edit_post", id=post.id))
 
-    form.comment.data = image.comment       # preload
+    form.comment.data = image.comment  # preload
     form.headline.data = image.is_headline
     return render_template('edit_image.html', image=image, form=form)
 
@@ -379,6 +379,40 @@ def popis_opreme():
 @member_required
 def dokumenti():
     return render_template("klubski_dokumenti.html")
+
+
+#
+# KOLEDAR
+#
+
+@main.route('/koledar/<int:year>')
+@main.route('/koledar')
+def koledar(year=0):
+    if year == 0:
+        year = datetime.now().year
+        # events = CalendarEvent.query.filter(CalendarEvent.start > datetime.now()).order_by(CalendarEvent.start).all()
+    start = datetime(year, 1, 1)
+    end = datetime(year + 1, 1, 1)
+    events = CalendarEvent.query.filter(start <= CalendarEvent.start).filter(CalendarEvent.start <= end).order_by(
+        CalendarEvent.start).all()
+    next_events = CalendarEvent.query.filter(CalendarEvent.start >= end).order_by(
+        CalendarEvent.start).count()
+    prev_events = CalendarEvent.query.filter(CalendarEvent.start < start).order_by(
+        CalendarEvent.start).count()
+    return render_template("koledar.html", events=events, year=year, prev_events=prev_events, next_events=next_events)
+
+
+@main.route('/delete_event/')  # za js route
+@main.route('/delete_event/<int:id>', methods=["GET", "POST"])
+@login_required
+def delete_event(id):
+    evnt = CalendarEvent.query.get_or_404(id)
+    if current_user.can(Permission.ADMINISTER) or evnt.author == current_user:
+        db.session.delete(evnt)
+        flash("Dogodek izbrisan")
+        return redirect(url_for("main.index"))
+    else:
+        flash("Brišete lahko samo svoje prispevke¸")
 
 
 @main.route('/test')

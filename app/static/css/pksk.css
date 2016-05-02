@@ -1,0 +1,13 @@
+.koledar_datum {
+    font-size: x-large;
+    font-family: 'Lucida Grande', 'Lucida Sans Unicode', 'Geneva', 'Verdana', sans-serif;
+}
+
+.koledar_od_do {
+    font-size: small;
+}
+
+.koledar_title {
+    font-size: larger;
+    font-weight: bold;
+}

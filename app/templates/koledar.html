@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}PKSK - koledar dogodkov {% endblock %}
+{% block styles %}
+    {{ super() }}
+    <link href="/static/css/pksk.css" rel="stylesheet">
+{% endblock %}
+
+{% block page_content %}
+    <div class="page-header">
+        <h1>Koledar dogodkov za leto {{ year }}</h1>
+    </div>
+
+    <div class="container">
+        {% if prev_events > 0 %}
+            <nav>
+                <ul class="pager">
+                    <li class="previous"><a href="{{ url_for('main.koledar', year=year-1) }}"><span
+                            aria-hidden="true">&larr;</span> Pretekli dogodki
+                        ({{ prev_events }})</a></li>
+                </ul>
+            </nav>
+        {% endif %}
+        {% if events %}
+            <table class="table table-bordered">
+                {% for event in events %}
+                    <tr>
+                        <td style="width:10%; vertical-align: middle"><p
+                                class="koledar_datum">{{ event.start | datetimeformat("%d.%m.") }}</p></td>
+                        <td style="width:20%"><p class="koledar_title">{{ event.title }}</p>
+                            {% if event.end %}
+                                <p class="koledar_od_do">Od: {{ event.start | datetimeformat("%d.%m %H:%M") }}<br>
+                                    Do: {{ event.end | datetimeformat("%d.%m %H:%M") }}</p></td>
+                            {% else %}
+                                <p class="koledar_od_do">Ob: {{ event.start | datetimeformat("%H:%M") }}</p>
+                            {% endif %}
+                        <td style="width:70%">
+                            {% if current_user.can(Permission.ADMINISTER) %}
+                                <div class="text-right">
+                                    <a href="{{ url_for('admin.edit_event', id=event.id) }}">
+                                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>
+                                    <a onclick="confirmAction('{{ url_for("admin.delete_event", id=event.id) }}', 'Potrdi brisanje dogodka')"
+                                       href="#">
+                                        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
+                                </div>
+                                <br>
+                            {% endif %}
+                            {{ event.body_html | safe }}
+                        {% if event.post_id %}
+                            <br>
+                            <a href="{{ url_for('main.post', id=event.post_id) }}">Več o tem</a>
+                        {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+            {% if next_events > 0 %}
+                <nav>
+                    <ul class="pager">
+                        <li class="next"><a href="{{ url_for('main.koledar', year=year+1) }}">Prihajajoči dogodki
+                            ({{ next_events }}) <span aria-hidden="true">&rarr;</span></a></li>
+                    </ul>
+                </nav>
+            {% endif %}
+
+        {% else %}
+            <h3>Za to obdobje v koledarju ni dogodkov!</h3>
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script src="/static/js/pkskstuff.js"></script>
+{% endblock %}
