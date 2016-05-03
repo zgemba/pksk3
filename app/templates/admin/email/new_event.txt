@@ -1,0 +1,7 @@
+Pozdravljen/a!
+Pravkar je {{ event.author.username }} dodal v koledar nov dogodek z naslovom {{ event.title }}.
+    Povezava: {{ url_for('main.koledar', _external=True) }}
+
+
+Če ne želiš več prejemati obvestil o novih dogodkih lahko to izklopiš v tvojem profilu.
+Lep pozdrav, Ekipa PKSK

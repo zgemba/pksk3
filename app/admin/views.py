@@ -3,7 +3,7 @@ from . import admin
 from flask import render_template, redirect, url_for, flash, current_app
 from flask.ext.login import login_required, current_user
 from app.decorators import admin_required
-from ..models import User, CalendarEvent
+from ..models import User, CalendarEvent, MailNotification
 from .forms import BulkEmailForm, AddEventForm
 from flask.ext.mail import Message
 from ..email import send_message, send_template_email
@@ -78,7 +78,14 @@ def add_event():
             start=form.start.data, end=form.end.data, post_id=form.post_id.data)
         db.session.add(new_event)
         db.session.commit()
-        return redirect(url_for("main.index"))
+
+        emails = User.users_to_notify(MailNotification.NEWS)
+        if current_user.email in emails:  # samemu sebi ne pošiljamo mailov!
+            emails.remove(current_user.email)
+        for email in emails:
+            send_template_email([email], "Nov dogodek v koledarju", "admin/email/new_event", event=new_event)
+
+        return redirect(url_for("main.koledar"))
 
     return render_template("admin/add_event.html", form=form, title="Dodaj dogodek v koledar")
 

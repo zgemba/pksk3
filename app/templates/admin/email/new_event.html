@@ -1,0 +1,6 @@
+<p>Pozdravljen/a!</p>
+<p>Pravkar je {{ event.author.username }} dodal v koledar nov dogodek z naslovom
+    <a href="{{ url_for('main.koledar', _external=True) }}">{{ event.title }}</a>.</p>
+    <br><br>
+<p>Če ne želiš več prejemati obvestil o novih dogodkih lahko to izklopiš v tvojem profilu.</p>
+<p>Lep pozdrav, Ekipa PKSK</p>
