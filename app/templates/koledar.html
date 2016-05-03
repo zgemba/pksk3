@@ -48,7 +48,7 @@
                             {{ event.body_html | safe }}
                         {% if event.post_id %}
                             <br>
-                            <a href="{{ url_for('main.post', id=event.post_id) }}">Več o tem</a>
+                            <a href="{{ url_for('main.post', id=event.post_id) }}">Več o tem dogodku</a>
                         {% endif %}
                         </td>
                     </tr>
