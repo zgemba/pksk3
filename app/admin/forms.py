@@ -1,9 +1,10 @@
+from flask.ext.pagedown.fields import PageDownField
 from flask.ext.wtf import Form
 from wtforms import StringField, SubmitField, TextAreaField, IntegerField, DateTimeField
 from wtforms.validators import InputRequired, Optional
 from datetime import datetime
 from wtforms import ValidationError
-from ..models import CalendarEvent
+from ..models import Post
 
 
 # custom validator
@@ -22,7 +23,7 @@ class AddEventForm(Form):
     title = StringField("Naslov", validators=[InputRequired()])
     start = DateTimeField("Začetek (d.m.l u:m)", validators=[InputRequired(), future_event], format="%d.%m.%Y %H:%M")
     end = DateTimeField("Konec (d.m.l u:m)", validators=[future_event, Optional()], format="%d.%m.%Y %H:%M")
-    body = TextAreaField("Opis dogodka", validators=[Optional()])
+    body = PageDownField("Opis dogodka", validators=[Optional()])
     post_id = IntegerField("ID posta (če obstaja)", validators=[Optional()])
     submit = SubmitField("Shrani dogodek")
 
@@ -33,5 +34,11 @@ class AddEventForm(Form):
 
     def validate_post_id(form, field):
         if field.data:
-            if not CalendarEvent.query.get(field.data):
+            if not Post.query.get(field.data):
                 raise ValidationError("Ta post ne obstahja")
+
+
+class AddTagForm(Form):
+    text = StringField("Tag", validators=[InputRequired()])
+    submit = SubmitField("Shrani tag")
+

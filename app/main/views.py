@@ -418,3 +418,14 @@ def delete_event(id):
 @main.route('/test')
 def test():
     return redirect(url_for(".novice"))
+
+
+@main.route('/privacy')
+def privacy():
+    return render_template("privacy.html")
+
+
+# google site verification
+@main.route("/google866d75cc1861ab1a.html")
+def google_site_verification():
+    return render_template("google866d75cc1861ab1a.html")
