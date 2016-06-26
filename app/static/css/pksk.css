@@ -11,3 +11,12 @@
     font-size: larger;
     font-weight: bold;
 }
+
+.tag {
+    font-size: small;
+    font-weight: bold;
+    background-color: #5153ff;
+    color: white;
+    padding-left: 8px;
+    padding-right: 8px;
+}

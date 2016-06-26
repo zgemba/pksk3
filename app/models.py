@@ -465,3 +465,13 @@ class CalendarEvent(db.Model):
 
 
 db.event.listen(CalendarEvent.body, 'set', CalendarEvent.on_changed_body)
+
+
+#
+# tags
+#
+
+class Tag(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    text = db.Column(db.String(30))
+

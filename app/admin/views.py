@@ -3,8 +3,8 @@ from . import admin
 from flask import render_template, redirect, url_for, flash, current_app
 from flask.ext.login import login_required, current_user
 from app.decorators import admin_required
-from ..models import User, CalendarEvent, MailNotification
-from .forms import BulkEmailForm, AddEventForm
+from ..models import User, CalendarEvent, MailNotification, Tag
+from .forms import BulkEmailForm, AddEventForm, AddTagForm
 from flask.ext.mail import Message
 from ..email import send_message, send_template_email
 from app import db
@@ -125,3 +125,16 @@ def delete_event(id):
     db.session.delete(event)
     db.session.commit()
     return redirect(url_for("main.koledar"))
+
+
+@admin.route('/edit_tag/<int:id>', methods=['GET', 'POST'])
+@admin.route('/edit_tag')
+@login_required
+@admin_required
+def edit_tag(id=0):
+    form = AddTagForm()
+    # tags = Tag.query.all().orderby(Tag.text)
+    tags = ['tekmovanja', 'tabori', 'alpinizem', 'vzponi']
+    if form.validate_on_submit():
+        pass
+    return render_template("admin/edit_tag.html", form=form, tags=tags)
