@@ -128,13 +128,36 @@ def delete_event(id):
 
 
 @admin.route('/edit_tag/<int:id>', methods=['GET', 'POST'])
-@admin.route('/edit_tag')
+@admin.route('/edit_tag', methods=['GET', 'POST'])
 @login_required
 @admin_required
 def edit_tag(id=0):
     form = AddTagForm()
-    # tags = Tag.query.all().orderby(Tag.text)
-    tags = ['tekmovanja', 'tabori', 'alpinizem', 'vzponi']
+    all_tags = Tag.query.order_by(Tag.text)
+
     if form.validate_on_submit():
-        pass
-    return render_template("admin/edit_tag.html", form=form, tags=tags)
+        if id == 0:
+            newtag = Tag(text=form.text.data)
+            db.session.add(newtag)
+            form.text.data = ""
+        else:
+            tag = Tag.query.get_or_404(id)
+            tag.text = form.text.data
+        db.session.commit()
+        return redirect(url_for("admin.edit_tag"))
+
+    if id != 0:     # preload
+        tag = Tag.query.get_or_404(id)
+        form.text.data = tag.text
+
+    return render_template("admin/edit_tag.html", form=form, tags=all_tags)
+
+
+@admin.route('/delete_tag/<int:id>', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def delete_tag(id):
+    tag = Tag.query.get_or_404(id)
+    db.session.delete(tag)
+    db.session.commit()
+    return redirect(url_for("admin.edit_tag"))

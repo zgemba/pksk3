@@ -1,8 +1,14 @@
+short body za novice
+vodnički
+tags n:m
 deploy iz git
 slike gradnje bolderce
 paging news
 
-NAREJENO (ni nujno da je deployano!):
+
+NAREJENO (je deployano!):
+20.6. cookie-bar
+x.5. koledar
 24.4. popis materiala
 13.3. confirmation za brisanje komenmtarja
 7.3. mail obvestilo ob lastnem komentarju se ne sme pošiljat!

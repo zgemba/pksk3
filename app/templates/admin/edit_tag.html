@@ -13,14 +13,22 @@
         <h1>Urejanje tagov</h1>
     </div>
 
-    {% for tag in tags %}
-        <span class="tag">{{ tag }}</span>
-        &nbsp;
-    {% endfor %}
-    <br>
     <div class="container-fluid">
-        <div class="col-md-4">
-            {{ wtf.quick_form(form) }}
+        {% for tag in tags %}
+            <span class="tag">{{ tag.text }}</span>
+            <a href="{{ url_for('admin.edit_tag', id=tag.id) }}"><span class="glyphicon glyphicon-edit"></span></a>
+
+            <a onclick="confirmAction('{{ url_for("admin.delete_tag", id=tag.id) }}', 'Potrdi brisanje taga')"
+               href="#"><span class="glyphicon glyphicon-trash"></span></a>
+            {% if not loop.last %}
+                &nbsp;|&nbsp;
+            {% endif %}
+        {% endfor %}
+        <br><br>
+        <div class="container-fluid">
+            <div class="col-md-4">
+                {{ wtf.quick_form(form) }}
+            </div>
         </div>
     </div>
 {% endblock %}

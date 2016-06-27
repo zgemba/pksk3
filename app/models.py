@@ -84,7 +84,7 @@ class User(UserMixin, db.Model):
     posts = db.relationship('Post', backref='author', lazy='dynamic')
     comments = db.relationship('Comment', backref='author', lazy='dynamic')
     events = db.relationship('CalendarEvent', backref='author', lazy='dynamic')
-
+    guidebooks = db.relationship('Guidebook', backref='owner', lazy='dynamic')
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
@@ -475,3 +475,16 @@ class Tag(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String(30))
 
+
+#
+# Guidebooks
+#
+
+class Guidebook(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(100))
+    author = db.Column(db.String(100))
+    publisher = db.Column(db.String(100))
+    year_published = db.Column(db.DateTime)
+    description = db.Column(db.Text)
+    owner_id = db.Column(db.Integer, db.ForeignKey('users.id'))
