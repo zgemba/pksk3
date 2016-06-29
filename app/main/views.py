@@ -1,14 +1,15 @@
 import os
 import random
-from datetime import datetime
+from datetime import datetime, date
 from flask import render_template, redirect, url_for, abort, flash, send_from_directory, current_app, app
 from flask.ext.login import login_required, current_user
 from sqlalchemy import desc
 from . import main
 from app import db
-from ..models import User, Role, Post, PostImage, Comment, Permission, MailNotification, CalendarEvent
+from ..models import User, Role, Post, PostImage, Comment, Permission, MailNotification, CalendarEvent, Guidebook
 from ..decorators import admin_required, member_required, cached
-from .forms import EditProfileForm, EditProfileAdminForm, DodajNovicoForm, DodajKomentarForm, EditImageForm
+from .forms import EditProfileForm, EditProfileAdminForm, DodajNovicoForm, DodajKomentarForm, EditImageForm, \
+    EditGuidebookForm
 from werkzeug.utils import secure_filename
 from ..myutils import allowed_file, make_unique_filename, get_from_gdrive
 from ..email import send_template_email
@@ -414,6 +415,86 @@ def delete_event(id):
     else:
         flash("Brišete lahko samo svoje prispevke¸")
 
+
+#
+# Guidebooks
+#
+
+@main.route("/vodnicki")
+@login_required
+@member_required
+def guidebooks():
+    books = Guidebook.query.order_by(Guidebook.title)
+    return render_template("guidebooks.html", books=books)
+
+
+@main.route("/vodnicek/<int:id>")
+@login_required
+@member_required
+def guidebook(id):
+    book = Guidebook.query.get_or_404(id)
+    return render_template("guidebook_details.html", book=book)
+
+
+@main.route("/delete_vodnicek/<int:id>")
+@login_required
+@member_required
+def delete_guidebook(id):
+    book = Guidebook.query.get_or_404(id)
+    if current_user.can(Permission.ADMINISTER) or book.owner == current_user:
+        db.session.delete(book)
+        flash("Vodniček izbrisan")
+    else:
+        flash("Brišete lahko samo svoje vodničke")
+
+    return redirect(url_for("main.guidebooks"))
+
+
+@main.route("/uredi_vodnicek/<int:id>", methods=["GET", "POST"])
+@main.route("/uredi_vodnicek", methods=["GET", "POST"])
+@login_required
+@member_required
+def edit_guidebook(id=0):
+    form = EditGuidebookForm()
+
+    if form.validate_on_submit():
+        if id == 0: # dodajam
+            owner = current_user._get_current_object()
+            new_book = Guidebook(title=form.title.data, author=form.author.data, publisher=form.publisher.data,
+                                 year_published=form.year_published.data, description=form.description.data,
+                                 owner=owner)
+            db.session.add(new_book)
+            db.session.commit()
+
+        else:
+            book = Guidebook.query.get_or_404(id)
+            if current_user.can(Permission.ADMINISTER) or book.owner == current_user:
+                book.title = form.title.data
+                book.author = form.author.data
+                book.year_published = form.year_published.data
+                book.publisher = form.publisher.data
+                book.description = form.description.data
+                db.session.commit()
+            else:
+                flash ("Urejate lahko samo svoje vodničke")
+
+        return redirect(url_for("main.guidebooks"))
+
+    if id != 0:  # preload
+        book = Guidebook.query.get_or_404(id)
+        form.title.data = book.title
+        form.author.data = book.author
+        form.year_published.data = book.year_published
+        form.publisher.data = book.publisher
+        form.description.data = book.description
+
+    return render_template("guidebook_edit.html", form=form)
+
+############################################################################################
+#
+# ostalo, privacy, google analitika ipd
+#
+############################################################################################
 
 @main.route('/test')
 def test():

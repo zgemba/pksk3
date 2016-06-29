@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}PKSK - oirejanje vodnička{% endblock %}
+{% block styles %}
+    {{ super() }}
+    <link href="/static/css/pksk.css" rel="stylesheet">
+{% endblock %}
+
+{% block page_content %}
+    <div class="page-header">
+        <h1>Urejanje podatkov vodnička</h1>
+    </div>
+
+    <div class="container">
+        {{ wtf.quick_form(form) }}
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script src="/static/js/pkskstuff.js"></script>
+{% endblock %}

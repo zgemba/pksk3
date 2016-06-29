@@ -1,6 +1,6 @@
 from flask.ext.wtf import Form
 from wtforms import StringField, TextAreaField, BooleanField, SelectField, \
-    SubmitField, FileField
+    SubmitField, FileField, DateTimeField
 from wtforms.validators import InputRequired, Length, Email, Regexp
 from wtforms import ValidationError
 from ..models import Role, User
@@ -78,8 +78,8 @@ class DodajNovicoForm(Form):
         for i in range(1, 4):
             field = eval("self.img" + str(i))
             if not isinstance(field.data, str):
-                    if field.data.filename != "" and not allowed_file(field.data.filename):
-                        raise ValidationError("Tip datoteke ni podprt.")
+                if field.data.filename != "" and not allowed_file(field.data.filename):
+                    raise ValidationError("Tip datoteke ni podprt.")
 
 
 class DodajKomentarForm(Form):
@@ -98,3 +98,12 @@ class EditImageForm(Form):
     def validate_img(self, field):
         if field.data.filename != "" and not allowed_file(field.data.filename):
             raise ValidationError("Tip datoteke ni podprt.")
+
+
+class EditGuidebookForm(Form):
+    title = StringField("Naslov", validators=[InputRequired()])
+    author = StringField("Avtor", validators=[InputRequired()])
+    publisher = StringField("Založba", validators=[InputRequired()])
+    year_published = DateTimeField("Leto izdaje", validators=[InputRequired()], format="%Y")
+    description = TextAreaField("Opis")
+    submit = SubmitField("Shrani spremembe")
