@@ -197,6 +197,7 @@ def edit_post(id):
         db.session.commit()
         return redirect(url_for(".index"))
 
+    p = None
     if id != 0:  # preload forme
         editing = True
         p = Post.query.get_or_404(id)
@@ -207,7 +208,7 @@ def edit_post(id):
         else:
             images = None
 
-    return render_template("edit_post.html", form=form, edit=editing, images=images)
+    return render_template("edit_post.html", form=form, edit=editing, images=images, post=p)
 
 
 def save_image(field, pst, comment):
@@ -458,7 +459,7 @@ def edit_guidebook(id=0):
     form = EditGuidebookForm()
 
     if form.validate_on_submit():
-        if id == 0: # dodajam
+        if id == 0:  # dodajam
             owner = current_user._get_current_object()
             new_book = Guidebook(title=form.title.data, author=form.author.data, publisher=form.publisher.data,
                                  year_published=form.year_published.data, description=form.description.data,
@@ -476,7 +477,7 @@ def edit_guidebook(id=0):
                 book.description = form.description.data
                 db.session.commit()
             else:
-                flash ("Urejate lahko samo svoje vodničke")
+                flash("Urejate lahko samo svoje vodničke")
 
         return redirect(url_for("main.guidebooks"))
 
@@ -490,11 +491,13 @@ def edit_guidebook(id=0):
 
     return render_template("guidebook_edit.html", form=form)
 
+
 ############################################################################################
 #
 # ostalo, privacy, google analitika ipd
 #
 ############################################################################################
+
 
 @main.route('/test')
 def test():
