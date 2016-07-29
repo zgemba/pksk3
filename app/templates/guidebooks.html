@@ -8,10 +8,11 @@
 
 {% block page_content %}
     <div class="page-header">
-        <h1>Vodnički na voljo za izposojo pri članih</h1>
+        <h1>Vodnički in skice</h1>
     </div>
 
     <div class="container">
+        <h2>Vodnički na voljo za izposojo pri članih</h2>
         <table class="table table-bordered table-responsive">
             <th>Naslov</th>
             <th>Leto izdaje</th>
@@ -19,13 +20,24 @@
             {% for book in books %}
                 <tr>
                     <td><a href="{{ url_for('main.guidebook', id=book.id) }}">{{ book.title }}</a></td>
-                    <td>{{ book.year_published | datetimeformat('%Y')}}</td>
-                    <td><a href="{{ url_for('main.user', user_id=book.owner.username) }}">{{ book.owner.username  }}</a></td>
+                    <td>{{ book.year_published | datetimeformat('%Y') }}</td>
+                    <td><a href="{{ url_for('main.user', user_id=book.owner.username) }}">{{ book.owner.username }}</a>
+                    </td>
                 </tr>
             {% endfor %}
         </table>
 
-    <p><a href="{{ url_for('main.edit_guidebook', id=0) }}">Dodaj nov vodniček</a></p>
+        <p><a href="{{ url_for('main.edit_guidebook', id=0) }}"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Dodaj nov vodniček</a></p>
+
+        <h2>Skice, opisi in podobno</h2>
+        <table class="table table-bordered table-responsive">
+            <th>Naslov</th>
+            <th>Komentar</th>
+                <tr>
+                    <td><a href="/static/dokumenti/Kroficka.zip">Krofička</a></td>
+                    <td>Skice in opisi vrtanih smeri v Krofički. Za dodatne informacije glej še PZS vodniček Logarska dolinas, vzhodni del.</td>
+                </tr>
+        </table>
 
     </div>
 {% endblock %}
