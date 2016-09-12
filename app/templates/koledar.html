@@ -11,22 +11,27 @@
         <h1>Koledar dogodkov za leto {{ year }}</h1>
     </div>
 
+    <h3> Minuli dogodki so označeni <span class="koledar_expired">sivo</span></h3>
     <div class="container">
         {% if prev_events > 0 %}
             <nav>
                 <ul class="pager">
                     <li class="previous"><a href="{{ url_for('main.koledar', year=year-1) }}"><span
-                            aria-hidden="true">&larr;</span> Pretekli dogodki
-                        ({{ prev_events }})</a></li>
+                            aria-hidden="true">&larr;</span> Prejšnje leto
+                    </a></li>
                 </ul>
             </nav>
         {% endif %}
         {% if events %}
             <table class="table table-bordered">
                 {% for event in events %}
-                    <tr>
-                        <td style="width:10%; vertical-align: middle"><p
-                                class="koledar_datum">{{ event.start | datetimeformat("%d.%m.") }}</p></td>
+                    <tr {% if event.expired %} class="koledar_expired" {% endif %}>
+                        <td style="width:10%; vertical-align: middle">
+                            <p class="koledar_datum">
+                                {{ event.start | datetimeformat("%d.%m.") }}
+                            </p>
+                        </td>
+
                         <td style="width:20%"><p class="koledar_title">{{ event.title }}</p>
                             {% if event.end %}
                                 <p class="koledar_od_do">Od: {{ event.start | datetimeformat("%d.%m %H:%M") }}<br>
@@ -34,6 +39,7 @@
                             {% else %}
                                 <p class="koledar_od_do">Ob: {{ event.start | datetimeformat("%H:%M") }}</p>
                             {% endif %}
+
                         <td style="width:70%">
                             {% if current_user.can(Permission.ADMINISTER) %}
                                 <div class="text-right">
@@ -46,10 +52,10 @@
                                 <br>
                             {% endif %}
                             {{ event.body_html | safe }}
-                        {% if event.post_id %}
-                            <br>
-                            <a href="{{ url_for('main.post', id=event.post_id) }}">Več o tem dogodku</a>
-                        {% endif %}
+                            {% if event.post_id %}
+                                <br>
+                                <a href="{{ url_for('main.post', id=event.post_id) }}">Več o tem dogodku</a>
+                            {% endif %}
                         </td>
                     </tr>
                 {% endfor %}
@@ -57,8 +63,8 @@
             {% if next_events > 0 %}
                 <nav>
                     <ul class="pager">
-                        <li class="next"><a href="{{ url_for('main.koledar', year=year+1) }}">Prihajajoči dogodki
-                            ({{ next_events }}) <span aria-hidden="true">&rarr;</span></a></li>
+                        <li class="next"><a href="{{ url_for('main.koledar', year=year+1) }}">Naslednje leto
+                            <span aria-hidden="true">&rarr;</span></a></li>
                     </ul>
                 </nav>
             {% endif %}

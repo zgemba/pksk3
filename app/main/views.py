@@ -392,16 +392,17 @@ def dokumenti():
 def koledar(year=0):
     if year == 0:
         year = datetime.now().year
-        # events = CalendarEvent.query.filter(CalendarEvent.start > datetime.now()).order_by(CalendarEvent.start).all()
     start = datetime(year, 1, 1)
     end = datetime(year + 1, 1, 1)
     events = CalendarEvent.query.filter(start <= CalendarEvent.start).filter(CalendarEvent.start <= end).order_by(
         CalendarEvent.start).all()
+
     next_events = CalendarEvent.query.filter(CalendarEvent.start >= end).order_by(
         CalendarEvent.start).count()
     prev_events = CalendarEvent.query.filter(CalendarEvent.start < start).order_by(
         CalendarEvent.start).count()
-    return render_template("koledar.html", events=events, year=year, prev_events=prev_events, next_events=next_events)
+    return render_template("koledar.html", events=events, year=year, prev_events=prev_events,
+                           next_events=next_events)
 
 
 @main.route('/delete_event/')  # za js route

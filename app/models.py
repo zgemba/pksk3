@@ -1,5 +1,5 @@
 import os
-from datetime import datetime
+from datetime import datetime, timedelta, date
 import hashlib
 from flask.ext.login import UserMixin, AnonymousUserMixin
 from sqlalchemy import desc
@@ -464,6 +464,15 @@ class CalendarEvent(db.Model):
             markdown(value, output_format='html'),
             tags=allowed_tags, strip=True))
 
+    @property
+    def expired(self):
+        if self.end:
+            return self.end < datetime.utcnow()
+        else:
+            # če smo ravno na tisti dan in dogodek še traja, robni primer
+            now = datetime.utcnow()
+            cutoff = datetime(year=now.year, month=now.month, day=now.day) + timedelta(days=1)
+            return self.start < cutoff
 
 db.event.listen(CalendarEvent.body, 'set', CalendarEvent.on_changed_body)
 

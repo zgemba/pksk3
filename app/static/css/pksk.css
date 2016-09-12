@@ -3,6 +3,11 @@
     font-family: 'Lucida Grande', 'Lucida Sans Unicode', 'Geneva', 'Verdana', sans-serif;
 }
 
+
+.koledar_expired {
+    color: grey;
+}
+
 .koledar_od_do {
     font-size: small;
 }
