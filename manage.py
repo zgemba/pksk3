@@ -7,11 +7,11 @@ from flask.ext.script import Manager, Shell
 from flask.ext.migrate import Migrate, MigrateCommand
 
 from app import create_app, db
-from app.models import Post, User, Permission, Role
+from app.models import Post, User, Permission, Role, Guidebook, Tag, CalendarEvent
 
 app = create_app(os.getenv("FLASK_CONFIG") or "default")
 manager = Manager(app)
-migrate = Migrate(app, db, app.config["MIGRATIONS_FOLDER"])             # nekaj povozi default nastavitev?
+migrate = Migrate(app, db, app.config["MIGRATIONS_FOLDER"])  # nekaj povozi default nastavitev?
 
 
 @manager.command
@@ -23,7 +23,8 @@ def test():
 
 
 def make_shell_context():
-    return dict(app=app, db=db, User=User, Post=Post, Permission=Permission, Role=Role)
+    return dict(app=app, db=db, User=User, Post=Post, Permission=Permission, Role=Role, Guidebook=Guidebook, Tag=Tag,
+                CalendarEvent=CalendarEvent)
 
 
 manager.add_command("shell", Shell(make_context=make_shell_context))

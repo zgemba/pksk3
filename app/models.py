@@ -2,6 +2,7 @@ import os
 from datetime import datetime
 import hashlib
 from flask.ext.login import UserMixin, AnonymousUserMixin
+from sqlalchemy import desc
 from werkzeug.security import generate_password_hash, check_password_hash
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flask import current_app, request
@@ -488,3 +489,8 @@ class Guidebook(db.Model):
     year_published = db.Column(db.DateTime)
     description = db.Column(db.Text)
     owner_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+
+    @staticmethod
+    def last_added():
+        return Guidebook.query.order_by(desc(Guidebook.id)).first()
+
