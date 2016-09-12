@@ -79,11 +79,12 @@ def add_event():
         db.session.add(new_event)
         db.session.commit()
 
-        emails = User.users_to_notify(MailNotification.NEWS)
-        if current_user.email in emails:  # samemu sebi ne pošiljamo mailov!
-            emails.remove(current_user.email)
-        for email in emails:
-            send_template_email([email], "Nov dogodek v koledarju", "admin/email/new_event", event=new_event)
+        if form.notify.data:
+            emails = User.users_to_notify(MailNotification.NEWS)
+            if current_user.email in emails:  # samemu sebi ne pošiljamo mailov!
+                emails.remove(current_user.email)
+            for email in emails:
+                send_template_email([email], "Nov dogodek v koledarju", "admin/email/new_event", event=new_event)
 
         return redirect(url_for("main.koledar"))
 

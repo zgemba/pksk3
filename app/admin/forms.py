@@ -1,6 +1,6 @@
 from flask.ext.pagedown.fields import PageDownField
 from flask.ext.wtf import Form
-from wtforms import StringField, SubmitField, TextAreaField, IntegerField, DateTimeField
+from wtforms import StringField, SubmitField, TextAreaField, IntegerField, DateTimeField, BooleanField
 from wtforms.validators import InputRequired, Optional
 from datetime import datetime
 from wtforms import ValidationError
@@ -25,6 +25,7 @@ class AddEventForm(Form):
     end = DateTimeField("Konec (d.m.l u:m)", validators=[future_event, Optional()], format="%d.%m.%Y %H:%M")
     body = PageDownField("Opis dogodka", validators=[Optional()])
     post_id = IntegerField("ID posta (če obstaja)", validators=[Optional()])
+    notify = BooleanField("Obvesti uporabnike po mailu", default=False)
     submit = SubmitField("Shrani dogodek")
 
     def validate_end(form, field):
