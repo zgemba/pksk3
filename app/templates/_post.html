@@ -3,11 +3,13 @@
         <div class="col-lg-6">
             <h2>{{ post.title }}</h2>
 
-            <p class="small">
+            <p class="objavil">
                 Objavil
                 <a href='{{ url_for("main.user", user_id=post.author.username) }}'>
                     {{ post.author.username }}</a>
-                {{ moment(post.timestamp).fromNow() }}</p>
+                {{ moment(post.timestamp).fromNow() }}
+                | <a href='{{ url_for("main.post", id=post.id) }}'>povezava</a>
+            </p>
         </div>
         <div class="col-lg-6 text-right">
             {% if current_user.can(Permission.ADMINISTER) or post.author == current_user %}
@@ -22,39 +24,39 @@
 
     {% if post.has_images %}
         <div class="row">
-            {% if post.headline_image %}
-                <div class="col-lg-8">
-            {% else %}
-                <div class="col-lg-10">
+        {% if post.headline_image %}
+            <div class="col-lg-8">
+        {% else %}
+            <div class="col-lg-10">
+        {% endif %}
+    {% if post.body_html %}
+        {{ post.body_html | safe }}
+    {% else %}
+        {{ post.body }}
+    {% endif %}
+    </div>
+        {% if post.headline_image %}
+            <div class="col-lg-4">
+        {% else %}
+            <div class="col-lg-2">
+        {% endif %}
+    <figure class="figure">
+        <a href="{{ url_for('main.post', id=post.id) }}">
+            <img class="figure-img img-fluid img-rounded"
+                    {% if post.headline_image %}
+                 src="{{ post.headline_image }}"
+                    {% else %}
+                 src="{{ post.post_thumbnail }}"
+                    {% endif %}
+                 alt="thumb">
+            {% if post.images_count > 1 %}
+                <figcaption class="figure-caption text-center">Dodatne
+                    slike: {{ post.images_count - 1 }}</figcaption>
             {% endif %}
-            {% if post.body_html %}
-                {{ post.body_html | safe }}
-            {% else %}
-                {{ post.body }}
-            {% endif %}
-        </div>
-            {% if post.headline_image %}
-                <div class="col-lg-4">
-            {% else %}
-                <div class="col-lg-2">
-            {% endif %}
-                <figure class="figure">
-                    <a href="{{ url_for('main.post', id=post.id) }}">
-                        <img class="figure-img img-fluid img-rounded"
-                             {% if post.headline_image %}
-                                src="{{ post.headline_image }}"
-                             {%  else %}
-                                src="{{ post.post_thumbnail }}"
-                             {% endif %}
-                             alt="thumb">
-                        {% if post.images_count > 1 %}
-                            <figcaption class="figure-caption text-center">Dodatne
-                                slike: {{ post.images_count - 1 }}</figcaption>
-                        {% endif %}
-                    </a>
-                </figure>
-            </div>
-        </div>
+        </a>
+    </figure>
+    </div>
+    </div>
     {% else %}
         {% if post.body_html %}
             {{ post.body_html | safe }}
@@ -73,4 +75,4 @@
         {% endif %}
     </a>
 
-</div>
+    </div>
