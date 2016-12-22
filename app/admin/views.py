@@ -1,20 +1,26 @@
+import os
 from datetime import datetime
-from . import admin
+
 from flask import render_template, redirect, url_for, flash, current_app
-from flask.ext.login import login_required, current_user
-from app.decorators import admin_required
-from ..models import User, CalendarEvent, MailNotification, Tag
-from .forms import BulkEmailForm, AddEventForm, AddTagForm
-from flask.ext.mail import Message
-from ..email import send_message, send_template_email
+from flask_login import login_required, current_user
+from flask_mail import Message
+
 from app import db
+from app.decorators import admin_required
+from . import admin
+from .forms import BulkEmailForm, AddEventForm, AddTagForm, EditEventForm
+from ..email import send_message, send_template_email
+from ..models import User, CalendarEvent, MailNotification, Tag
 
 
 @admin.route("/users")
 @admin_required
 def users():
     usrs = User.query.order_by(User.id)
-    return render_template("admin/users.html", users=usrs)
+    cfg = sorted(os.environ.items())
+    if cfg is None:
+        cfg = "None"
+    return render_template("admin/users.html", users=usrs, cfg=cfg)
 
 
 @admin.route('/approve_user/<int:id>', methods=['GET', 'POST'])
@@ -95,7 +101,7 @@ def add_event():
 @login_required
 @admin_required
 def edit_event(id):
-    form = AddEventForm()
+    form = EditEventForm()
     event = CalendarEvent.query.get_or_404(id)
     if form.validate_on_submit():
         event.title = form.title.data
