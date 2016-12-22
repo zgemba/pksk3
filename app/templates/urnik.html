@@ -12,7 +12,7 @@
             background-color: #00aa00;
         }
 
-        .urnik-maybe {
+        .urnik-zasedeno {
             color: #000;
             background-color: #ffaa00;
         }
@@ -20,6 +20,11 @@
         .urnik-rekreacija {
             color: #000;
             background-color: #00aaff;
+        }
+
+        .urnik-maybe {
+            color: #fff;
+            background-color: #005500;
         }
     </style>
     {{ super() }}
@@ -34,7 +39,7 @@
 
     <h2>Rekreacija za občane</h2>
     <p>Kot društvo v okviru zavoda za šport nudimo rekracijo za občane, ki želijo poskusiti športno plezanje in
-        balvaniranje. Rekreacija je odprta za vse in poteka ob torkih med 18:00 in 20:00 na
+        balvaniranje. Rekreacija je odprta za vse in poteka ob sredah med 18:00 in 20:00 na
         <a href="{{ url_for('main.bolder_3d') }}">nizki plezalni steni</a>.
         <br>V klubu imamo na voljo tudi nekaj plezalnih čevljev različnih številk, ki si jih lahko izposodite, če nimate
         svojih.</p>
@@ -51,6 +56,9 @@
         </tr>
         <tr>
             <td class="urnik-maybe">Plezanje po dogovoru</td>
+        </tr>
+        <tr>
+            <td class="urnik-zasedeno">Rezerviran termin</td>
         </tr>
         <tr>
             <td class="urnik-off">Plezanje NI MOGOČE</td>
@@ -145,8 +153,9 @@
 
     <h3>Bolder</h3>
 
-    <p>Med tednom je plezanje na bolderju možno vsak dan od 18:00 do 20:00, večinoma pa še dlje.</p>
-    <p>Po predhodnem dogovoru je mogoče plezati tudi izven teh terminov.</p>
+    <p>Med tednom je plezanje na bolderju možno vsak dan od 18:00 do 20:00, večinoma pa še dlje.
+    Po predhodnem dogovoru je mogoče plezati tudi izven teh terminov.</p>
+    <p>Zaradi večjega obiska so lahko nekateri termini rezervirani za dogovorjene skupine. Ostale člane prosimo, da svoje obiske prilagodite temu.</p>
     <br>
     <table class="table-condensed table-bordered">
         <tr>
@@ -160,16 +169,16 @@
         <tr>
             <td><strong>18:00</strong></td>
             <td class="urnik-on"></td>
+            <td class="urnik-zasedeno"></td>
             <td class="urnik-rekreacija"></td>
-            <td class="urnik-on"></td>
             <td class="urnik-on"></td>
             <td class="urnik-on"></td>
         </tr>
         <tr>
             <td><strong>19:00</strong></td>
             <td class="urnik-on"></td>
+            <td class="urnik-zasedeno"></td>
             <td class="urnik-rekreacija"></td>
-            <td class="urnik-on"></td>
             <td class="urnik-on"></td>
             <td class="urnik-on"></td>
         </tr>
