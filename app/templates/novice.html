@@ -21,8 +21,10 @@
         {% include "_post.html" %}
     {% endfor %}
 
-    <div class="pagination">
-        {{ macros.pagination_widget(pagination, ".novice") }}
+    <div class="container-fluid text-center">
+        <div class="pagination">
+            {{ macros.pagination_widget(pagination, ".novice") }}
+        </div>
     </div>
 
 {% endblock %}

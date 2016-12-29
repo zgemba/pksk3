@@ -34,7 +34,7 @@
         {% if post.has_images %}
             {% for image in post.images %}
                 <figure class="figure">
-                    <img class="figure-img img-fluid center-block" src="{{ image.file }}"
+                    <img class="figure-img img-fluid center-block img-responsive" src="{{ image.file }}"
                          alt="thumb">
                     <figcaption class="figure-caption text-center">{{ image.comment }}</figcaption>
                 </figure>
