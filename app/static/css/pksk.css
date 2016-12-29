@@ -8,6 +8,10 @@
     color: grey;
 }
 
+.koledar_hidden {
+    display: none;
+}
+
 .koledar_od_do {
     font-size: small;
 }
@@ -24,4 +28,10 @@
     color: white;
     padding-left: 8px;
     padding-right: 8px;
+}
+
+.objavil {
+    font-size: small;
+    font-weight: bold;
+    color: black;
 }

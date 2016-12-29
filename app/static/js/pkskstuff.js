@@ -5,9 +5,19 @@
 function unhide(id) {
     var elem = $(id);
     elem.show();
-    elem.addClass("small");
  }
 
+function unhide_tooltip(id) {
+    unhide(id);
+    elem.addClass("small");
+}
+
+function unhide_c_events() {
+    var elems = $("tr.koledar_hidden");
+    elems.show();
+    elems.addClass("koledar_expired");
+    $("#prikazi_minule").hide();
+}
 
 function confirmAction(actionUrl, prompt) {
     if (confirm(prompt)) {
