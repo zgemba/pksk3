@@ -1,18 +1,20 @@
 import os
 import random
-from datetime import datetime, date
-from flask import render_template, redirect, url_for, abort, flash, send_from_directory, current_app, app
-from flask.ext.login import login_required, current_user
+from datetime import datetime
+
+from flask import render_template, redirect, url_for, abort, flash, send_from_directory, current_app
+from flask_login import login_required, current_user
 from sqlalchemy import desc
-from . import main
+from werkzeug.utils import secure_filename
+
 from app import db
-from ..models import User, Role, Post, PostImage, Comment, Permission, MailNotification, CalendarEvent, Guidebook
-from ..decorators import admin_required, member_required, cached
+from . import main
 from .forms import EditProfileForm, EditProfileAdminForm, DodajNovicoForm, DodajKomentarForm, EditImageForm, \
     EditGuidebookForm
-from werkzeug.utils import secure_filename
-from ..myutils import allowed_file, make_unique_filename, get_from_gdrive
+from ..decorators import admin_required, member_required, cached
 from ..email import send_template_email
+from ..models import User, Role, Post, PostImage, Comment, Permission, MailNotification, CalendarEvent, Guidebook
+from ..myutils import allowed_file, make_unique_filename, get_from_gdrive
 
 
 @main.route("/")
@@ -394,15 +396,17 @@ def koledar(year=0):
         year = datetime.now().year
     start = datetime(year, 1, 1)
     end = datetime(year + 1, 1, 1)
-    events = CalendarEvent.query.filter(start <= CalendarEvent.start).filter(CalendarEvent.start <= end).order_by(
+    events = CalendarEvent.query.filter(start <= CalendarEvent.start).filter(CalendarEvent.start < end).order_by(
         CalendarEvent.start).all()
+
+    expired = [e for e in events if e.expired]
 
     next_events = CalendarEvent.query.filter(CalendarEvent.start >= end).order_by(
         CalendarEvent.start).count()
     prev_events = CalendarEvent.query.filter(CalendarEvent.start < start).order_by(
         CalendarEvent.start).count()
     return render_template("koledar.html", events=events, year=year, prev_events=prev_events,
-                           next_events=next_events)
+                           next_events=next_events, expired=expired)
 
 
 @main.route('/delete_event/')  # za js route

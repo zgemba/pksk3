@@ -11,7 +11,6 @@
         <h1>Koledar dogodkov za leto {{ year }}</h1>
     </div>
 
-    <h3> Minuli dogodki so označeni <span class="koledar_expired">sivo</span></h3>
     <div class="container">
         {% if prev_events > 0 %}
             <nav>
@@ -22,16 +21,22 @@
                 </ul>
             </nav>
         {% endif %}
+
         {% if events %}
             <table class="table table-bordered">
+
+                {% if expired %}
+                    <a href="#" onclick="unhide_c_events()" id="prikazi_minule">Prikaži minule dogodke za to leto</a>
+                {% endif %}
+
                 {% for event in events %}
-                    <tr {% if event.expired %} class="koledar_expired" {% endif %}>
+
+                    <tr {% if event.expired %} class="koledar_hidden" {% endif %}>
                         <td style="width:10%; vertical-align: middle">
                             <p class="koledar_datum">
                                 {{ event.start | datetimeformat("%d.%m.") }}
                             </p>
                         </td>
-
                         <td style="width:20%"><p class="koledar_title">{{ event.title }}</p>
                             {% if event.end %}
                                 <p class="koledar_od_do">Od: {{ event.start | datetimeformat("%d.%m %H:%M") }}<br>
@@ -60,17 +65,17 @@
                     </tr>
                 {% endfor %}
             </table>
-            {% if next_events > 0 %}
-                <nav>
-                    <ul class="pager">
-                        <li class="next"><a href="{{ url_for('main.koledar', year=year+1) }}">Naslednje leto
-                            <span aria-hidden="true">&rarr;</span></a></li>
-                    </ul>
-                </nav>
-            {% endif %}
 
         {% else %}
             <h3>Za to obdobje v koledarju ni dogodkov!</h3>
+        {% endif %}
+        {% if next_events > 0 %}
+            <nav>
+                <ul class="pager">
+                    <li class="next"><a href="{{ url_for('main.koledar', year=year+1) }}">Naslednje leto
+                        <span aria-hidden="true">&rarr;</span></a></li>
+                </ul>
+            </nav>
         {% endif %}
     </div>
 {% endblock %}
