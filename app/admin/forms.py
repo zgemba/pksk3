@@ -1,9 +1,11 @@
-from flask.ext.pagedown.fields import PageDownField
-from flask.ext.wtf import Form
-from wtforms import StringField, SubmitField, TextAreaField, IntegerField, DateTimeField, BooleanField
-from wtforms.validators import InputRequired, Optional
 from datetime import datetime
+
+from flask_pagedown.fields import PageDownField
+from flask_wtf import Form
+from wtforms import StringField, SubmitField, TextAreaField, IntegerField, DateTimeField, BooleanField
 from wtforms import ValidationError
+from wtforms.validators import InputRequired, Optional
+
 from ..models import Post
 
 
@@ -37,6 +39,12 @@ class AddEventForm(Form):
         if field.data:
             if not Post.query.get(field.data):
                 raise ValidationError("Ta post ne obstahja")
+
+
+class EditEventForm(AddEventForm):
+    start = DateTimeField("Začetek (d.m.l u:m)", validators=[InputRequired()], format="%d.%m.%Y %H:%M")
+    end = DateTimeField("Konec (d.m.l u:m)", validators=[Optional()], format="%d.%m.%Y %H:%M")
+
 
 
 class AddTagForm(Form):

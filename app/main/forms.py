@@ -1,11 +1,12 @@
-from flask.ext.wtf import Form
+from flask_login import current_user
+from flask_pagedown.fields import PageDownField
+from flask_wtf import FlaskForm as Form
 from wtforms import StringField, TextAreaField, BooleanField, SelectField, \
     SubmitField, FileField, DateTimeField
-from wtforms.validators import InputRequired, Length, Email, Regexp
 from wtforms import ValidationError
+from wtforms.validators import InputRequired, Length, Email, Regexp
+
 from ..models import Role, User
-from flask_login import current_user
-from flask.ext.pagedown.fields import PageDownField
 from ..myutils import allowed_file
 
 

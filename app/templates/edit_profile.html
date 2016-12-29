@@ -7,7 +7,7 @@
     <div class="page-header">
         <h1>Urejanje profila</h1>
     </div>
-    <p>Sliko za profil si lahko nastaviš e s pomočjo <a href="http://www.gravatar.com">storitve Gravatar</a>. Ta mora biti povezana na email naslov, s katerim si se registriral tukaj.</p>
+    <p>Sliko za profil si lahko nastaviš s pomočjo <a href="http://www.gravatar.com">storitve Gravatar</a>. Ta mora biti povezana na email naslov, s katerim si se registriral tukaj.</p>
     <br>
     <div class="container-fluid">
         <form enctype="multipart/form-data" action="" method="post" name="edit_profile" class="form-horizontal"
@@ -15,7 +15,7 @@
             {{ form.hidden_tag() }}
 
             <div class="form-group">
-                <label for="name" class="col-sm-2 control-label">Ime in priimek <a onclick="unhide('#name-tt')"
+                <label for="name" class="col-sm-2 control-label">Ime in priimek <a onclick="unhide_tooltip('#name-tt')"
                                                                                    href="#"><span
                         class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></a>:</label>
 
@@ -29,7 +29,7 @@
             </div>
 
             <div class="form-group">
-                <label for="username" class="col-sm-2 control-label">Vzdevek <a onclick="unhide('#username-tt')"
+                <label for="username" class="col-sm-2 control-label">Vzdevek <a onclick="unhide_tooltip('#username-tt')"
                                                                                 href="#"><span
                         class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></a>:</label>
 
@@ -43,7 +43,7 @@
             </div>
 
             <div class="form-group">
-                <label for="about_me" class="col-sm-2 control-label">O meni <a onclick="unhide('#about_me-tt')"
+                <label for="about_me" class="col-sm-2 control-label">O meni <a onclick="unhide_tooltip('#about_me-tt')"
                                                                                href="#"><span
                         class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></a>:</label>
 
@@ -58,7 +58,7 @@
 
             <div class="form-group">
                 <label for="notify_news" class="col-sm-2 control-label">Obveščaj me o <a
-                        onclick="unhide('#notify-tt')"
+                        onclick="unhide_tooltip('#notify-tt')"
                         href="#"><span
                         class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></a>:</label>
 

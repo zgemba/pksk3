@@ -1,12 +1,29 @@
+BROKEN:
+glyphicons (serviraj novi bootstrap lokalno?)
+
+FIX:
+dependancies?
+remote gdrive getter?
+
+FEATURE:
 short body za novice
-vodnički
 tags n:m
 deploy iz git
 slike gradnje bolderce
-paging news
+image zoomer
+
+
+NAREJENO (ni deployano):
+
 
 
 NAREJENO (je deployano!):
+21.12.2016 če editiram koledar event za preteklost je treba izklopit validator!
+21.12.2016 paging news
+21.12.2016 markup previrew pri editu koledarja, naredi ročno formo, ne wtf-quickform
+21.12.2016 prikaz eventov po letih, če je med dvema eventoma več kot eno leto ne dela link na naslednjega
+17.11.2016 koledar markdown prikaz
+1.11.2016 vodnički
 20.6. cookie-bar
 x.5. koledar
 24.4. popis materiala

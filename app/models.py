@@ -1,14 +1,16 @@
-import os
-from datetime import datetime, timedelta, date
 import hashlib
-from flask.ext.login import UserMixin, AnonymousUserMixin
-from sqlalchemy import desc
-from werkzeug.security import generate_password_hash, check_password_hash
-from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
-from flask import current_app, request
-from markdown import markdown
+import os
+from datetime import datetime, timedelta
+
 import bleach
 from PIL import Image
+from flask import current_app, request
+from flask_login import UserMixin, AnonymousUserMixin
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from markdown import markdown
+from sqlalchemy import desc
+from werkzeug.security import generate_password_hash, check_password_hash
+
 from . import db, login_manager
 
 
@@ -458,8 +460,9 @@ class CalendarEvent(db.Model):
 
     @staticmethod
     def on_changed_body(target, value, oldvalue, initiator):
-        allowed_tags = ['a', 'abbr', 'acronym', 'b', 'code', 'em', 'i',
-                        'strong']
+        allowed_tags = ['a', 'abbr', 'acronym', 'b', 'blockquote', 'code',
+                        'em', 'i', 'li', 'ol', 'pre', 'strong', 'ul',
+                        'h1', 'h2', 'h3', 'p']
         target.body_html = bleach.linkify(bleach.clean(
             markdown(value, output_format='html'),
             tags=allowed_tags, strip=True))

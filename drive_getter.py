@@ -1,11 +1,11 @@
-import os
-import sys
 import json
-import gspread
-from oauth2client.client import SignedJwtAssertionCredentials
+import os
 import pickle
+import sys
 import traceback
 
+import gspread
+from oauth2client.service_account import ServiceAccountCredentials
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 try:
@@ -17,7 +17,7 @@ try:
     json_keyfile = os.path.join(basedir, jk)
     json_key = json.load(open(json_keyfile))
     scope = ['https://spreadsheets.google.com/feeds']
-    credentials = SignedJwtAssertionCredentials(json_key['client_email'], json_key['private_key'].encode(), scope)
+    credentials = ServiceAccountCredentials.from_json_keyfile_name(json_keyfile, scope)
     gc = gspread.authorize(credentials)
     wks = gc.open_by_key(key)
     pickle.dump(wks, open(os.path.join(basedir, file), "wb"))

@@ -1,7 +1,8 @@
 import os
+
 from werkzeug.contrib.cache import SimpleCache
 
-from app.myutils import get_from_gdrive_local, get_from_gdrive_remote
+from app.myutils import get_from_gdrive_local, get_from_gdrive_remote  # , get_from_gdrive_remote
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -15,6 +16,7 @@ class Config:
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME') or "username"
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD') or "password"
     WTF_CSRF_ENABLED = True                     # a je to še potrebno?
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # Moje nastavitve za novice
     ITEMS_PER_PAGE = 10
@@ -58,6 +60,8 @@ class DevelopmentConfig(Config):
     MAIL_USE_TLS = True
     MIGRATIONS_FOLDER = os.path.join(basedir, "app/migrations")
     GDRIVE_GETTER = get_from_gdrive_local
+    BOOTSTRAP_SERVE_LOCAL = True
+    ITEMS_PER_PAGE = 3      # da testiram pager
 
 
 class DevelopmentSqliteConfig(Config):
