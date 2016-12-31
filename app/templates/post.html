@@ -1,6 +1,14 @@
 {% extends "base.html" %}
+
 {% import "bootstrap/wtf.html" as wtf %}
+
 {% block title %}PKSK - {{ post.title }} {% endblock %}
+
+{% block styles %}
+    {{ super() }}
+    <link href="/static/css/pksk.css" rel="stylesheet">
+    <link href="/static/css/lightbox.css" rel="stylesheet">
+{% endblock %}
 
 {% block page_content %}
     <div class="well">
@@ -31,16 +39,44 @@
             {{ post.body }}
         {% endif %}
 
+
+        <hr>
+
         {% if post.has_images %}
-            {% for image in post.images %}
-                <figure class="figure">
-                    <img class="figure-img img-fluid center-block img-responsive" src="{{ image.file }}"
-                         alt="thumb">
-                    <figcaption class="figure-caption text-center">{{ image.comment }}</figcaption>
-                </figure>
-                <br>
-            {% endfor %}
+            <div class="lb_row">
+                {% for image in post.images %}
+                    <div class="lb_column">
+                        <figure class="figure">
+                            <img class="figure-img img-fluid img-responsive lb_hover-shadow" src="{{ image.thumbnail }}"
+                                 onclick="openModal();currentSlide({{ loop.index }})" alt="{{ image.comment }}">
+                            <figcaption class="figure-caption small">{{ image.comment }}</figcaption>
+                        </figure>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div id="myModal" class="lb_modal">
+                <span class="lb_close cursor" onclick="closeModal()">&times;</span>
+                <div class="lb_modal-content">
+
+                    {% for image in post.images %}
+                        <div class="lb_mySlides">
+                            <div class="lb_numbertext">{{ loop.index }} / {{ loop.length }}</div>
+                            <img src="{{ image.file }}" style="width:100%" alt="{{ image.comment }}">
+                        </div>
+                    {% endfor %}
+
+                    <a class="lb_prev" onclick="plusSlides(-1)">&#10094;</a>
+                    <a class="lb_next" onclick="plusSlides(1)">&#10095;</a>
+
+                    <div class="lb_caption-container">
+                        <p id="lb_caption"></p>
+                    </div>
+                </div>
+            </div>
         {% endif %}
+
+        <hr>
 
         <h2>Komentarji ({{ post.comments_count }})</h2>
         <a name="comments"></a>
@@ -63,4 +99,5 @@
 {% block scripts %}
     {{ super() }}
     <script src="/static/js/pkskstuff.js"></script>
+    <script src="/static/js/lightbox.js"></script>
 {% endblock %}
