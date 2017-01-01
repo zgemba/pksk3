@@ -3,10 +3,24 @@
  */
 
 function openModal() {
+    document.onkeydown = function (e) {
+        switch (e.keyCode) {
+            case 27:            // esc
+                closeModal();
+                break;
+            case 37:            // <-
+                plusSlides(-1);
+                break;
+            case 39:            // ->
+                plusSlides(1);
+                break;
+        }
+    };
     document.getElementById('myModal').style.display = "block";
 }
 
 function closeModal() {
+    document.onkeydown = undefined;
     document.getElementById('myModal').style.display = "none";
 }
 
