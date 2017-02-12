@@ -39,7 +39,6 @@
             {{ post.body }}
         {% endif %}
 
-
         <hr>
 
         {% if post.has_images %}
@@ -47,7 +46,7 @@
                 {% for image in post.images %}
                     <div class="lb_column">
                         <figure class="figure">
-                            <img class="figure-img img-fluid img-responsive lb_hover-shadow" src="{{ image.thumbnail }}"
+                            <img class="figure-img img-fluid img-responsive lb_hover-shadow lb_image-thumbnail" src="{{ image.thumbnail }}"
                                  onclick="openModal();currentSlide({{ loop.index }})" alt="{{ image.comment }}">
                             <figcaption class="figure-caption small">{{ image.comment }}</figcaption>
                         </figure>
@@ -62,7 +61,7 @@
                     {% for image in post.images %}
                         <div class="lb_mySlides">
                             <div class="lb_numbertext">{{ loop.index }} / {{ loop.length }}</div>
-                            <img src="{{ image.file }}" style="width:100%" alt="{{ image.comment }}">
+                            <img src="{{ image.file }}" class="lb_modal-image center-block" alt="{{ image.comment }}">
                         </div>
                     {% endfor %}
 

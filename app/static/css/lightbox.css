@@ -30,12 +30,27 @@
 /* Modal Content */
 .lb_modal-content {
   position: relative;
-  background-color: #fefefe;
+  background-color: black;
   margin: auto;
   padding: 0;
-  width: 90%;
-  max-width: 1200px;
+  max-width: 800px;
 }
+
+
+.lb_modal-image {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 800px;
+}
+
+
+.lb_image-thumbnail {
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
 
 /* The Close Button */
 .lb_close {

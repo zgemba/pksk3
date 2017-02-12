@@ -28,7 +28,7 @@ class Config:
     UPLOAD_FOLDER = "/static/img/upload"
     BANNER_FOLDER = os.path.join(basedir, "app/static/img/banner")
     ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
-    MAX_UPLOAD_DIMENSION = 1200
+    MAX_UPLOAD_DIMENSION = 800
     THUMBNAIL_SIZE = 225
     HEADLINE_SIZE = 500
 
