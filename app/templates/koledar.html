@@ -22,6 +22,13 @@
             </nav>
         {% endif %}
 
+        <p class="filterbox">Filtriraj oznake:
+            {% for tag in tags %}
+                <input type="checkbox" checked id="cb_{{ tag }}" onclick="filter_change('{{ tag }}')">
+                <span class="tag">{{ tag }}</span>
+            {% endfor %}
+        </p>
+
         {% if events %}
             <table class="table table-bordered">
 
@@ -31,7 +38,8 @@
 
                 {% for event in events %}
 
-                    <tr {% if event.expired %} class="koledar_hidden" {% endif %}>
+                    <tr class='{% for tag in event.tags %}{{ tag }} {% endfor %}{% if event.expired %} koledar_hidden{% endif %}'>
+
                         <td style="width:10%; vertical-align: middle">
                             <p class="koledar_datum">
                                 {{ event.start | datetimeformat("%d.%m.") }}
@@ -54,8 +62,14 @@
                                        href="#">
                                         <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
                                 </div>
-                                <br>
                             {% endif %}
+
+                            {% for tag in event.tags %}
+                                <span class="tag">{{ tag }}</span>
+                            {% endfor %}
+
+                            <hr>
+
                             {{ event.body_html | safe }}
                             {% if event.post_id %}
                                 <br>

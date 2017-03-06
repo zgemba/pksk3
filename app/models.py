@@ -456,7 +456,8 @@ class CalendarEvent(db.Model):
     body = db.Column(db.Text)
     body_html = db.Column(db.Text)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    post_id = db.Column(db.Integer)  # ker je opcionalno polje ne bom delal ORM
+    post_id = db.Column(db.Integer)         # ker je opcionalno polje ne bom delal ORM
+    _tags_string = db.Column(db.Text)       # ^ enako
 
     @staticmethod
     def on_changed_body(target, value, oldvalue, initiator):
@@ -477,16 +478,33 @@ class CalendarEvent(db.Model):
             cutoff = datetime(year=now.year, month=now.month, day=now.day) + timedelta(days=1)
             return self.start < cutoff
 
+    @property
+    def tags(self):
+        if self._tags_string:
+            return self._tags_string.split(",")
+        else:
+            return []
+
+    @tags.setter
+    def tags(self, value):
+        self._tags_string = ",".join(value)
+
+
 db.event.listen(CalendarEvent.body, 'set', CalendarEvent.on_changed_body)
 
 
 #
-# tags
+# tags,
+# TODO: tagsi gredo lahko k eventom ali k postom? je to treba ločiti, da ne bo podvajanja/prekrivanja???
 #
 
 class Tag(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String(30))
+
+    @staticmethod
+    def all_tags():
+        return sorted([tag.text for tag in Tag.query.all()], key=lambda tag: tag.lower())
 
 
 #

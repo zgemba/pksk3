@@ -1,7 +1,11 @@
-¸{% extends "base.html" %}
+{% extends "base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
-
 {% block title %}PKSK - Dodaj dogodek v koledar{% endblock %}
+{% block styles %}
+    {{ super() }}
+    <link href="/static/css/pksk.css" rel="stylesheet">
+{% endblock %}
+
 
 {% block page_content %}
     <div class="page-header">
@@ -78,6 +82,15 @@
                 </div>
             </div>
 
+            <div class="form-group">
+                <label for="tags" class="col-sm-2 control-label">Oznake:</label>
+                <div class="col-sm-10">
+                    {% for tag in tags %}
+                        <input type="checkbox" name="tag_{{ tag }}" {% if tag in set_tags %} checked {% endif %}>
+                        <span class="tag">{{ tag }}</span>
+                    {% endfor %}
+                </div>
+            </div>
 
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">

@@ -46,7 +46,6 @@ class EditEventForm(AddEventForm):
     end = DateTimeField("Konec (d.m.l u:m)", validators=[Optional()], format="%d.%m.%Y %H:%M")
 
 
-
 class AddTagForm(Form):
     text = StringField("Tag", validators=[InputRequired()])
     submit = SubmitField("Shrani tag")

@@ -13,7 +13,7 @@ from .forms import EditProfileForm, EditProfileAdminForm, DodajNovicoForm, Dodaj
     EditGuidebookForm
 from ..decorators import admin_required, member_required, cached
 from ..email import send_template_email
-from ..models import User, Role, Post, PostImage, Comment, Permission, MailNotification, CalendarEvent, Guidebook
+from ..models import User, Role, Post, PostImage, Comment, Permission, MailNotification, CalendarEvent, Guidebook, Tag
 from ..myutils import allowed_file, make_unique_filename, get_from_gdrive
 
 
@@ -400,13 +400,14 @@ def koledar(year=0):
         CalendarEvent.start).all()
 
     expired = [e for e in events if e.expired]
+    all_tags = Tag.all_tags()
 
     next_events = CalendarEvent.query.filter(CalendarEvent.start >= end).order_by(
         CalendarEvent.start).count()
     prev_events = CalendarEvent.query.filter(CalendarEvent.start < start).order_by(
         CalendarEvent.start).count()
     return render_template("koledar.html", events=events, year=year, prev_events=prev_events,
-                           next_events=next_events, expired=expired)
+                           next_events=next_events, expired=expired, tags=all_tags)
 
 
 @main.route('/delete_event/')  # za js route
@@ -506,6 +507,7 @@ def edit_guidebook(id=0):
 
 @main.route('/test')
 def test():
+    return render_template("test.html");
     return redirect(url_for(".novice"))
 
 

@@ -19,6 +19,26 @@ function unhide_c_events() {
     $("#prikazi_minule").hide();
 }
 
+function filter_change(tag) {
+    var cb = $("#cb_" + tag)[0];
+    if(cb.checked) {
+        unhide_tag_events(tag);
+    }
+    else {
+        hide_tag_events(tag);
+    }
+}
+
+function unhide_tag_events(tag) {
+    var elems = $("tr." + tag);
+    elems.show();
+}
+
+function hide_tag_events(tag) {
+    var elems = $("tr." + tag);
+    elems.hide();
+}
+
 function confirmAction(actionUrl, prompt) {
     if (confirm(prompt)) {
         window.location.replace(actionUrl);
