@@ -12,12 +12,8 @@ function unhide_tooltip(id) {
     elem.addClass("small");
 }
 
-function unhide_c_events() {
-    var elems = $("tr.koledar_hidden");
-    elems.show();
-    elems.addClass("koledar_expired");
-    $("#prikazi_minule").hide();
-}
+
+// koledar
 
 function filter_change(tag) {
     var cb = $("#cb_" + tag)[0];
@@ -37,14 +33,41 @@ function unhide_tag_events(tag) {
 function hide_tag_events(tag) {
     var elems = $("tr." + tag);
     elems.hide();
+
+    $(":checked").each(function(index, elem) {
+        var tag = elem.id.replace("cb_", "");
+        unhide_tag_events(tag);
+    });
 }
+
+function expired_change() {
+    var cb = $("#cb_expired")[0];
+    if (cb.checked) {
+        hide_expired_events();
+    }
+    else {
+        unhide_expired_events();
+    }
+}
+
+function hide_expired_events() {
+    var elems = $("tr.koledar_expired");
+    elems.hide();
+}
+
+function unhide_expired_events() {
+    var elems = $("tr.koledar_expired");
+    elems.show();
+}
+
+
+// ostalo
 
 function confirmAction(actionUrl, prompt) {
     if (confirm(prompt)) {
         window.location.replace(actionUrl);
     }
 }
-
 
 function addImageField() {
     var elem = $("#expander");

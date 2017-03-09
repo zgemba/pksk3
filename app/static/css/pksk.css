@@ -1,14 +1,14 @@
 .koledar_datum {
     font-size: x-large;
-    font-family: 'Lucida Grande', 'Lucida Sans Unicode', 'Geneva', 'Verdana', sans-serif;
-}
-
-.koledar_expired {
-    color: grey;
+    font-family: 'Lucida Grande', 'Lucida Sans Unicode', 'Geneva', 'Verdana', 'sans-serif';
 }
 
 .koledar_hidden {
     display: none;
+}
+
+.koledar_expired {
+    color: grey;
 }
 
 .koledar_od_do {
@@ -38,4 +38,8 @@
 .filterbox {
     padding: 5px;
     border: thin solid lightgray;
+}
+
+.checkbox_tagfilter {
+    color: black;
 }

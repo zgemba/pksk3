@@ -24,21 +24,26 @@
 
         <p class="filterbox">Filtriraj oznake:
             {% for tag in tags %}
-                <input type="checkbox" checked id="cb_{{ tag }}" onclick="filter_change('{{ tag }}')">
+                <input type="checkbox" class="checkbox_tagfilter" checked id="cb_{{ tag }}"
+                       onclick="filter_change('{{ tag }}')">
                 <span class="tag">{{ tag }}</span>
             {% endfor %}
+            <br>
+            <input type="checkbox" id="cb_expired" onclick="expired_change()">
+            Skrij minule dogodke za to leto
         </p>
+
 
         {% if events %}
             <table class="table table-bordered">
 
-                {% if expired %}
-                    <a href="#" onclick="unhide_c_events()" id="prikazi_minule">Prikaži minule dogodke za to leto</a>
-                {% endif %}
-
                 {% for event in events %}
 
-                    <tr class='{% for tag in event.tags %}{{ tag }} {% endfor %}{% if event.expired %} koledar_hidden{% endif %}'>
+                    <tr class='
+
+
+
+                            {% for tag in event.tags %}{{ tag }} {% endfor %}{% if event.expired %}koledar_expired{% endif %}'>
 
                         <td style="width:10%; vertical-align: middle">
                             <p class="koledar_datum">
