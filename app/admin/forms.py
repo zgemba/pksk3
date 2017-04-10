@@ -6,7 +6,7 @@ from wtforms import StringField, SubmitField, TextAreaField, IntegerField, DateT
 from wtforms import ValidationError
 from wtforms.validators import InputRequired, Optional
 
-from ..models import Post
+from ..models import Post, Tag
 
 
 # custom validator
@@ -50,3 +50,7 @@ class AddTagForm(Form):
     text = StringField("Tag", validators=[InputRequired()])
     submit = SubmitField("Shrani tag")
 
+    def validate_text(form, field):
+        if field.data:
+            if field.data in Tag.all_tags():
+                raise ValidationError("Ta tag že obstaja!")
