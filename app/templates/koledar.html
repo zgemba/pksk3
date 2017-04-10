@@ -39,11 +39,7 @@
 
                 {% for event in events %}
 
-                    <tr class='
-
-
-
-                            {% for tag in event.tags %}{{ tag }} {% endfor %}{% if event.expired %}koledar_expired{% endif %}'>
+                    <tr class='{% for tag in event.tags %}{{ tag }} {% endfor %}{% if event.expired %}koledar_expired{% endif %}'>
 
                         <td style="width:10%; vertical-align: middle">
                             <p class="koledar_datum">
