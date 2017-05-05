@@ -107,4 +107,10 @@ class EditGuidebookForm(Form):
     publisher = StringField("Založba", validators=[InputRequired()])
     year_published = DateTimeField("Leto izdaje", validators=[InputRequired()], format="%Y")
     description = TextAreaField("Opis")
+    owner = SelectField("Lastnik", coerce=int)
     submit = SubmitField("Shrani spremembe")
+
+    def __init__(self, *args, **kwargs):
+        super(EditGuidebookForm, self).__init__(*args, **kwargs)
+        self.owner.choices = [(user.id, user.username)
+                              for user in User.query.order_by(User.username).all()]

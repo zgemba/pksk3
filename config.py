@@ -44,8 +44,10 @@ class Config:
 
     # produkcija to overrida z memcachedd?
     CACHE = SimpleCache()
-
     BASEDIR = basedir
+
+    # Username za lastnika klubskih vodničkov
+    ADMIN_USERNAME = "Admin"
 
     @staticmethod
     def init_app(app):
@@ -62,6 +64,7 @@ class DevelopmentConfig(Config):
     GDRIVE_GETTER = get_from_gdrive_local
     BOOTSTRAP_SERVE_LOCAL = True
     ITEMS_PER_PAGE = 3      # da testiram pager
+    ADMIN_USERNAME = "Blaž"
 
 
 class DevelopmentSqliteConfig(Config):

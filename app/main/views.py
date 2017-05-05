@@ -431,8 +431,10 @@ def delete_event(id):
 @login_required
 @member_required
 def guidebooks():
-    books = Guidebook.query.order_by(Guidebook.title)
-    return render_template("guidebooks.html", books=books)
+    admin = User.query.filter_by(username=current_app.config["ADMIN_USERNAME"]).first()
+    c_books = Guidebook.query.filter_by(owner=admin).order_by(Guidebook.title).all()
+    books = Guidebook.query.filter(Guidebook.owner != admin).order_by(Guidebook.title)
+    return render_template("guidebooks.html", books=books, c_books=c_books)
 
 
 @main.route("/vodnicek/<int:id>")
@@ -463,17 +465,17 @@ def delete_guidebook(id):
 @member_required
 def edit_guidebook(id=0):
     form = EditGuidebookForm()
+    owner = current_user._get_current_object()
 
     if form.validate_on_submit():
         if id == 0:  # dodajam
-            owner = current_user._get_current_object()
             new_book = Guidebook(title=form.title.data, author=form.author.data, publisher=form.publisher.data,
                                  year_published=form.year_published.data, description=form.description.data,
                                  owner=owner)
             db.session.add(new_book)
             db.session.commit()
 
-        else:
+        else:  # editiram
             book = Guidebook.query.get_or_404(id)
             if current_user.can(Permission.ADMINISTER) or book.owner == current_user:
                 book.title = form.title.data
@@ -481,6 +483,7 @@ def edit_guidebook(id=0):
                 book.year_published = form.year_published.data
                 book.publisher = form.publisher.data
                 book.description = form.description.data
+                book.owner = User.query.get_or_404(form.owner.data)
                 db.session.commit()
             else:
                 flash("Urejate lahko samo svoje vodničke")
@@ -494,8 +497,9 @@ def edit_guidebook(id=0):
         form.year_published.data = book.year_published
         form.publisher.data = book.publisher
         form.description.data = book.description
+        owner = book.owner
 
-    return render_template("guidebook_edit.html", form=form)
+    return render_template("guidebook_edit.html", form=form, owner=owner)
 
 
 ############################################################################################
@@ -507,8 +511,7 @@ def edit_guidebook(id=0):
 
 @main.route('/test')
 def test():
-    return render_template("test.html");
-    return redirect(url_for(".novice"))
+    return render_template("test.html")
 
 
 @main.route('/privacy')

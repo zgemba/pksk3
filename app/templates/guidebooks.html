@@ -8,11 +8,25 @@
 
 {% block page_content %}
     <div class="page-header">
-        <h1>Vodnički in skice</h1>
+        <h1>Vodnički, skice in druga literatura</h1>
     </div>
 
     <div class="container">
+        <h2>Klubski vodnički</h2>
+        <p>Shranjeni so v sobi za sestanke na bolderju. Za izposojo se obrni na Bogdana ali Blaža.</p>
+        <table class="table table-bordered table-responsive">
+            <th>Naslov</th>
+            <th>Leto izdaje</th>
+            {% for book in c_books %}
+                <tr>
+                    <td><a href="{{ url_for('main.guidebook', id=book.id) }}">{{ book.title }}</a></td>
+                    <td>{{ book.year_published | datetimeformat('%Y') }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+
         <h2>Vodnički na voljo za izposojo pri članih</h2>
+        <p>Za izposojo se obrni na lastnika.</p>
         <table class="table table-bordered table-responsive">
             <th>Naslov</th>
             <th>Leto izdaje</th>
