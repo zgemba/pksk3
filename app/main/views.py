@@ -472,6 +472,11 @@ def edit_guidebook(id=0):
             new_book = Guidebook(title=form.title.data, author=form.author.data, publisher=form.publisher.data,
                                  year_published=form.year_published.data, description=form.description.data,
                                  owner=owner)
+
+            # preverim override ownerja, če je klubska knjiga
+            if form.clubs.data:
+                new_book.owner = User.query.filter_by(username=current_app.config["ADMIN_USERNAME"]).first()
+
             db.session.add(new_book)
             db.session.commit()
 
@@ -484,6 +489,9 @@ def edit_guidebook(id=0):
                 book.publisher = form.publisher.data
                 book.description = form.description.data
                 book.owner = User.query.get_or_404(form.owner.data)
+                # preverim override ownerja, če je klubska knjiga
+                if form.clubs.data:
+                    book.owner = User.query.filter_by(username=current_app.config["ADMIN_USERNAME"]).first()
                 db.session.commit()
             else:
                 flash("Urejate lahko samo svoje vodničke")
@@ -498,6 +506,8 @@ def edit_guidebook(id=0):
         form.publisher.data = book.publisher
         form.description.data = book.description
         owner = book.owner
+        if owner.username == current_app.config["ADMIN_USERNAME"]:
+            form.clubs.data = True
 
     return render_template("guidebook_edit.html", form=form, owner=owner)
 

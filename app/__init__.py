@@ -5,7 +5,7 @@ from flask_mail import Mail
 from flask_moment import Moment
 from flask_pagedown import PageDown
 from flask_sqlalchemy import SQLAlchemy
-from flask_wtf.csrf import CsrfProtect
+from flask_wtf import CSRFProtect
 from werkzeug.contrib.cache import SimpleCache
 
 from config import config
@@ -14,7 +14,7 @@ from .filters import datetimeformat
 bootstrap = Bootstrap()
 mail = Mail()
 db = SQLAlchemy()
-csrf = CsrfProtect()
+csrf = CSRFProtect()
 moment = Moment()
 pagedown = PageDown()
 cache = SimpleCache()

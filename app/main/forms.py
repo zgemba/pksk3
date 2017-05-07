@@ -108,6 +108,7 @@ class EditGuidebookForm(Form):
     year_published = DateTimeField("Leto izdaje", validators=[InputRequired()], format="%Y")
     description = TextAreaField("Opis")
     owner = SelectField("Lastnik", coerce=int)
+    clubs = BooleanField("Klubski vodniček")
     submit = SubmitField("Shrani spremembe")
 
     def __init__(self, *args, **kwargs):
