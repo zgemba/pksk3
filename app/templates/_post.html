@@ -42,7 +42,7 @@
         {% endif %}
     <figure class="figure">
         <a href="{{ url_for('main.post', id=post.id) }}">
-            <img class="figure-img img-fluid img-rounded"
+            <img class="figure-img img-fluid img-rounded img-responsive"
                     {% if post.headline_image %}
                  src="{{ post.headline_image }}"
                     {% else %}
