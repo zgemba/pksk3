@@ -2,7 +2,7 @@ from flask_login import current_user
 from flask_pagedown.fields import PageDownField
 from flask_wtf import FlaskForm as Form
 from wtforms import StringField, TextAreaField, BooleanField, SelectField, \
-    SubmitField, FileField, DateTimeField
+    SubmitField, FileField, DateTimeField, RadioField
 from wtforms import ValidationError
 from wtforms.validators import InputRequired, Length, Email, Regexp
 
@@ -95,6 +95,9 @@ class EditImageForm(Form):
     delete = BooleanField("Izbriši sliko")
     headline = BooleanField("Uporabi za veliko naslovnico")
     submit = SubmitField("Shrani spremembe")
+    rotate_cw = BooleanField("Rotiraj desno")
+    rotate_ccw = BooleanField("Rotiraj levo")
+    rotate = RadioField("Rotiraj", choices=[(1, "Levo"), (2, "Desno")])
 
     def validate_img(self, field):
         if field.data.filename != "" and not allowed_file(field.data.filename):

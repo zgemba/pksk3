@@ -314,6 +314,13 @@ def edit_image(id):
             image.remove()  # zbrišem staro sliko ne glede na kljukico
             db.session.delete(image)
             save_image(form.img, post, form.comment.data)
+
+        if form.rotate_ccw.data:
+            image.rotate_ccw()
+
+        if form.rotate_cw.data:
+            image.rotate_cw()
+
         db.session.commit()
         return redirect(url_for("main.edit_post", id=post.id))
 

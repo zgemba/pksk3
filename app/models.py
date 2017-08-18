@@ -426,6 +426,22 @@ class PostImage(db.Model):
             # naredi symlink originala, da prihranim disk
             os.symlink(self._file_on_disk, new_name)
 
+    def rotate_cw(self):
+        im = Image.open(self._file_on_disk)
+        new = im.rotate(-90, expand=True)
+        new.save(self._file_on_disk)
+        self._create_thumbnail()
+        if self.is_headline:
+            self._create_headline()
+
+    def rotate_ccw(self):
+        im = Image.open(self._file_on_disk)
+        new = im.rotate(90, expand=True)
+        new.save(self._file_on_disk)
+        self._create_thumbnail()
+        if self.is_headline:
+            self._create_headline()
+
     def remove(self):
         try:
             os.remove(self._file_on_disk)
