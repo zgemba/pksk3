@@ -315,10 +315,9 @@ def edit_image(id):
             db.session.delete(image)
             save_image(form.img, post, form.comment.data)
 
-        if form.rotate_ccw.data:
+        if form.rotate.data == 1:
             image.rotate_ccw()
-
-        if form.rotate_cw.data:
+        elif form.rotate.data == 2:
             image.rotate_cw()
 
         db.session.commit()

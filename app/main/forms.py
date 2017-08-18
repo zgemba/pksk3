@@ -97,7 +97,7 @@ class EditImageForm(Form):
     submit = SubmitField("Shrani spremembe")
     rotate_cw = BooleanField("Rotiraj desno")
     rotate_ccw = BooleanField("Rotiraj levo")
-    rotate = RadioField("Rotiraj", choices=[(1, "Levo"), (2, "Desno")])
+    rotate = RadioField("Rotiraj", coerce=int, choices=[(1, "Levo"), (2, "Desno")])
 
     def validate_img(self, field):
         if field.data.filename != "" and not allowed_file(field.data.filename):
