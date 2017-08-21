@@ -1,5 +1,6 @@
 import hashlib
 import os
+import stat
 from datetime import datetime, timedelta
 
 import bleach
@@ -344,6 +345,8 @@ class PostImage(db.Model):
         self.post = post
         self.is_headline = is_headline
 
+        self._correct_orientation_from_exif()
+
         if self._is_oversize:
             self._resize(current_app.config["MAX_UPLOAD_DIMENSION"], self._file_on_disk)
 
@@ -390,6 +393,17 @@ class PostImage(db.Model):
         im = Image.open(self._file_on_disk)
         return max(im.size) > max_size
 
+    def _correct_orientation_from_exif(self):
+        im = Image.open(self._file_on_disk)
+        if hasattr(im, "_getexif"):             # samo jpeg, to sicer preveri že upload?
+            tags = im._getexif()
+            if tags is not None:
+                transforms = {3: Image.ROTATE_180, 6: Image.ROTATE_270, 8: Image.ROTATE_90}
+                orientation = tags[274]         # 274 je orientacija
+                if orientation in transforms.keys():
+                    self._rotate(transforms[orientation])
+        im.close()
+
     def _resize(self, max_dim, new_filename):
         im = Image.open(self._file_on_disk)
         (px, py) = im.size
@@ -426,21 +440,33 @@ class PostImage(db.Model):
             # naredi symlink originala, da prihranim disk
             os.symlink(self._file_on_disk, new_name)
 
+    @property
+    def _unique_filename(self):
+        (name, ext) = os.path.splitext(self.filename)
+        name = name.split("-")[0]
+        mtime = os.stat(self._file_on_disk)[stat.ST_MTIME]
+        return "{0}-{1}{2}".format(name, str(mtime), ext)
+
     def rotate_cw(self):
-        im = Image.open(self._file_on_disk)
-        new = im.rotate(-90, expand=True)
-        new.save(self._file_on_disk)
+        self._rotate(Image.ROTATE_270)
         self._create_thumbnail()
         if self.is_headline:
             self._create_headline()
 
     def rotate_ccw(self):
-        im = Image.open(self._file_on_disk)
-        new = im.rotate(90, expand=True)
-        new.save(self._file_on_disk)
+        self._rotate(Image.ROTATE_90)
         self._create_thumbnail()
         if self.is_headline:
             self._create_headline()
+
+    def _rotate(self, rotation):
+        im = Image.open(self._file_on_disk)
+        new = im.transpose(rotation)
+        new_name = self._unique_filename
+        new_file_on_disk = os.path.join(current_app.config["UPLOAD_SAVE_FOLDER"], new_name)
+        new.save(new_file_on_disk)
+        self.remove()
+        self.filename = new_name
 
     def remove(self):
         try:
@@ -472,8 +498,8 @@ class CalendarEvent(db.Model):
     body = db.Column(db.Text)
     body_html = db.Column(db.Text)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    post_id = db.Column(db.Integer)         # ker je opcionalno polje ne bom delal ORM
-    _tags_string = db.Column(db.Text)       # ^ enako
+    post_id = db.Column(db.Integer)  # ker je opcionalno polje ne bom delal ORM
+    _tags_string = db.Column(db.Text)  # ^ enako
 
     @staticmethod
     def on_changed_body(target, value, oldvalue, initiator):
@@ -540,4 +566,3 @@ class Guidebook(db.Model):
     @staticmethod
     def last_added():
         return Guidebook.query.order_by(desc(Guidebook.id)).first()
-
