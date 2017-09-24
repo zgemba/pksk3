@@ -29,9 +29,9 @@
                     <a href={{ url_for("main.edit_profile_admin", id=user.id) }}><span class="glyphicon glyphicon-edit"
                                                                                        data-toggle="tooltip"
                                                                                        title="Popravi uporabnika"></span></a>
-                    <a onclick="confirmDeleteUser({{ user.id }}, '{{ user.username }}')" href="#"><span
-                            class="glyphicon glyphicon-trash" data-toggle="tooltip"
-                            title="Briši uporabnika"></span></a>
+                    <a onclick="confirmAction('{{ url_for("admin.delete_user", id=user.id) }}', 'Potrdi brisanje uporabnika {{ user.username }}')"
+                       href="#">
+                        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
                 </td>
             </tr>
         {% endfor %}
