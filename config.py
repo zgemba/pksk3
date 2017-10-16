@@ -15,7 +15,7 @@ class Config:
     EMAIL_SENDER = "info@pksk.si"
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME') or "username"
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD') or "password"
-    WTF_CSRF_ENABLED = True                     # a je to še potrebno?
+    WTF_CSRF_ENABLED = True  # a je to še potrebno?
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # Moje nastavitve za novice
@@ -63,13 +63,14 @@ class DevelopmentConfig(Config):
     MIGRATIONS_FOLDER = os.path.join(basedir, "app/migrations")
     GDRIVE_GETTER = get_from_gdrive_local
     BOOTSTRAP_SERVE_LOCAL = True
-    ITEMS_PER_PAGE = 3      # da testiram pager
+    ITEMS_PER_PAGE = 3  # da testiram pager
     ADMIN_USERNAME = "Blaž"
 
 
 class DevelopmentSqliteConfig(Config):
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = os.environ.get("DEV_DATABASE_URI") or "sqlite:///" + os.path.join(basedir, "db-devel.sqlite")
+    SQLALCHEMY_DATABASE_URI = os.environ.get("DEV_DATABASE_URI") or "sqlite:///" + os.path.join(basedir,
+                                                                                                "db-devel.sqlite")
     MAIL_SERVER = 'smtp.googlemail.com'
     MAIL_PORT = 587
     MAIL_USE_TLS = True
@@ -78,7 +79,8 @@ class DevelopmentSqliteConfig(Config):
 
 class TestingConfig(Config):
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = os.environ.get("TEST_DATABASE_URI") or "sqlite:///" + os.path.join(basedir, "db-test.sqlite")
+    SQLALCHEMY_DATABASE_URI = os.environ.get("TEST_DATABASE_URI") or "sqlite:///" + os.path.join(basedir,
+                                                                                                 "db-test.sqlite")
     GDRIVE_GETTER = get_from_gdrive_local
 
 
@@ -108,8 +110,9 @@ class ProductionConfig(Config):
         app.logger.addHandler(mail_handler)
 
         log_file = os.path.join(basedir, 'log', '') + 'pksk.log'
-        file_handler = RotatingFileHandler(log_file, "a", 1*1024*1024, 10)
-        file_handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'))
+        file_handler = RotatingFileHandler(log_file, "a", 1 * 1024 * 1024, 10)
+        file_handler.setFormatter(
+            logging.Formatter('%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'))
         file_handler.setLevel(logging.ERROR)
         app.logger.addHandler(file_handler)
 
