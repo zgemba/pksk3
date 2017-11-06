@@ -10,7 +10,6 @@ short body za novice
 tags n:m
 deploy iz git
 slike gradnje bolderce
-image zoomer
 
 
 NAREJENO (ni deployano):
@@ -18,6 +17,9 @@ NAREJENO (ni deployano):
 
 
 NAREJENO (je deployano!):
+5.10.2017 image zoomer kaže napačno število slik x/y, za 1 je narobe?
+9.2017 brisanje uporabnike, ne kliče se pravi js
+image zoomer
 21.12.2016 če editiram koledar event za preteklost je treba izklopit validator!
 21.12.2016 paging news
 21.12.2016 markup previrew pri editu koledarja, naredi ročno formo, ne wtf-quickform
