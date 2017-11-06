@@ -61,7 +61,7 @@
                     {% for image in post.images %}
                         <div class="lb_mySlides">
                             <div class="lb_numbertext">{{ loop.index }} / {{ post.images.count() }}</div>
-                            <img src="{{ image.file }}" class="img-responsive center-block" alt="{{ image.comment }}">
+                            <img data-src="{{ image.file }}" src="/static/img/loading.gif" class="img-responsive center-block" alt="{{ image.comment }}">
                         </div>
                     {% endfor %}
 

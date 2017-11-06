@@ -1,5 +1,7 @@
 /**
  * Created by blaz on 29.12.2016.
+ *
+ * zelo rahlo bazira na nekem najdenem lightbox pluginu
  */
 
 function openModal() {
@@ -25,7 +27,6 @@ function closeModal() {
 }
 
 var slideIndex = 1;
-showSlides(slideIndex);
 
 function plusSlides(n) {
     showSlides(slideIndex += n);
@@ -48,6 +49,13 @@ function showSlides(n) {
     for (i = 0; i < slides.length; i++) {
         slides[i].style.display = "none";
     }
-    slides[slideIndex - 1].style.display = "block";
-    captionText.innerHTML = slides[slideIndex - 1].getElementsByTagName("IMG")[0].alt;
+    var slide = slides[slideIndex - 1];
+    slide.style.display = "block";                      // najprej je loadnig gif
+    var img = slide.getElementsByTagName("IMG")[0];
+    var data = img.attributes["data-src"].value;
+    if (data) {
+        img.src = data;
+        img.attributes["data-src"] = "";
+    }
+    captionText.innerHTML = slide.getElementsByTagName("IMG")[0].alt;
 }
