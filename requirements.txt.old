@@ -2,16 +2,16 @@ Flask
 Flask-Bootstrap
 Flask-Login
 Flask-Mail
-Flask-Migrate
+Flask-Migrat
 Flask-Moment
 Flask-PageDown
 Flask-SQLAlchemy
-Flask-Script
+Flask-Scrip
 Flask-WTF
 ForgeryPy
 Jinja2
 Mako
-Markdown
+Markdow
 MarkupSafe
 Pillow
 SQLAlchemy
@@ -40,4 +40,4 @@ requests
 rsa
 six
 visitor
-webencodings
+webencoding

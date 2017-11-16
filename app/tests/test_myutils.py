@@ -1,5 +1,6 @@
-import unittest
 import os
+import unittest
+
 from app import create_app
 from app.myutils import allowed_file, make_unique_filename
 
