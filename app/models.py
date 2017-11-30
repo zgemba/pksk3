@@ -102,7 +102,9 @@ class User(UserMixin, db.Model):
         if self.email is not None and self.avatar_hash is None:
             self.avatar_hash = hashlib.md5(
                 self.email.encode('utf-8')).hexdigest()
-        self.username = self.email.split("@")[0]  # nastavim na nek default
+
+        if self.email is not None:
+            self.username = self.email.split("@")[0]  # nastavim na nek default
 
     @property
     def password(self):

@@ -19,7 +19,7 @@ class MyUtilstestCase(unittest.TestCase):
         self.assertTrue(allowed_file("test.jpg"))
 
     def test_make_unique_filename(self):
-        filename = os.path.join(self.app.config["UPLOAD_FOLDER"], "testing.tst")
+        filename = os.path.join(self.app.config["UPLOAD_SAVE_FOLDER"], "testing.tst")
         file = open(filename, "w")
         file.close()
         new_filename = make_unique_filename(filename)
