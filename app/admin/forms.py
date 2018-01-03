@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from flask_pagedown.fields import PageDownField
-from flask_wtf import Form
+from flask_wtf import FlaskForm as Form
 from wtforms import StringField, SubmitField, TextAreaField, IntegerField, DateTimeField, BooleanField
 from wtforms import ValidationError
 from wtforms.validators import InputRequired, Optional
