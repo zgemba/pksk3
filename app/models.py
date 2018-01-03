@@ -270,10 +270,11 @@ class Post(db.Model):
     def on_changed_body(target, value, oldvalue, initiator):
         allowed_tags = ['a', 'abbr', 'acronym', 'b', 'blockquote', 'code',
                         'em', 'i', 'li', 'ol', 'pre', 'strong', 'ul',
-                        'h1', 'h2', 'h3', 'p']
+                        'h1', 'h2', 'h3', 'p', 'img']
+        allowed_attributes = ['src', 'alt']
         target.body_html = bleach.linkify(bleach.clean(
             markdown(value, output_format='html'),
-            tags=allowed_tags, strip=True))
+            tags=allowed_tags, strip=True, attributes=allowed_attributes))
 
     @property
     def has_images(self):
@@ -397,11 +398,11 @@ class PostImage(db.Model):
 
     def _correct_orientation_from_exif(self):
         im = Image.open(self._file_on_disk)
-        if hasattr(im, "_getexif"):             # samo jpeg, to sicer preveri že upload?
+        if hasattr(im, "_getexif"):  # samo jpeg, to sicer preveri že upload?
             tags = im._getexif()
             if tags is not None:
                 transforms = {3: Image.ROTATE_180, 6: Image.ROTATE_270, 8: Image.ROTATE_90}
-                orientation = tags[274]         # 274 je orientacija
+                orientation = tags[274]  # 274 je orientacija
                 if orientation in transforms.keys():
                     self._rotate(transforms[orientation])
         im.close()
@@ -507,10 +508,11 @@ class CalendarEvent(db.Model):
     def on_changed_body(target, value, oldvalue, initiator):
         allowed_tags = ['a', 'abbr', 'acronym', 'b', 'blockquote', 'code',
                         'em', 'i', 'li', 'ol', 'pre', 'strong', 'ul',
-                        'h1', 'h2', 'h3', 'p']
+                        'h1', 'h2', 'h3', 'p', 'img']
+        allowed_attributes = ['src', 'alt']
         target.body_html = bleach.linkify(bleach.clean(
             markdown(value, output_format='html'),
-            tags=allowed_tags, strip=True))
+            tags=allowed_tags, strip=True, attributes=allowed_attributes))
 
     @property
     def expired(self):
