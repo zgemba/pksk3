@@ -31,7 +31,7 @@ class AddEventForm(Form):
     submit = SubmitField("Shrani dogodek")
 
     def validate_end(form, field):
-        if field.data:
+        if field.data and form.start.data:
             if form.start.data > form.end.data:
                 raise ValidationError("Dogodek se ne more končati pred začetkom")
 
