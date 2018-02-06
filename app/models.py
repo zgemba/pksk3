@@ -402,9 +402,10 @@ class PostImage(db.Model):
             tags = im._getexif()
             if tags is not None:
                 transforms = {3: Image.ROTATE_180, 6: Image.ROTATE_270, 8: Image.ROTATE_90}
-                orientation = tags[274]  # 274 je orientacija
-                if orientation in transforms.keys():
-                    self._rotate(transforms[orientation])
+                if 274 in tags.keys():  # 274 je orientacija
+                    orientation = tags[274]  # pozor, image lahko da ima tage, ni nujno, da ima orientacijo!
+                    if orientation in transforms.keys():
+                        self._rotate(transforms[orientation])
         im.close()
 
     def _resize(self, max_dim, new_filename):
