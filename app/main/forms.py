@@ -4,7 +4,7 @@ from flask_wtf import FlaskForm as Form
 from wtforms import StringField, TextAreaField, BooleanField, SelectField, \
     SubmitField, FileField, DateTimeField, RadioField
 from wtforms import ValidationError
-from wtforms.validators import InputRequired, Length, Email, Regexp
+from wtforms.validators import InputRequired, Length, Email, Regexp, Optional
 
 from ..models import Role, User
 from ..myutils import allowed_file
@@ -63,6 +63,7 @@ class EditProfileAdminForm(Form):
 class DodajNovicoForm(Form):
     title = StringField("Naslov", validators=[InputRequired(message="Obvezno vpiši naslov")])
     body = PageDownField("Vsebina", validators=[InputRequired(message="Obvezno vpiši vsebino")])
+    author = SelectField("Avtor", validators=[Optional()], coerce=int)
 
     # 3 potencialne slik, ni nujno, da se vse pojavijo
     img1 = FileField("Slika 1")
@@ -73,6 +74,11 @@ class DodajNovicoForm(Form):
 
     img3 = FileField("Slika 3")
     img3comment = StringField("Opis")
+
+    def __init__(self, *args, **kwargs):
+        super(DodajNovicoForm, self).__init__(*args, **kwargs)
+        self.author.choices = [(user.id, user.username)
+                               for user in User.query.order_by(User.username).all()]
 
     def validate_all(self, extra_validators=None):
         # tu naredi neko superduper validacijo čez prisotna polja?

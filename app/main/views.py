@@ -155,6 +155,7 @@ def post(id):
 def edit_post(id):
     editing = False
     images = None
+    author = None
     form = DodajNovicoForm()
     if form.validate_on_submit():
         title = form.title.data
@@ -186,6 +187,8 @@ def edit_post(id):
             p = Post.query.get_or_404(id)
             p.body = body
             p.title = title
+            p.author = User.query.filter_by(id=form.author.data).first()
+
             # imamo nove slike?
             for i in range(1, 4):
                 image_field = eval("form.img{}".format(str(i)))
@@ -205,12 +208,14 @@ def edit_post(id):
         p = Post.query.get_or_404(id)
         form.title.data = p.title
         form.body.data = p.body
+        form.author.data = p.author.id
         if p.has_images:
             images = p.images.all()
         else:
             images = None
+        author = p.author.username
 
-    return render_template("edit_post.html", form=form, edit=editing, images=images, post=p)
+    return render_template("edit_post.html", form=form, edit=editing, images=images, post=p, author=author)
 
 
 def save_image(field, pst, comment):

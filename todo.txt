@@ -3,9 +3,9 @@ glyphicons (serviraj novi bootstrap lokalno?)
 
 FIX:
 dependancies?
-remote gdrive getter?
 
 FEATURE:
+checkbox za obvestilo o novem postu, admin only
 short body za novice
 tags n:m
 deploy iz git
@@ -15,8 +15,8 @@ slike gradnje bolderce
 NAREJENO (ni deployano):
 
 
-
 NAREJENO (je deployano!):
+7.2.2018 možnost spreminjanja avtorja posta, admin only
 5.10.2017 image zoomer kaže napačno število slik x/y, za 1 je narobe?
 9.2017 brisanje uporabnike, ne kliče se pravi js
 image zoomer

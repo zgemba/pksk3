@@ -15,6 +15,17 @@
               role="form">
             {{ form.hidden_tag() }}
             <input type="hidden" name="ImageCount" value="1">
+
+            {% if edit == True and current_user.can(Permission.ADMINISTER) %}
+                <div class="form-group">
+                    <label for="avtor" class="col-sm-2 control-label">Avtor:</label>
+                    <div id="body" class="col-sm-10">
+                        {{ form.author(id="avtor") }}
+                        ({{ author }})
+                    </div>
+                </div>
+            {% endif %}
+
             <div class="form-group">
                 <label for="title" class="col-sm-2 control-label">Naslov:</label>
 
