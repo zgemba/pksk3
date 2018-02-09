@@ -64,9 +64,11 @@ class DodajNovicoForm(Form):
     title = StringField("Naslov", validators=[InputRequired(message="Obvezno vpiši naslov")])
     body = PageDownField("Vsebina", validators=[InputRequired(message="Obvezno vpiši vsebino")])
     author = SelectField("Avtor", validators=[Optional()], coerce=int)
+    notify = BooleanField("Pošlji obvestolo uporabnikom", default=True)
 
     # 3 potencialne slik, ni nujno, da se vse pojavijo
     img1 = FileField("Slika 1")
+
     img1comment = StringField("Opis")
 
     img2 = FileField("Slika 2")

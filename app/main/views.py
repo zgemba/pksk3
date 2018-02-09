@@ -176,12 +176,13 @@ def edit_post(id):
                 except AttributeError:  # če ni polja v formi, pol dobim AttributeError in kar ignoriram
                     pass
 
-            # obvestim še tiste, ki so naročeni na maile o novih postih
-            emails = User.users_to_notify(MailNotification.NEWS)
-            if current_user.email in emails:  # samemu sebi ne pošiljamo mailov!
-                emails.remove(current_user.email)
-            for email in emails:
-                send_template_email([email], "Nova objava", "admin/email/new_post", post=p)
+            if form.notify.data:
+                # obvestim še tiste, ki so naročeni na maile o novih postih
+                emails = User.users_to_notify(MailNotification.NEWS)
+                if current_user.email in emails:  # samemu sebi ne pošiljamo mailov!
+                    emails.remove(current_user.email)
+                for email in emails:
+                    send_template_email([email], "Nova objava", "admin/email/new_post", post=p)
 
         else:  # editiram obstoječega
             p = Post.query.get_or_404(id)
