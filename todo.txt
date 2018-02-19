@@ -12,10 +12,11 @@ ločen loader za slike, ki jih je možno inlineat v poste
 tags n:m
 deploy iz git
 
-
 NAREJENO (ni deployano):
 
 NAREJENO (je deployano!):
+18.1. 2018 stran za prikaz vadnin
+13.2.2018 linkify pri markdownu!
 13.2.2018 slike gradnje bolderce
 9.2.2018 checkbox za obvestilo o novem postu, samo pri novem, ne pri editu
 7.2.2018 možnost spreminjanja avtorja posta, admin only

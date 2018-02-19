@@ -2,7 +2,7 @@ import os
 import unittest
 
 from app import create_app
-from app.myutils import allowed_file, make_unique_filename
+from app.myutils import allowed_file, make_unique_filename, get_from_gdrive
 
 
 class MyUtilstestCase(unittest.TestCase):
@@ -26,3 +26,13 @@ class MyUtilstestCase(unittest.TestCase):
         self.assertTrue(new_filename != filename)
         os.remove(filename)
 
+    def test_gdrive_getter(self):
+        sheet = get_from_gdrive("1KnfSG-v6JwLDW0vFe9E_hgDi17PfsZTPk7LuiCL9ybU")
+        if sheet:
+            if type(sheet) is int:
+                self.fail("Error acessing gdrive ".format(str(sheet)))
+
+            vals = sheet.sheet1.get_all_values()
+            self.assertEqual(vals[0], ['Datum', 'Ime in priimek', 'Opombe', 'Preveril'])
+        else:
+            self.fail("Error acessing gdrive ")

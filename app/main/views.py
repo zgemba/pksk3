@@ -1,3 +1,4 @@
+import locale
 import os
 import random
 from datetime import datetime
@@ -351,6 +352,35 @@ def razpored_ciscenja():
         vals = sheet.sheet1.get_all_values()[1:]  # odstranim header row
         return render_template("razpored_ciscenja.html", members=vals)
     else:
+        flash("Napaka pri pridobivanju podatkov")
+        return redirect(url_for(".novice"))
+
+
+@main.route("/vadnine")
+@login_required
+@member_required
+@cached()
+def vadnine():
+    sheet = get_from_gdrive("1Uc5V78YZ-dQMQw0w2iZY0b2lnES0tW3IW3SKGCBA_8o")
+    if sheet:
+        if type(sheet) is int:
+            flash("Napaka pri pridobivanju podatkov: {}".format(sheet))
+            return redirect(url_for(".novice"))
+
+        data = sheet.sheet1.get_all_values()
+
+        header = data[:1][0]  # odrežem header
+        header = [header[0]] + header[1:][0::2]  # podatki po letih so v vsaki DRUGI koloni
+
+        data = data[1:]
+        vals = [[v[0]] + v[1:][0::2] for v in data]  # podatki po letih so v vsaki DRUGI koloni
+
+        locale.setlocale(locale.LC_COLLATE, "sl_SI.utf8")  # sortiram po priimku in imenu, naš razpored
+        vals = sorted(vals, key=lambda v: locale.strxfrm(v[0].split()[1] + v[0].split()[0]))
+
+        return render_template("vadnine.html", header=header, vals=vals)
+    else:
+        flash("Napaka pri pridobivanju podatkov")
         return redirect(url_for(".novice"))
 
 
