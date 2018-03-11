@@ -539,7 +539,10 @@ class CalendarEvent(db.Model):
 
     @property
     def is_multiday(self):
-        return datetime.date(self.start) != datetime.date(self.end)
+        if self.end:
+            return datetime.date(self.start) != datetime.date(self.end)
+        else:
+            return False
 
 
 db.event.listen(CalendarEvent.body, 'set', CalendarEvent.on_changed_body)
