@@ -537,6 +537,10 @@ class CalendarEvent(db.Model):
         if value not in self.tags:
             self._tags_string = ",".join(value)
 
+    @property
+    def is_multiday(self):
+        return datetime.date(self.start) != datetime.date(self.end)
+
 
 db.event.listen(CalendarEvent.body, 'set', CalendarEvent.on_changed_body)
 
