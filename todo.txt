@@ -1,6 +1,7 @@
 BROKEN:
 glyphicons (serviraj novi bootstrap lokalno?)
 
+
 FIX:
 dependancies?
 testi za post in slike
@@ -15,6 +16,7 @@ deploy iz git
 NAREJENO (ni deployano):
 
 NAREJENO (je deployano!):
+11.3.2018 koledar naj prikazuje dva datuma za večdnevne dogodke
 18.1. 2018 stran za prikaz vadnin
 13.2.2018 linkify pri markdownu!
 13.2.2018 slike gradnje bolderce

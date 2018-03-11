@@ -44,6 +44,10 @@
                         <td style="width:10%; vertical-align: middle">
                             <p class="koledar_datum">
                                 {{ event.start | datetimeformat("%d.%m.") }}
+                                {% if event.end %}
+                                    <br>-<br>
+                                    {{ event.end | datetimeformat("%d.%m.") }}
+                                {% endif %}
                             </p>
                         </td>
                         <td style="width:20%"><p class="koledar_title">{{ event.title }}</p>
