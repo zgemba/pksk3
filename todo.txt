@@ -1,7 +1,6 @@
 BROKEN:
 glyphicons (serviraj novi bootstrap lokalno?)
 
-
 FIX:
 dependancies?
 testi za post in slike
