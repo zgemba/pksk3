@@ -2,7 +2,7 @@ import os
 
 from werkzeug.contrib.cache import SimpleCache
 
-from app.myutils import get_from_gdrive_local, get_from_gdrive_remote  # , get_from_gdrive_remote
+from app.myutils import get_from_gdrive_local  # , get_from_gdrive_remote
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -89,7 +89,7 @@ class ProductionConfig(Config):
     MAIL_SERVER = "smtp.webfaction.com"
     MAIL_PORT = 25
     SQLALCHEMY_DATABASE_URI = os.environ.get("PRODUCTION_DATABASE_URI") or ""
-    GDRIVE_GETTER = get_from_gdrive_remote
+    GDRIVE_GETTER = get_from_gdrive_local  # po updejtu oauth2client in pycripto zdaj dela okej lokalno! \o/
 
     @classmethod
     def init_app(cls, app):
