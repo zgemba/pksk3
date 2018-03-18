@@ -44,6 +44,7 @@ def get_from_gdrive_local(key):
 
 
 def get_from_gdrive_remote(key):
+    """ DEPRECATED """
     basedir = current_app.config["BASEDIR"]
 
     # Apache SSL fookup workaround, pohandlam exit code za msgflash
