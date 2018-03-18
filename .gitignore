@@ -57,3 +57,4 @@ external_config.py
 .idea
 .vscode
 PKSK*.json
+/local_stuff/
