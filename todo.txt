@@ -10,11 +10,13 @@ short body za novice
 markdown gumbi ali vsaj help vrstica
 ločen loader za slike, ki jih je možno inlineat v poste
 tags n:m
-deploy iz git, test
+deploy iz git, database upgrade
+
 
 NAREJENO (ni deployano):
 
 NAREJENO (je deployano!):
+16.3.2018 deploy iz git, requirements
 11.3.2018 koledar naj prikazuje dva datuma za večdnevne dogodke
 18.1. 2018 stran za prikaz vadnin
 13.2.2018 linkify pri markdownu!
