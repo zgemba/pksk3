@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 import bleach
 from PIL import Image
 from flask import current_app, request
-from flask_login import UserMixin, AnonymousUserMixin, current_user
+from flask_login import UserMixin, AnonymousUserMixin
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from markdown import markdown
 from sqlalchemy import desc
@@ -89,7 +89,6 @@ class User(UserMixin, db.Model):
     comments = db.relationship('Comment', backref='author', lazy='dynamic')
     events = db.relationship('CalendarEvent', backref='author', lazy='dynamic')
     guidebooks = db.relationship('Guidebook', backref='owner', lazy='dynamic')
-    images = db.relationship('PostImage', backref='author', lazy='dynamic')
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
@@ -341,7 +340,6 @@ class PostImage(db.Model):
     comment = db.Column(db.String(200))
     post_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
     is_headline = db.Column(db.Boolean, default=False)
-    author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
     def __init__(self, filename, timestamp, comment, post, is_headline=False):
         self.filename = os.path.split(filename)[1]  # hranim samo ime fajla, ostalo dela getter automagično
@@ -349,7 +347,6 @@ class PostImage(db.Model):
         self.comment = comment
         self.post = post
         self.is_headline = is_headline
-        self.author = current_user._get_current_object()
 
         self._correct_orientation_from_exif()
 
