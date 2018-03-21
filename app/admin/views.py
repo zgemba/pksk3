@@ -1,4 +1,3 @@
-import os
 from datetime import datetime
 
 from flask import render_template, redirect, url_for, flash, current_app
@@ -18,10 +17,7 @@ from ..models import User, CalendarEvent, MailNotification, Tag
 @admin_required
 def users():
     usrs = User.query.order_by(User.id)
-    cfg = sorted(os.environ.items())
-    if cfg is None:
-        cfg = "None"
-    return render_template("admin/users.html", users=usrs, cfg=cfg)
+    return render_template("admin/users.html", users=usrs)
 
 
 @admin.route('/approve_user/<int:id>', methods=['GET', 'POST'])

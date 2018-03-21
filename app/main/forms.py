@@ -106,7 +106,7 @@ class EditImageForm(Form):
     rotate = RadioField("Rotiraj", coerce=int, choices=[(1, "Levo"), (2, "Desno")], default=0)
 
     def validate_img(self, field):
-        if field.data.filename != "" and not allowed_file(field.data.filename):
+        if field.data and field.data.filename != "" and not allowed_file(field.data.filename):
             raise ValidationError("Tip datoteke ni podprt.")
 
     def validate_rotate(self, field):

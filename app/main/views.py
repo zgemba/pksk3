@@ -189,7 +189,10 @@ def edit_post(id):
             p = Post.query.get_or_404(id)
             p.body = body
             p.title = title
-            p.author = User.query.filter_by(id=form.author.data).first()
+
+            # samo admin lahko spremeni avtorja posta
+            if current_user.can(Permission.ADMINISTER):
+                p.author = User.query.filter_by(id=form.author.data).first()
 
             # imamo nove slike?
             for i in range(1, 4):
@@ -317,7 +320,7 @@ def edit_image(id):
                 i.is_headline = False
             image.is_headline = True
 
-        if form.img.data.filename != "":
+        if form.img.data and form.img.data.filename != "":
             image.remove()  # zbrišem staro sliko ne glede na kljukico
             db.session.delete(image)
             save_image(form.img, post, form.comment.data)
