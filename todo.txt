@@ -2,20 +2,19 @@ BROKEN:
 glyphicons (serviraj novi bootstrap lokalno?)
 
 FIX:
-dependancies?
-testi za post in slike
+testi za post in slike?
 
 FEATURE:
-short body za novice
-markdown gumbi ali vsaj help vrstica
+markdown gumbi ali vsaj help vrstica + oznaka za body shortener
 ločen loader za slike, ki jih je možno inlineat v poste
 tags n:m
-deploy iz git, database upgrade
 
 
 NAREJENO (ni deployano):
+short body za novice
 
 NAREJENO (je deployano!):
+x.3.2018 deploy iz git, database upgrade
 20.2.2018 fix, edit posta, ni bilo avtorja, če editor ni bil admin
 16.3.2018 deploy iz git, requirements
 11.3.2018 koledar naj prikazuje dva datuma za večdnevne dogodke

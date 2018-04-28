@@ -261,6 +261,7 @@ class Post(db.Model):
     title = db.Column(db.String(128))
     body = db.Column(db.Text)
     body_html = db.Column(db.Text)
+    short_html = db.Column(db.Text)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     comments = db.relationship('Comment', backref='post', lazy='dynamic', cascade="save-update, merge, delete")
@@ -276,6 +277,12 @@ class Post(db.Model):
             markdown(value, output_format='html'),
             tags=allowed_tags, strip=True, attributes=allowed_attributes))
 
+        cut = value.find("[-*-]")
+        if cut != -1:
+            target.short_html = bleach.linkify(bleach.clean(
+                markdown(value[:cut], output_format='html'),
+                tags=allowed_tags, strip=True, attributes=allowed_attributes))
+
     @property
     def has_images(self):
         return self.images_count > 0
@@ -287,6 +294,10 @@ class Post(db.Model):
     @property
     def has_comments(self):
         return self.comments_count > 0
+
+    @property
+    def is_shortened(self):
+        return self.short_html is not None
 
     @property
     def comments_count(self):

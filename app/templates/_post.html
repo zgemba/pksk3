@@ -58,7 +58,10 @@
     </div>
     </div>
     {% else %}
-        {% if post.body_html %}
+        {% if post.short_html %}
+            {{ post.short_html | safe }}
+            <a href="{{ url_for("main.post", id=post.id) }}"><b>Preberi več...</b></a>
+        {% elif post.body_html %}
             {{ post.body_html | safe }}
         {% else %}
             {{ post.body }}
@@ -66,6 +69,7 @@
     {% endif %}
 
     <a href="{{ url_for("main.post", id=post.id, _anchor='comments') }}">
+        <br>
         {% if post.has_comments %}
             Komentarjev <span class="badge">{{ post.comments_count }}</span>
         {% else %}
