@@ -42,6 +42,7 @@
                     <tr class='{% for tag in event.tags %}{{ tag }} {% endfor %}{% if event.expired %}koledar_expired{% endif %}'>
 
                         <td style="width:10%; vertical-align: middle">
+                            <a name="{{ event.id }}"></a>
                             <p class="koledar_datum">
                                 {{ event.start | datetimeformat("%d.%m.") }}
                                 {% if event.is_multiday %}

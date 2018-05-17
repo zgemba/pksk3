@@ -5,6 +5,7 @@ FIX:
 testi za post in slike?
 
 FEATURE:
+anchor link za dogodke v koledarju, da gre v mail
 markdown gumbi ali vsaj help vrstica + oznaka za body shortener
 ločen loader za slike, ki jih je možno inlineat v poste
 tags n:m

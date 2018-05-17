@@ -436,7 +436,7 @@ def dokumenti():
 
 @main.route('/koledar/<int:year>')
 @main.route('/koledar')
-def koledar(year=0):
+def koledar(year=0, anchor=""):
     if year == 0:
         year = datetime.now().year
     start = datetime(year, 1, 1)
