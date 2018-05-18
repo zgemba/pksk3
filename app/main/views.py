@@ -15,7 +15,7 @@ from .forms import EditProfileForm, EditProfileAdminForm, DodajNovicoForm, Dodaj
 from ..decorators import admin_required, member_required, cached
 from ..email import send_template_email
 from ..models import User, Role, Post, PostImage, Comment, Permission, MailNotification, CalendarEvent, Guidebook, Tag
-from ..myutils import allowed_file, make_unique_filename  # , get_from_gdrive
+from ..myutils import allowed_file, make_unique_filename, get_from_gdrive
 
 
 @main.route("/")
@@ -347,8 +347,7 @@ def edit_image(id):
 @cached()
 def razpored_ciscenja():
     flash("Napaka pri pridobivanju podatkov")
-    return redirect(url_for(".novice"))
-    #    sheet = get_from_gdrive("1KnfSG-v6JwLDW0vFe9E_hgDi17PfsZTPk7LuiCL9ybU")
+    sheet = get_from_gdrive("1KnfSG-v6JwLDW0vFe9E_hgDi17PfsZTPk7LuiCL9ybU")
     if sheet:
         if type(sheet) is int:
             flash("Napaka pri pridobivanju podatkov: {}".format(sheet))
@@ -367,7 +366,6 @@ def razpored_ciscenja():
 @cached()
 def vadnine():
     flash("Napaka pri pridobivanju podatkov")
-    return redirect(url_for(".novice"))
     sheet = get_from_gdrive("1Uc5V78YZ-dQMQw0w2iZY0b2lnES0tW3IW3SKGCBA_8o")
     if sheet:
         if type(sheet) is int:
@@ -412,7 +410,6 @@ def sola():
 @cached()
 def popis_opreme():
     flash("Napaka pri pridobivanju podatkov")
-    return redirect(url_for(".novice"))
     sheet = get_from_gdrive("1_qMnVPXiHCwVLBqhHpZYrcFY6wiDCEbepKYY0uJq6DQ")
     # preveri, če je int in flashaj napako
     if sheet:

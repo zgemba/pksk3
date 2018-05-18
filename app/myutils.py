@@ -2,10 +2,9 @@ import os
 import pickle
 import subprocess
 
+import gspread
 from flask import current_app
-
-
-# from oauth2client.service_account import ServiceAccountCredentials
+from oauth2client.service_account import ServiceAccountCredentials
 
 
 def allowed_file(filename):
@@ -33,15 +32,15 @@ def get_from_gdrive(key):
     return getter(key)
 
 
-# def get_from_gdrive_local(key):
-#    basedir = current_app.config["BASEDIR"]
-#    json_keyfile = os.path.join(basedir, current_app.config["JSON_KEY_FILE"])
-#    scope = ['https://spreadsheets.google.com/feeds']
-#    credentials = ServiceAccountCredentials.from_json_keyfile_name(json_keyfile, scope)
-#
-#    gc = gspread.authorize(credentials)
-#    wks = gc.open_by_key(key)
-#    return wks
+def get_from_gdrive_local(key):
+    basedir = current_app.config["BASEDIR"]
+    json_keyfile = os.path.join(basedir, current_app.config["JSON_KEY_FILE"])
+    scope = ['https://spreadsheets.google.com/feeds']
+    credentials = ServiceAccountCredentials.from_json_keyfile_name(json_keyfile, scope)
+
+    gc = gspread.authorize(credentials)
+    wks = gc.open_by_key(key)
+    return wks
 
 
 def get_from_gdrive_remote(key):
