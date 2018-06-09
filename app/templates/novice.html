@@ -9,21 +9,45 @@
 
 {% block page_content %}
 
-    <div class="page-header">
-        <h1>Novice</h1>
-    </div>
     {% if profile_warn %}
         <h3 class="alert-danger">Prosim popravi <a href="{{ url_for('main.edit_profile') }}">tvoj profil</a> in vpiši
             mankajoče podatke. Hvala.</h3>
     {% endif %}
 
-    {% for post in posts %}
-        {% include "_post.html" %}
-    {% endfor %}
+    <div class="container-fluid">
 
-    <div class="container-fluid text-center">
-        <div class="pagination">
-            {{ macros.pagination_widget(pagination, ".novice") }}
+        <div class="row">
+            <div class="col-lg-10">
+
+                <h1>Novice</h1>
+
+                {% for post in posts %}
+                    {% include "_post.html" %}
+                {% endfor %}
+
+                <div class="container-fluid text-center">
+                    <div class="pagination">
+                        {{ macros.pagination_widget(pagination, ".novice") }}
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2">
+                <h1>Koledar</h1>
+                <div class="well">
+                    <p class="objavil center-block">Dogodki v naslednjih 30 dneh</p>
+                    {% if (calendarEvents.count() < 0) %}
+                        {% for event in calendarEvents %}
+                            <p> {{ event.start | datetimeformat("%d.%m.") }} -
+                                <a href="{{ url_for('main.koledar') }}#{{ event.id }}">{{ event.title }}</a>
+                            </p>
+                        {% endfor %}
+                    {% else %}
+                        <i>ni dogodkov</i><br>
+                    {% endif %}
+                    <br/>
+                    <a href="{{ url_for('main.koledar') }}">Celoten koledar</a>
+                </div>
+            </div>
         </div>
     </div>
 

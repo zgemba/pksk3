@@ -1,7 +1,7 @@
 import locale
 import os
 import random
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from flask import render_template, redirect, url_for, abort, flash, send_from_directory, current_app
 from flask_login import login_required, current_user
@@ -32,7 +32,14 @@ def novice(page=1):
     pw = False
     if current_user.is_authenticated:
         pw = (current_user.name is None or current_user.name.strip() == "")
-    return render_template("novice.html", posts=posts, pagination=pagination, profile_warn=pw)
+
+    now = datetime.now()
+    then = now + timedelta(days=30)
+    calendarEvents = CalendarEvent.query.filter(CalendarEvent.start > now).filter(CalendarEvent.start <= then).order_by(
+        CalendarEvent.start).limit(5)
+
+    return render_template("novice.html", posts=posts, pagination=pagination, profile_warn=pw,
+                           calendarEvents=calendarEvents)
 
 
 @main.route('/user/<user_id>')
