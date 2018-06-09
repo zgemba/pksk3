@@ -35,7 +35,7 @@
                 <h1>Koledar</h1>
                 <div class="well">
                     <p class="objavil center-block">Dogodki v naslednjih 30 dneh</p>
-                    {% if (calendarEvents.count() < 0) %}
+                    {% if (calendarEvents.count() > 0) %}
                         {% for event in calendarEvents %}
                             <p> {{ event.start | datetimeformat("%d.%m.") }} -
                                 <a href="{{ url_for('main.koledar') }}#{{ event.id }}">{{ event.title }}</a>
