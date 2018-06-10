@@ -363,7 +363,6 @@ def edit_image(id):
 @member_required
 @cached()
 def razpored_ciscenja():
-    flash("Napaka pri pridobivanju podatkov")
     sheet = get_from_gdrive("1KnfSG-v6JwLDW0vFe9E_hgDi17PfsZTPk7LuiCL9ybU")
     if sheet:
         if type(sheet) is int:
@@ -382,7 +381,6 @@ def razpored_ciscenja():
 @member_required
 @cached()
 def vadnine():
-    flash("Napaka pri pridobivanju podatkov")
     sheet = get_from_gdrive("1Uc5V78YZ-dQMQw0w2iZY0b2lnES0tW3IW3SKGCBA_8o")
     if sheet:
         if type(sheet) is int:
@@ -426,7 +424,6 @@ def sola():
 @member_required
 @cached()
 def popis_opreme():
-    flash("Napaka pri pridobivanju podatkov")
     sheet = get_from_gdrive("1_qMnVPXiHCwVLBqhHpZYrcFY6wiDCEbepKYY0uJq6DQ")
     # preveri, če je int in flashaj napako
     if sheet:
