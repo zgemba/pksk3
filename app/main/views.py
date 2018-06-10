@@ -36,10 +36,20 @@ def novice(page=1):
     now = datetime.now()
     then = now + timedelta(days=30)
     calendarEvents = CalendarEvent.query.filter(CalendarEvent.start > now).filter(CalendarEvent.start <= then).order_by(
-        CalendarEvent.start).limit(5)
+        CalendarEvent.start).limit(5).all()
+
+    count = len(calendarEvents)
+    calendarTitle = {
+        0: "Brez dogodkov",
+        1: "1 dogodek",
+        2: "2 dogodka",
+        3: "3 dogodki",
+        4: "4 dogodki"
+    }.get(count, "{0} dogodkov".format(count))
+    calendarTitle += " v naslednjih 30 dneh:"
 
     return render_template("novice.html", posts=posts, pagination=pagination, profile_warn=pw,
-                           calendarEvents=calendarEvents)
+                           calendarEvents=calendarEvents, calendarTitle=calendarTitle)
 
 
 @main.route('/user/<user_id>')

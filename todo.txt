@@ -5,16 +5,17 @@ FIX:
 testi za post in slike?
 
 FEATURE:
-anchor link za dogodke v koledarju, da gre v mail
-markdown gumbi ali vsaj help vrstica + oznaka za body shortener
 ločen loader za slike, ki jih je možno inlineat v poste
 tags n:m
 
 
 NAREJENO (ni deployano):
-short body za novice
+
 
 NAREJENO (je deployano!):
+8.6.2018 koledar za 30 dni na prvi strani
+24.5.2018 anchor link za dogodke v koledarju, da gre v mail
+20.5.2018 markdown gumbi ali vsaj help vrstica + oznaka za body shortener, short body za novice
 x.3.2018 deploy iz git, database upgrade
 20.2.2018 fix, edit posta, ni bilo avtorja, če editor ni bil admin
 16.3.2018 deploy iz git, requirements

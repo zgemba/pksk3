@@ -36,13 +36,9 @@
 
         {% if events %}
             <table class="table table-bordered">
-
                 {% for event in events %}
-
                     <tr class='{% for tag in event.tags %}{{ tag }} {% endfor %}{% if event.expired %}koledar_expired{% endif %}'>
-
                         <td style="width:10%; vertical-align: middle">
-                            <a name="{{ event.id }}"></a>
                             <p class="koledar_datum">
                                 {{ event.start | datetimeformat("%d.%m.") }}
                                 {% if event.is_multiday %}
@@ -51,7 +47,9 @@
                                 {% endif %}
                             </p>
                         </td>
-                        <td style="width:20%"><p class="koledar_title">{{ event.title }}</p>
+                        <td style="width:20%">
+                            <a name="{{ event.id }}"></a>
+                            <p class="koledar_title">{{ event.title }}</p>
                             {% if event.end %}
                                 <p class="koledar_od_do">Od: {{ event.start | datetimeformat("%d.%m %H:%M") }}<br>
                                     Do: {{ event.end | datetimeformat("%d.%m %H:%M") }}</p></td>
