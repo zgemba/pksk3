@@ -15,6 +15,7 @@
         .urnik-zasedeno {
             color: #000;
             background-color: #ffaa00;
+            text-align: center;
         }
 
         .urnik-rekreacija {
@@ -26,6 +27,11 @@
             color: #fff;
             background-color: #005500;
         }
+
+        .table-header {
+            text-align: center;
+        }
+
     </style>
     {{ super() }}
 {% endblock %}
@@ -79,11 +85,11 @@
     <table class="table-condensed table-bordered">
         <tr>
             <td width="10%"></td>
-            <th width="18%">PONEDELJEK</th>
-            <th width="18%">TOREK</th>
-            <th width="18%">SREDA</th>
-            <th width="18%">ČETRTEK</th>
-            <th width="18%">PETEK</th>
+            <th class="table-header" width="18%">PONEDELJEK</th>
+            <th class="table-header" width="18%">TOREK</th>
+            <th class="table-header" width="18%">SREDA</th>
+            <th class="table-header" width="18%">ČETRTEK</th>
+            <th class="table-header" width="18%">PETEK</th>
         </tr>
         <tr>
             <td><strong>18:00</strong></td>
@@ -160,17 +166,17 @@
     <table class="table-condensed table-bordered">
         <tr>
             <td width="10%"></td>
-            <th width="18%">PONEDELJEK</th>
-            <th width="18%">TOREK</th>
-            <th width="18%">SREDA</th>
-            <th width="18%">ČETRTEK</th>
-            <th width="18%">PETEK</th>
+            <th class="table-header" width="18%">PONEDELJEK</th>
+            <th class="table-header" width="18%">TOREK</th>
+            <th class="table-header" width="18%">SREDA</th>
+            <th class="table-header" width="18%">ČETRTEK</th>
+            <th class="table-header" width="18%">PETEK</th>
         </tr>
         <tr>
             <td><strong>18:00</strong></td>
             <td class="urnik-maybe"></td>
             <td class="urnik-maybe"></td>
-            <td class="urnik-maybe"></td>
+            <td class="urnik-zasedeno">rezervirano</td>
             <td class="urnik-on"></td>
             <td class="urnik-maybe"></td>
         </tr>
@@ -178,7 +184,7 @@
             <td><strong>19:00</strong></td>
             <td class="urnik-maybe"></td>
             <td class="urnik-maybe"></td>
-            <td class="urnik-maybe"></td>
+            <td class="urnik-zasedeno">rezervirano</td>
             <td class="urnik-on"></td>
             <td class="urnik-maybe"></td>
         </tr>
