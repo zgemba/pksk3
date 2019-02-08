@@ -68,7 +68,6 @@ class DodajNovicoForm(Form):
 
     # 3 potencialne slik, ni nujno, da se vse pojavijo
     img1 = FileField("Slika 1")
-
     img1comment = StringField("Opis")
 
     img2 = FileField("Slika 2")
