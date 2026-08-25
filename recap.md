@@ -334,13 +334,15 @@ Important limitation: Git does not protect database content or uploaded images. 
 
 ## Repository Transition
 
-Before implementation:
+Completed on 2026-08-25:
 
-1. Inspect Git status and history.
-2. Create a final snapshot commit/tag of the current legacy project.
-3. Create a replacement branch.
-4. Remove obsolete legacy files from that branch.
-5. Build the new application at the repository root.
+1. The legacy project was cleanly snapshotted at commit `acebe18`.
+2. Annotated tag `legacy-snapshot-2026-08-25` was created.
+3. Legacy application files were removed and committed as `e20c444` (`restart cleanup`) on `master`.
+4. The cleanup commit was pushed to `origin/master`.
+5. Replacement work is on branch `codex/replacement`.
+
+The legacy snapshot remains recoverable through the tag. Do not use destructive Git commands such as `git reset --hard` or `git checkout --` without explicit approval.
 
 Do not use destructive Git commands such as `git reset --hard` or `git checkout --` without explicit approval. Preserve current user changes in the legacy snapshot first.
 
@@ -348,19 +350,56 @@ The previous modernization attempt changed or added legacy files including `.git
 
 ## Next Implementation Sequence
 
-1. Inspect Git state and create the protected legacy snapshot.
-2. Create the replacement branch and root scaffold.
-3. Add app factory, configuration, extensions, blueprints, CLI, and pinned requirements.
-4. Implement models and initial migration.
-5. Implement Markdown sanitization, excerpts, slugs, authentication, and authorization.
-6. Implement admin CRUD and public routes.
-7. Add uploads, locally hosted Bootstrap, templates, security, logging, health check, sitemap, and metadata.
-8. Add the light pytest suite and Ruff configuration.
-9. Verify locally through PyCharm and Flask CLI.
-10. Add Opalstack Git setup and the explicit SSH deployment script.
-11. Provision Opalstack app, PostgreSQL, media path, and site routes.
-12. Deploy and run smoke checks.
+Completed:
+
+1. Protected the legacy project with a snapshot tag.
+2. Created `codex/replacement` and cleaned the legacy working tree.
+3. Added the Flask application factory, configuration, extensions, WSGI entry point, templates, and pinned requirements.
+4. Implemented the four MVP models and initial migration.
+5. Added a minimal home page, `/health`, smoke tests, and Ruff configuration.
+6. Configured PyCharm to use `.venv` and the `PKSK Flask` run configuration.
+7. Deployed the minimal application to Opalstack and verified it through uWSGI.
+
+Next:
+
+1. Implement Markdown sanitization, excerpts, slug generation, and reserved-slug handling.
+2. Add authentication, authorization, the `create-admin` CLI command, and login/logout.
+3. Implement public news/static-page routes and admin CRUD.
+4. Add uploads, Bootstrap assets, security headers, SEO metadata, sitemap, and robots file.
+5. Replace production SQLite with Opalstack PostgreSQL.
+6. Add the explicit SSH deployment script and deployment checks.
 
 ## Current Status
 
-Planning is complete. No replacement application code has been implemented. The next action is to inspect the current Git state and create the protected legacy snapshot before changing application files.
+The minimal replacement is live at [www.pksk.si](https://www.pksk.si).
+
+Local branch and commits:
+
+```text
+branch: codex/replacement
+311bd23 initial Flask replacement scaffold
+f16974b pin greenlet for Opalstack
+```
+
+The branch is pushed to `origin/codex/replacement`. Local Ruff and pytest checks pass (`2 passed`).
+
+PyCharm uses `/home/blaz/PycharmProjects/pksk3/.venv/bin/python` and the `PKSK Flask` run configuration.
+
+Opalstack deployment:
+
+```text
+SSH alias: ssh opal
+server: opal6.opalstack.com
+shell user: zgemba
+application: /home/zgemba/apps/pksk-ng
+project: /home/zgemba/apps/pksk-ng/project
+shared data: /home/zgemba/apps/pksk-ng/shared
+runtime: Python 3.10.21/uWSGI
+deployed commit: f16974b
+database: /home/zgemba/apps/pksk-ng/shared/app.sqlite
+media: /home/zgemba/apps/pksk-ng/shared/media/
+```
+
+The generated uWSGI configuration loads `project/wsgi.py`, uses production settings, and the app was restarted successfully. The site currently serves the minimal page and `/health` returns `{"status":"ok"}`. The generated demo `myapp/` directory remains in the Opalstack application directory but is not used.
+
+Important deployment follow-up: production is temporarily using SQLite. Provision PostgreSQL before adding real content, and then create a server-side owner-readable `.env` or equivalent uWSGI environment settings. A bare Git repository and explicit deployment script have not yet been implemented.
