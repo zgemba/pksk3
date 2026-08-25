@@ -38,10 +38,14 @@ nosetests.xml
 
 # Flask stuff, bfs
 venv/
+.venv/
 flask/
 tmp/
 apache2/
 logs/
+.env
+.env.*
+!.env.example
 Thumbs.db
 app.db
 test.db

@@ -26,8 +26,11 @@ def index():
 @main.route("/novice")
 @main.route("/novice/<int:page>")
 def novice(page=1):
-    pagination = Post.query.order_by(desc(Post.id)).paginate(page, per_page=current_app.config["ITEMS_PER_PAGE"],
-                                                             error_out=False)
+    pagination = Post.query.order_by(desc(Post.id)).paginate(
+        page=page,
+        per_page=current_app.config["ITEMS_PER_PAGE"],
+        error_out=False
+    )
     posts = pagination.items
     pw = False
     if current_user.is_authenticated:

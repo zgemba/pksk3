@@ -27,6 +27,10 @@ class MyUtilstestCase(unittest.TestCase):
         os.remove(filename)
 
     def test_gdrive_getter(self):
+        json_keyfile = os.path.join(self.app.config["BASEDIR"], self.app.config["JSON_KEY_FILE"])
+        if not self.app.config["JSON_KEY_FILE"] or not os.path.exists(json_keyfile):
+            self.skipTest("JSON_KEY_FILE is not configured")
+
         sheet = get_from_gdrive("1KnfSG-v6JwLDW0vFe9E_hgDi17PfsZTPk7LuiCL9ybU")
         if sheet:
             if type(sheet) is int:

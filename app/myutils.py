@@ -4,7 +4,7 @@ import subprocess
 
 import gspread
 from flask import current_app
-from oauth2client.service_account import ServiceAccountCredentials
+from google.oauth2.service_account import Credentials
 
 
 def allowed_file(filename):
@@ -35,8 +35,14 @@ def get_from_gdrive(key):
 def get_from_gdrive_local(key):
     basedir = current_app.config["BASEDIR"]
     json_keyfile = os.path.join(basedir, current_app.config["JSON_KEY_FILE"])
-    scope = ['https://spreadsheets.google.com/feeds']
-    credentials = ServiceAccountCredentials.from_json_keyfile_name(json_keyfile, scope)
+    if not current_app.config["JSON_KEY_FILE"] or not os.path.exists(json_keyfile):
+        return None
+
+    scopes = [
+        "https://www.googleapis.com/auth/spreadsheets.readonly",
+        "https://www.googleapis.com/auth/drive.readonly",
+    ]
+    credentials = Credentials.from_service_account_file(json_keyfile, scopes=scopes)
 
     gc = gspread.authorize(credentials)
     wks = gc.open_by_key(key)

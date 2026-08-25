@@ -5,7 +5,7 @@ import sys
 import traceback
 
 import gspread
-from oauth2client.service_account import ServiceAccountCredentials
+from google.oauth2.service_account import Credentials
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 try:
@@ -16,8 +16,11 @@ try:
     file = key
     json_keyfile = os.path.join(basedir, jk)
     json_key = json.load(open(json_keyfile))
-    scope = ['https://spreadsheets.google.com/feeds']
-    credentials = ServiceAccountCredentials.from_json_keyfile_name(json_keyfile, scope)
+    scopes = [
+        "https://www.googleapis.com/auth/spreadsheets.readonly",
+        "https://www.googleapis.com/auth/drive.readonly",
+    ]
+    credentials = Credentials.from_service_account_file(json_keyfile, scopes=scopes)
     gc = gspread.authorize(credentials)
     wks = gc.open_by_key(key)
     pickle.dump(wks, open(os.path.join(basedir, file), "wb"))
