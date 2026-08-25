@@ -39,6 +39,7 @@ nosetests.xml
 # Flask stuff, bfs
 venv/
 .venv/
+instance/
 flask/
 tmp/
 apache2/
