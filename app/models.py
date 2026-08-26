@@ -35,6 +35,10 @@ class User(UserMixin, db.Model):
     def is_admin(self):
         return self.role == "admin"
 
+    @property
+    def is_active(self):
+        return self.active
+
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 

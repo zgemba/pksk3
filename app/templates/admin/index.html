@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Upravljanje – PKSK{% endblock %}
+
+{% block content %}
+  <h1>Upravljanje strani</h1>
+  <p>Pozdravljeni, {{ current_user.name }}.</p>
+
+  <section aria-labelledby="content-overview">
+    <h2 id="content-overview">Vsebina</h2>
+    <ul>
+      <li>Novice: {{ counts.posts }} (objavljene: {{ counts.published_posts }})</li>
+      <li>Statične strani: {{ counts.pages }}</li>
+    </ul>
+    <p>Urejanje novic in strani bo dodano v naslednjem koraku.</p>
+  </section>
+
+  {% if current_user.is_admin %}
+    <section aria-labelledby="administration">
+      <h2 id="administration">Administracija</h2>
+      <ul>
+        <li>Uporabniki: {{ counts.users }}</li>
+        <li>Nastavitve strani bodo dodane v naslednjem koraku.</li>
+      </ul>
+    </section>
+  {% endif %}
+{% endblock %}

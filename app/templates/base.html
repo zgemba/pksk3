@@ -6,6 +6,24 @@
     <title>{% block title %}PKSK{% endblock %}</title>
   </head>
   <body>
+    <header>
+      <nav aria-label="Glavna navigacija">
+        <a href="{{ url_for('main.index') }}">PKSK</a>
+        {% if current_user.is_authenticated %}
+          {% if current_user.role in ('admin', 'editor') %}
+            <a href="{{ url_for('admin.index') }}">Upravljanje</a>
+          {% endif %}
+          <a href="{{ url_for('auth.logout') }}">Odjava</a>
+        {% else %}
+          <a href="{{ url_for('auth.login') }}">Prijava</a>
+        {% endif %}
+      </nav>
+    </header>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}
+        <div role="status" class="flash flash-{{ category }}">{{ message }}</div>
+      {% endfor %}
+    {% endwith %}
     <main>
       {% block content %}{% endblock %}
     </main>
