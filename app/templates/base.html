@@ -8,7 +8,11 @@
   <body>
     <header>
       <nav aria-label="Glavna navigacija">
-        <a href="{{ url_for('main.index') }}">PKSK</a>
+        <a href="{{ url_for('main.index') }}">Domov</a>
+        <a href="{{ url_for('main.news') }}">Novice</a>
+        {% for page in navigation_pages %}
+          <a href="{{ url_for('main.page', slug=page.slug) }}">{{ page.title }}</a>
+        {% endfor %}
         {% if current_user.is_authenticated %}
           {% if current_user.role in ('admin', 'editor') %}
             <a href="{{ url_for('admin.index') }}">Upravljanje</a>

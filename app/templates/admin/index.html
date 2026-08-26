@@ -12,7 +12,8 @@
       <li>Novice: {{ counts.posts }} (objavljene: {{ counts.published_posts }})</li>
       <li>Statične strani: {{ counts.pages }}</li>
     </ul>
-    <p>Urejanje novic in strani bo dodano v naslednjem koraku.</p>
+    <p><a href="{{ url_for('admin.posts') }}">Upravljaj novice</a></p>
+    <p><a href="{{ url_for('admin.pages') }}">Upravljaj statične strani</a></p>
   </section>
 
   {% if current_user.is_admin %}

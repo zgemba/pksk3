@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}{% if page %}Uredi stran{% else %}Nova stran{% endif %} – PKSK{% endblock %}
+
+{% block content %}
+  <h1>{% if page %}Uredi stran{% else %}Nova stran{% endif %}</h1>
+  {% if page %}<p>Naslov URL: <code>/{{ page.slug }}</code></p>{% endif %}
+  <form method="post">
+    {{ form.hidden_tag() }}
+    <p>
+      {{ form.title.label }}<br>
+      {{ form.title(size=60) }}
+      {% for error in form.title.errors %}<span>{{ error }}</span>{% endfor %}
+    </p>
+    <p>
+      {{ form.body.label }}<br>
+      {{ form.body(rows=18, cols=80) }}
+      {% for error in form.body.errors %}<span>{{ error }}</span>{% endfor %}
+    </p>
+    <p>{{ form.show_in_nav() }} {{ form.show_in_nav.label }}</p>
+    <p>
+      {{ form.nav_order.label }}<br>
+      {{ form.nav_order(min=0) }}
+      {% for error in form.nav_order.errors %}<span>{{ error }}</span>{% endfor %}
+    </p>
+    {{ form.save_draft() }}
+    {{ form.publish() }}
+    {% if page %}{{ form.archive() }}{% endif %}
+  </form>
+
+  {% if page %}
+    <section aria-labelledby="delete-page">
+      <h2 id="delete-page">Trajni izbris</h2>
+      <form method="post" action="{{ url_for('admin.delete_page', page_id=page.id) }}">
+        {{ delete_form.hidden_tag() }}
+        <p>{{ delete_form.confirm() }} {{ delete_form.confirm.label }}</p>
+        {{ delete_form.submit() }}
+      </form>
+    </section>
+  {% endif %}
+{% endblock %}

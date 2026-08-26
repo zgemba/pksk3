@@ -5,7 +5,21 @@
 {% block content %}
   <h1>Plezalni klub Slovenske Konjice</h1>
   <p>Nova spletna stran je v pripravi.</p>
-    <br>
-    <h2>Za plezalno šolo in treninge otrok nam pišite na <a href="mailto:plezalnasola@pksk.si">plezalnasola@pksk.si</a></h2>
-    <h2>Za ostalo v zvezi s klubom nam pišite na <a href="mailto:info@pksk.si">info@pksk.si</h2>
+
+  {% if posts %}
+    <section aria-labelledby="latest-news">
+      <h2 id="latest-news">Najnovejše novice</h2>
+      {% for post in posts %}
+        <article>
+          <h3><a href="{{ url_for('main.post', slug=post.slug) }}">{{ post.title }}</a></h3>
+          <p>{{ post.summary }}</p>
+        </article>
+      {% endfor %}
+      <p><a href="{{ url_for('main.news') }}">Vse novice</a></p>
+    </section>
+  {% endif %}
+
+  <h2>Kontakt</h2>
+  <p>Za plezalno šolo in treninge otrok nam pišite na <a href="mailto:plezalnasola@pksk.si">plezalnasola@pksk.si</a>.</p>
+  <p>Za ostalo v zvezi s klubom nam pišite na <a href="mailto:info@pksk.si">info@pksk.si</a>.</p>
 {% endblock %}

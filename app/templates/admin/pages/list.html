@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Statične strani – upravljanje PKSK{% endblock %}
+
+{% block content %}
+  <h1>Statične strani</h1>
+  <p><a href="{{ url_for('admin.new_page') }}">Dodaj stran</a></p>
+
+  {% if pages %}
+    <table>
+      <thead>
+        <tr><th>Naslov</th><th>Stanje</th><th>V navigaciji</th><th></th></tr>
+      </thead>
+      <tbody>
+        {% for page in pages %}
+          <tr>
+            <td>{{ page.title }}</td>
+            <td>{{ page.status }}</td>
+            <td>{% if page.show_in_nav %}Da ({{ page.nav_order }}){% else %}Ne{% endif %}</td>
+            <td><a href="{{ url_for('admin.edit_page', page_id=page.id) }}">Uredi</a></td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>Strani še ni.</p>
+  {% endif %}
+{% endblock %}

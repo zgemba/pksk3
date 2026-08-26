@@ -1,5 +1,5 @@
 from app.extensions import db
-from app.models import User
+from app.models import Post, StaticPage, User
 
 
 def create_user(app, *, active=True, role="editor"):
@@ -112,3 +112,103 @@ def test_administrator_sees_management_summary(client, app):
     assert response.status_code == 200
     assert "Administracija" in response.get_data(as_text=True)
     assert "Uporabniki: 1" in response.get_data(as_text=True)
+
+
+def test_editor_can_create_publish_archive_and_delete_post(client, app):
+    user_id = create_user(app)
+    client.post(
+        "/auth/login",
+        data={"email": "editor@example.com", "password": "correct horse battery"},
+    )
+
+    response = client.post(
+        "/admin/posts/new",
+        data={"title": "Čas za Šolo", "body": "## Pozdrav\n\nTo je **vsebina**.", "publish": True},
+    )
+    assert response.status_code == 302
+
+    with app.app_context():
+        post = db.session.scalar(db.select(Post).where(Post.author_id == user_id))
+        assert post.slug == "cas-za-solo"
+        assert post.status == "published"
+        assert post.published_at is not None
+        assert "<h2>Pozdrav</h2>" in post.body_html
+        post_id = post.id
+
+    response = client.post(
+        f"/admin/posts/{post_id}/edit",
+        data={"title": "Spremenjen naslov", "body": "Arhivirana vsebina", "archive": True},
+    )
+    assert response.status_code == 302
+    with app.app_context():
+        post = db.get_or_404(Post, post_id)
+        assert post.slug == "cas-za-solo"
+        assert post.status == "archived"
+
+    response = client.post(f"/admin/posts/{post_id}/delete", data={"confirm": True})
+    assert response.status_code == 302
+    with app.app_context():
+        assert db.session.get(Post, post_id) is None
+
+
+def test_post_deletion_requires_confirmation(client, app):
+    user_id = create_user(app)
+    with app.app_context():
+        post = Post(title="Osnutek", slug="osnutek", body="Vsebina", author_id=user_id)
+        db.session.add(post)
+        db.session.commit()
+        post_id = post.id
+
+    client.post(
+        "/auth/login",
+        data={"email": "editor@example.com", "password": "correct horse battery"},
+    )
+    response = client.post(f"/admin/posts/{post_id}/delete", data={})
+
+    assert response.status_code == 302
+    with app.app_context():
+        assert db.session.get(Post, post_id) is not None
+
+
+def test_editor_can_create_publish_archive_and_delete_static_page(client, app):
+    user_id = create_user(app)
+    client.post(
+        "/auth/login",
+        data={"email": "editor@example.com", "password": "correct horse battery"},
+    )
+
+    response = client.post(
+        "/admin/pages/new",
+        data={
+            "title": "O Šoli",
+            "body": "## Dobrodošli\n\nPodrobnosti.",
+            "show_in_nav": True,
+            "nav_order": 4,
+            "publish": True,
+        },
+    )
+    assert response.status_code == 302
+
+    with app.app_context():
+        page = db.session.scalar(db.select(StaticPage).where(StaticPage.author_id == user_id))
+        assert page.slug == "o-soli"
+        assert page.status == "published"
+        assert page.show_in_nav
+        assert page.nav_order == 4
+        assert "<h2>Dobrodošli</h2>" in page.body_html
+        page_id = page.id
+
+    response = client.post(
+        f"/admin/pages/{page_id}/edit",
+        data={"title": "Spremenjena stran", "body": "Arhivirana", "archive": True},
+    )
+    assert response.status_code == 302
+    with app.app_context():
+        page = db.session.get(StaticPage, page_id)
+        assert page.slug == "o-soli"
+        assert page.status == "archived"
+
+    response = client.post(f"/admin/pages/{page_id}/delete", data={"confirm": True})
+    assert response.status_code == 302
+    with app.app_context():
+        assert db.session.get(StaticPage, page_id) is None
