@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}{% if user %}Uredi uporabnika{% else %}Nov uporabnik{% endif %} – PKSK{% endblock %}
+
+{% block content %}
+  <h1>{% if user %}Uredi uporabnika{% else %}Nov uporabnik{% endif %}</h1>
+  <form method="post">
+    {{ form.hidden_tag() }}
+    {% for field in (form.email, form.username, form.name, form.role, form.active, form.password) %}
+      <p>
+        {% if field.type == 'BooleanField' %}
+          {{ field() }} {{ field.label }}
+        {% else %}
+          {{ field.label }}<br>
+          {{ field(size=50) }}
+        {% endif %}
+        {% for error in field.errors %}<span>{{ error }}</span>{% endfor %}
+      </p>
+    {% endfor %}
+    {% if user %}<p>Pustite novo geslo prazno, če ga ne želite spremeniti.</p>{% endif %}
+    {{ form.submit() }}
+  </form>
+
+  {% if user %}
+    <section aria-labelledby="delete-user">
+      <h2 id="delete-user">Trajni izbris</h2>
+      <form method="post" action="{{ url_for('admin.delete_user', user_id=user.id) }}">
+        {{ delete_form.hidden_tag() }}
+        <p>{{ delete_form.confirm() }} {{ delete_form.confirm.label }}</p>
+        {{ delete_form.submit() }}
+      </form>
+    </section>
+  {% endif %}
+{% endblock %}

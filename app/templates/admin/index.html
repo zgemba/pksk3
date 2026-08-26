@@ -21,8 +21,9 @@
       <h2 id="administration">Administracija</h2>
       <ul>
         <li>Uporabniki: {{ counts.users }}</li>
-        <li>Nastavitve strani bodo dodane v naslednjem koraku.</li>
       </ul>
+      <p><a href="{{ url_for('admin.users') }}">Upravljaj uporabnike</a></p>
+      <p><a href="{{ url_for('admin.settings') }}">Nastavitve strani</a></p>
     </section>
   {% endif %}
 {% endblock %}

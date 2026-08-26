@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import BooleanField, IntegerField, StringField, SubmitField, TextAreaField
-from wtforms.validators import DataRequired, Length, NumberRange, Optional
+from wtforms import BooleanField, PasswordField, SelectField, IntegerField, StringField, SubmitField, TextAreaField
+from wtforms.validators import DataRequired, Email, Length, NumberRange, Optional, URL
 
 
 class PostForm(FlaskForm):
@@ -25,3 +25,41 @@ class StaticPageForm(FlaskForm):
     save_draft = SubmitField("Shrani osnutek")
     publish = SubmitField("Objavi")
     archive = SubmitField("Arhiviraj")
+
+
+class SiteSettingsForm(FlaskForm):
+    site_name = StringField("Ime strani", validators=[DataRequired(), Length(max=255)])
+    site_description = TextAreaField("Opis strani", validators=[Optional()])
+    tagline = StringField("Slogan", validators=[Optional(), Length(max=255)])
+    contact_email = StringField("Kontaktni e-poštni naslov", validators=[Optional(), Email(), Length(max=255)])
+    contact_phone = StringField("Kontaktni telefon", validators=[Optional(), Length(max=80)])
+    address = TextAreaField("Naslov", validators=[Optional()])
+    facebook_url = StringField("Facebook", validators=[Optional(), URL(), Length(max=500)])
+    instagram_url = StringField("Instagram", validators=[Optional(), URL(), Length(max=500)])
+    footer_text = TextAreaField("Besedilo noge", validators=[Optional()])
+    submit = SubmitField("Shrani nastavitve")
+
+
+class UserCreateForm(FlaskForm):
+    email = StringField("E-pošta", validators=[DataRequired(), Email(), Length(max=255)])
+    username = StringField("Uporabniško ime", validators=[DataRequired(), Length(max=80)])
+    name = StringField("Ime", validators=[DataRequired(), Length(max=120)])
+    role = SelectField("Vloga", choices=[("editor", "Urednik"), ("admin", "Administrator")])
+    active = BooleanField("Aktiven", default=True)
+    password = PasswordField("Začasno geslo", validators=[DataRequired(), Length(min=8)])
+    submit = SubmitField("Ustvari uporabnika")
+
+
+class UserEditForm(FlaskForm):
+    email = StringField("E-pošta", validators=[DataRequired(), Email(), Length(max=255)])
+    username = StringField("Uporabniško ime", validators=[DataRequired(), Length(max=80)])
+    name = StringField("Ime", validators=[DataRequired(), Length(max=120)])
+    role = SelectField("Vloga", choices=[("editor", "Urednik"), ("admin", "Administrator")])
+    active = BooleanField("Aktiven")
+    password = PasswordField("Novo geslo", validators=[Optional(), Length(min=8)])
+    submit = SubmitField("Shrani uporabnika")
+
+
+class ConfirmUserDeleteForm(FlaskForm):
+    confirm = BooleanField("Razumem, da bo uporabnik trajno izbrisan.", validators=[DataRequired()])
+    submit = SubmitField("Trajno izbriši uporabnika")

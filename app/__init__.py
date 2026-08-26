@@ -24,6 +24,10 @@ def create_app(config_name=None):
 
     from app import models  # noqa: F401
 
+    @app.context_processor
+    def inject_site_settings():
+        return {"site_settings": db.session.get(models.SiteSettings, 1) or models.SiteSettings()}
+
     @login_manager.user_loader
     def load_user(user_id):
         return db.session.get(models.User, int(user_id))

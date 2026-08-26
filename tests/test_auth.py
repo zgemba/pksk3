@@ -212,3 +212,86 @@ def test_editor_can_create_publish_archive_and_delete_static_page(client, app):
     assert response.status_code == 302
     with app.app_context():
         assert db.session.get(StaticPage, page_id) is None
+
+
+def test_settings_and_user_management_are_admin_only(client, app):
+    create_user(app)
+    client.post(
+        "/auth/login",
+        data={"email": "editor@example.com", "password": "correct horse battery"},
+    )
+
+    assert client.get("/admin/settings").status_code == 403
+    assert client.get("/admin/users").status_code == 403
+
+
+def test_administrator_can_save_settings_and_manage_users(client, app):
+    admin_id = create_user(app, role="admin")
+    client.post(
+        "/auth/login",
+        data={"email": "editor@example.com", "password": "correct horse battery"},
+    )
+
+    response = client.post(
+        "/admin/settings",
+        data={
+            "site_name": "PKSK test",
+            "site_description": "Opis",
+            "contact_email": "info@example.com",
+            "footer_text": "Noga strani",
+        },
+    )
+    assert response.status_code == 302
+    assert "Noga strani" in client.get("/").get_data(as_text=True)
+
+    response = client.post(
+        "/admin/users/new",
+        data={
+            "email": "new@example.com",
+            "username": "new-editor",
+            "name": "New Editor",
+            "role": "editor",
+            "active": True,
+            "password": "a safe password",
+        },
+    )
+    assert response.status_code == 302
+    with app.app_context():
+        editor = db.session.scalar(db.select(User).where(User.email == "new@example.com"))
+        assert editor is not None
+        assert editor.check_password("a safe password")
+        editor_id = editor.id
+
+    response = client.post(f"/admin/users/{editor_id}/delete", data={"confirm": True})
+    assert response.status_code == 302
+    with app.app_context():
+        assert db.session.get(User, editor_id) is None
+        assert db.session.get(User, admin_id) is not None
+
+
+def test_last_administrator_cannot_be_disabled_or_deleted(client, app):
+    admin_id = create_user(app, role="admin")
+    client.post(
+        "/auth/login",
+        data={"email": "editor@example.com", "password": "correct horse battery"},
+    )
+
+    response = client.post(
+        f"/admin/users/{admin_id}/edit",
+        data={
+            "email": "editor@example.com",
+            "username": "editor",
+            "name": "Editor",
+            "role": "admin",
+        },
+    )
+    assert response.status_code == 200
+    assert "Zadnjega aktivnega administratorja" in response.get_data(as_text=True)
+
+    response = client.post(f"/admin/users/{admin_id}/delete", data={"confirm": True})
+    assert response.status_code == 302
+    with app.app_context():
+        admin = db.session.get(User, admin_id)
+        assert admin is not None
+        assert admin.active
+        assert admin.role == "admin"

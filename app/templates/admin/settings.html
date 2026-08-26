@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}Nastavitve strani – PKSK{% endblock %}
+
+{% block content %}
+  <h1>Nastavitve strani</h1>
+  <form method="post">
+    {{ form.hidden_tag() }}
+    {% for field in (form.site_name, form.site_description, form.tagline, form.contact_email, form.contact_phone, form.address, form.facebook_url, form.instagram_url, form.footer_text) %}
+      <p>
+        {{ field.label }}<br>
+        {% if field.type == 'TextAreaField' %}
+          {{ field(rows=3, cols=60) }}
+        {% else %}
+          {{ field(size=60) }}
+        {% endif %}
+        {% for error in field.errors %}<span>{{ error }}</span>{% endfor %}
+      </p>
+    {% endfor %}
+    {{ form.submit() }}
+  </form>
+{% endblock %}
