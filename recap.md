@@ -344,8 +344,6 @@ Completed on 2026-08-25:
 
 The legacy snapshot remains recoverable through the tag. Do not use destructive Git commands such as `git reset --hard` or `git checkout --` without explicit approval.
 
-Do not use destructive Git commands such as `git reset --hard` or `git checkout --` without explicit approval. Preserve current user changes in the legacy snapshot first.
-
 The previous modernization attempt changed or added legacy files including `.gitignore`, `README.md`, `app/`, `config.py`, `drive_getter.py`, `index.py`, `manage.py`, `requirements.txt`, `.env.example`, `wsgi.py`, and this recap. Its old tests do not validate the replacement.
 
 ## Next Implementation Sequence
@@ -362,12 +360,11 @@ Completed:
 
 Next:
 
-1. Implement Markdown sanitization, excerpts, slug generation, and reserved-slug handling.
-2. Add authentication, authorization, the `create-admin` CLI command, and login/logout.
-3. Implement public news/static-page routes and admin CRUD.
-4. Add uploads, Bootstrap assets, security headers, SEO metadata, sitemap, and robots file.
-5. Replace production SQLite with Opalstack PostgreSQL.
-6. Add the explicit SSH deployment script and deployment checks.
+1. Add authentication, authorization, the `create-admin` CLI command, and login/logout.
+2. Implement public news/static-page routes and admin CRUD, using `app/content.py`.
+3. Add uploads, Bootstrap assets, security headers, SEO metadata, sitemap, and robots file.
+4. Replace production SQLite with Opalstack PostgreSQL.
+5. Add the explicit SSH deployment script and deployment checks.
 
 ## Current Status
 
@@ -379,9 +376,10 @@ Local branch and commits:
 branch: codex/replacement
 311bd23 initial Flask replacement scaffold
 f16974b pin greenlet for Opalstack
+7a46bc7 update deployment handoff
 ```
 
-The branch is pushed to `origin/codex/replacement`. Local Ruff and pytest checks pass (`2 passed`).
+The branch is pushed to `origin/codex/replacement`. The new content-processing changes are currently uncommitted. Local Ruff and pytest checks pass (`8 passed`).
 
 PyCharm uses `/home/blaz/PycharmProjects/pksk3/.venv/bin/python` and the `PKSK Flask` run configuration.
 
@@ -403,3 +401,10 @@ media: /home/zgemba/apps/pksk-ng/shared/media/
 The generated uWSGI configuration loads `project/wsgi.py`, uses production settings, and the app was restarted successfully. The site currently serves the minimal page and `/health` returns `{"status":"ok"}`. The generated demo `myapp/` directory remains in the Opalstack application directory but is not used.
 
 Important deployment follow-up: production is temporarily using SQLite. Provision PostgreSQL before adding real content, and then create a server-side owner-readable `.env` or equivalent uWSGI environment settings. A bare Git repository and explicit deployment script have not yet been implemented.
+
+Content processing completed on 2026-08-26:
+
+- Added `app/content.py` with sanitized Markdown rendering, plain-text excerpts, Slovenian slug transliteration, reserved-slug handling, and collision suffixes.
+- Raw HTML, inline Markdown images, and unsafe link protocols are removed or escaped.
+- Added `tests/test_content.py`; the full local suite passes with 8 tests.
+- Next coding task is authentication and authorization.
