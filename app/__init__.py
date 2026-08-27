@@ -1,6 +1,7 @@
 """PKSK Flask application factory."""
 
 import os
+from logging import Formatter, StreamHandler
 
 from flask import Flask
 
@@ -26,7 +27,8 @@ def create_app(config_name=None):
 
     @app.context_processor
     def inject_site_settings():
-        return {"site_settings": db.session.get(models.SiteSettings, 1) or models.SiteSettings()}
+        settings = db.session.get(models.SiteSettings, 1)
+        return {"site_settings": settings or models.SiteSettings(site_name="PKSK")}
 
     @login_manager.user_loader
     def load_user(user_id):
@@ -40,9 +42,36 @@ def create_app(config_name=None):
     app.register_blueprint(auth)
     app.register_blueprint(admin)
 
+    configure_security(app)
+    configure_logging(app)
     register_cli_commands(app)
 
     return app
+
+
+def configure_security(app):
+    @app.after_request
+    def add_security_headers(response):
+        response.headers.setdefault("X-Content-Type-Options", "nosniff")
+        response.headers.setdefault("X-Frame-Options", "DENY")
+        response.headers.setdefault("Referrer-Policy", "strict-origin-when-cross-origin")
+        response.headers.setdefault(
+            "Content-Security-Policy",
+            "default-src 'self'; img-src 'self'; style-src 'self'; script-src 'self'; "
+            "base-uri 'self'; form-action 'self'; frame-ancestors 'none'",
+        )
+        if app.config["SECURITY_HEADERS_HSTS"]:
+            response.headers.setdefault("Strict-Transport-Security", "max-age=31536000; includeSubDomains")
+        return response
+
+
+def configure_logging(app):
+    if app.debug or app.testing or app.logger.handlers:
+        return
+    handler = StreamHandler()
+    handler.setFormatter(Formatter("%(asctime)s %(levelname)s %(name)s: %(message)s"))
+    app.logger.addHandler(handler)
+    app.logger.setLevel("INFO")
 
 
 def register_cli_commands(app):

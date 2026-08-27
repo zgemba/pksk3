@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 
-from flask import flash, redirect, render_template, url_for
+from flask import current_app, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 from sqlalchemy import func
 
@@ -17,6 +17,7 @@ from app.admin.forms import (
 from app.auth.decorators import admin_required, editor_required
 from app.content import make_excerpt, render_markdown, unique_slug
 from app.extensions import db
+from app.media import InvalidImageError, delete_post_image, save_post_image
 from app.models import Post, SiteSettings, StaticPage, User
 
 
@@ -66,6 +67,48 @@ def update_post(post, form):
     post.body_html = render_markdown(post.body)
     if post.status == "draft":
         post.slug = post_slug(post.title, post.id)
+
+
+def update_post_image(post, form):
+    uploaded_image = form.image.data
+    if not hasattr(uploaded_image, "filename"):
+        uploaded_image = None
+    if uploaded_image and uploaded_image.filename:
+        image_alt = (form.image_alt.data or "").strip()
+        if not image_alt:
+            form.image_alt.errors.append("Opis slike je obvezen, če naložite sliko.")
+            return None, None
+        try:
+            filename = save_post_image(uploaded_image, current_app.config["MEDIA_ROOT"])
+        except InvalidImageError as exc:
+            form.image.errors.append(str(exc))
+            return None, None
+
+        old_filename = post.image
+        post.image = filename
+        post.image_alt = image_alt
+        post.image_caption = (form.image_caption.data or "").strip() or None
+        return old_filename, filename
+
+    if form.remove_image.data and post.image:
+        old_filename = post.image
+        post.image = None
+        post.image_alt = None
+        post.image_caption = None
+        return old_filename, None
+
+    return None, None
+
+
+def commit_post(post, old_image, new_image=None):
+    try:
+        db.session.commit()
+    except Exception:
+        delete_post_image(new_image, current_app.config["MEDIA_ROOT"])
+        db.session.rollback()
+        raise
+    if old_image:
+        delete_post_image(old_image, current_app.config["MEDIA_ROOT"])
 
 
 def set_post_status(post, form):
@@ -143,12 +186,15 @@ def new_post():
         post = Post(
             title=form.title.data.strip(),
             slug=post_slug(form.title.data),
-            author=current_user,
+            author_id=current_user.id,
         )
         update_post(post, form)
+        old_image, new_image = update_post_image(post, form)
+        if form.errors:
+            return render_template("admin/posts/form.html", form=form, post=None)
         message = set_post_status(post, form)
         db.session.add(post)
-        db.session.commit()
+        commit_post(post, old_image, new_image)
         flash(message, "success")
         return redirect(url_for("admin.edit_post", post_id=post.id))
 
@@ -160,12 +206,21 @@ def new_post():
 @editor_required
 def edit_post(post_id):
     post = db.get_or_404(Post, post_id)
-    form = PostForm(obj=post)
+    form = PostForm()
+    if request.method == "GET":
+        form.title.data = post.title
+        form.summary.data = post.summary
+        form.body.data = post.body
+        form.image_alt.data = post.image_alt
+        form.image_caption.data = post.image_caption
     delete_form = ConfirmDeleteForm()
     if form.validate_on_submit():
         update_post(post, form)
+        old_image, new_image = update_post_image(post, form)
+        if form.errors:
+            return render_template("admin/posts/form.html", form=form, post=post, delete_form=delete_form)
         message = set_post_status(post, form)
-        db.session.commit()
+        commit_post(post, old_image, new_image)
         flash(message, "success")
         return redirect(url_for("admin.edit_post", post_id=post.id))
 
@@ -182,8 +237,10 @@ def delete_post(post_id):
         flash("Potrdite trajni izbris novice.", "error")
         return redirect(url_for("admin.edit_post", post_id=post.id))
 
+    image_filename = post.image
     db.session.delete(post)
     db.session.commit()
+    delete_post_image(image_filename, current_app.config["MEDIA_ROOT"])
     flash("Novica je trajno izbrisana.", "success")
     return redirect(url_for("admin.posts"))
 

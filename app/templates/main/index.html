@@ -1,18 +1,21 @@
 {% extends "base.html" %}
 
 {% block title %}PKSK{% endblock %}
+{% block meta_description %}{{ site_settings.site_description or 'Plezalni klub Slovenske Konjice' }}{% endblock %}
 
 {% block content %}
-  <h1>Plezalni klub Slovenske Konjice</h1>
-  <p>Nova spletna stran je v pripravi.</p>
+  <section class="p-4 p-md-5 mb-5 rounded-3 bg-body-tertiary">
+    <h1 class="display-5">Plezalni klub Slovenske Konjice</h1>
+    <p class="lead mb-0">{{ site_settings.tagline or 'Nova spletna stran je v pripravi.' }}</p>
+  </section>
 
   {% if posts %}
     <section aria-labelledby="latest-news">
       <h2 id="latest-news">Najnovejše novice</h2>
       {% for post in posts %}
-        <article>
-          <h3><a href="{{ url_for('main.post', slug=post.slug) }}">{{ post.title }}</a></h3>
-          <p>{{ post.summary }}</p>
+        <article class="mb-4">
+          <h3 class="h4"><a href="{{ url_for('main.post', slug=post.slug) }}">{{ post.title }}</a></h3>
+          <p class="mb-0">{{ post.summary }}</p>
         </article>
       {% endfor %}
       <p><a href="{{ url_for('main.news') }}">Vse novice</a></p>

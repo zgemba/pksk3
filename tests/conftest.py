@@ -1,4 +1,5 @@
 import pytest
+import shutil
 
 from app import create_app
 from app.extensions import db
@@ -12,6 +13,7 @@ def app():
         yield app
         db.session.remove()
         db.drop_all()
+    shutil.rmtree(app.config["MEDIA_ROOT"], ignore_errors=True)
 
 
 @pytest.fixture

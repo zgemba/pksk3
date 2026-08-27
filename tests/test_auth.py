@@ -1,5 +1,9 @@
+from io import BytesIO
+from pathlib import Path
+
 from app.extensions import db
 from app.models import Post, StaticPage, User
+from PIL import Image
 
 
 def create_user(app, *, active=True, role="editor"):
@@ -295,3 +299,104 @@ def test_last_administrator_cannot_be_disabled_or_deleted(client, app):
         assert admin is not None
         assert admin.active
         assert admin.role == "admin"
+
+
+def test_post_image_upload_replace_and_deletion(client, app):
+    create_user(app)
+    client.post(
+        "/auth/login",
+        data={"email": "editor@example.com", "password": "correct horse battery"},
+    )
+    image_bytes = BytesIO()
+    Image.new("RGB", (1, 1), color="white").save(image_bytes, format="PNG")
+
+    response = client.post(
+        "/admin/posts/new",
+        data={
+            "title": "Novica s sliko",
+            "body": "Vsebina",
+            "image": (BytesIO(image_bytes.getvalue()), "image.jpg"),
+            "image_alt": "Opis slike",
+            "image_caption": "Napis",
+            "save_draft": True,
+        },
+        content_type="multipart/form-data",
+    )
+    assert response.status_code == 302
+    with app.app_context():
+        post = db.session.scalar(db.select(Post).where(Post.slug == "novica-s-sliko"))
+        assert post.image is not None
+        assert post.image.endswith(".png")
+        first_image = post.image
+        assert (Path(app.config["MEDIA_ROOT"]) / "posts" / first_image).is_file()
+        post_id = post.id
+
+    assert client.get(f"/media/posts/{first_image}").status_code == 200
+
+    response = client.post(
+        f"/admin/posts/{post_id}/edit",
+        data={
+            "title": "Novica s sliko",
+            "body": "Vsebina",
+            "image": (BytesIO(image_bytes.getvalue()), "replacement.png"),
+            "image_alt": "Nov opis",
+            "save_draft": True,
+        },
+        content_type="multipart/form-data",
+    )
+    assert response.status_code == 302
+    with app.app_context():
+        post = db.session.get(Post, post_id)
+        assert post.image != first_image
+        assert not (Path(app.config["MEDIA_ROOT"]) / "posts" / first_image).exists()
+        second_image = post.image
+
+    response = client.post(
+        f"/admin/posts/{post_id}/edit",
+        data={"title": "Novica s sliko", "body": "Vsebina", "publish": True},
+    )
+    assert response.status_code == 302
+    with app.app_context():
+        post = db.session.get(Post, post_id)
+        assert post.status == "published"
+        assert post.image == second_image
+
+    client.post(f"/admin/posts/{post_id}/delete", data={"confirm": True})
+    assert not (Path(app.config["MEDIA_ROOT"]) / "posts" / second_image).exists()
+
+
+def test_post_image_requires_alt_text_and_rejects_invalid_content(client, app):
+    create_user(app)
+    client.post(
+        "/auth/login",
+        data={"email": "editor@example.com", "password": "correct horse battery"},
+    )
+
+    response = client.post(
+        "/admin/posts/new",
+        data={
+            "title": "Manjka opis",
+            "body": "Vsebina",
+            "image": (BytesIO(b"not an image"), "image.png"),
+            "save_draft": True,
+        },
+        content_type="multipart/form-data",
+    )
+    assert response.status_code == 200
+    assert "Opis slike je obvezen" in response.get_data(as_text=True)
+    with app.app_context():
+        assert db.session.scalar(db.select(Post).where(Post.slug == "manjka-opis")) is None
+
+    response = client.post(
+        "/admin/posts/new",
+        data={
+            "title": "Napačna slika",
+            "body": "Vsebina",
+            "image": (BytesIO(b"not an image"), "image.png"),
+            "image_alt": "Opis",
+            "save_draft": True,
+        },
+        content_type="multipart/form-data",
+    )
+    assert response.status_code == 200
+    assert "Datoteka ni veljavna slika" in response.get_data(as_text=True)

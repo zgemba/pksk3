@@ -1,11 +1,20 @@
 {% extends "base.html" %}
 
 {% block title %}{{ post.title }} – PKSK{% endblock %}
+{% block meta_description %}{{ post.summary }}{% endblock %}
+{% block og_title %}{{ post.title }} – {{ site_settings.site_name }}{% endblock %}
+{% block og_description %}{{ post.summary }}{% endblock %}
 
 {% block content %}
   <article>
     <h1>{{ post.title }}</h1>
     {% if post.published_at %}<p><time datetime="{{ post.published_at.isoformat() }}">{{ post.published_at.strftime('%d. %m. %Y') }}</time></p>{% endif %}
+    {% if post.image %}
+      <figure>
+        <img src="{{ url_for('main.media', filename=post.image) }}" alt="{{ post.image_alt }}">
+        {% if post.image_caption %}<figcaption>{{ post.image_caption }}</figcaption>{% endif %}
+      </figure>
+    {% endif %}
     <div>{{ post.body_html|safe }}</div>
   </article>
 {% endblock %}

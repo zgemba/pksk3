@@ -5,7 +5,7 @@
 {% block content %}
   <h1>{% if post %}Uredi novico{% else %}Nova novica{% endif %}</h1>
   {% if post %}<p>Naslov URL: <code>/novice/{{ post.slug }}</code></p>{% endif %}
-  <form method="post">
+  <form method="post" enctype="multipart/form-data">
     {{ form.hidden_tag() }}
     <p>
       {{ form.title.label }}<br>
@@ -23,6 +23,29 @@
       {{ form.body(rows=18, cols=80) }}
       {% for error in form.body.errors %}<span>{{ error }}</span>{% endfor %}
     </p>
+    <p>
+      {{ form.image.label }}<br>
+      {{ form.image(accept="image/jpeg,image/png,image/webp") }}
+      {% for error in form.image.errors %}<span>{{ error }}</span>{% endfor %}
+    </p>
+    <p>
+      {{ form.image_alt.label }}<br>
+      {{ form.image_alt(size=60) }}
+      <small>Obvezno samo, če naložite sliko.</small>
+      {% for error in form.image_alt.errors %}<span>{{ error }}</span>{% endfor %}
+    </p>
+    <p>
+      {{ form.image_caption.label }}<br>
+      {{ form.image_caption(size=60) }}
+      {% for error in form.image_caption.errors %}<span>{{ error }}</span>{% endfor %}
+    </p>
+    {% if post and post.image %}
+      <figure>
+        <img src="{{ url_for('main.media', filename=post.image) }}" alt="{{ post.image_alt }}">
+        {% if post.image_caption %}<figcaption>{{ post.image_caption }}</figcaption>{% endif %}
+      </figure>
+      <p>{{ form.remove_image() }} {{ form.remove_image.label }}</p>
+    {% endif %}
     {{ form.save_draft() }}
     {{ form.publish() }}
     {% if post %}{{ form.archive() }}{% endif %}

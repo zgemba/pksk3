@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block title %}Strani ni – PKSK{% endblock %}
+
+{% block content %}
+  <h1>Strani ni mogoče najti</h1>
+  <p>Naslov morda ni pravilen ali pa je bila stran odstranjena.</p>
+  <p><a href="{{ url_for('main.index') }}">Nazaj na začetno stran</a></p>
+{% endblock %}

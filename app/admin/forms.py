@@ -1,5 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import BooleanField, PasswordField, SelectField, IntegerField, StringField, SubmitField, TextAreaField
+from flask_wtf.file import FileField
+from wtforms import BooleanField, IntegerField, PasswordField, SelectField, StringField, SubmitField, TextAreaField
 from wtforms.validators import DataRequired, Email, Length, NumberRange, Optional, URL
 
 
@@ -7,6 +8,10 @@ class PostForm(FlaskForm):
     title = StringField("Naslov", validators=[DataRequired(), Length(max=255)])
     summary = TextAreaField("Kratek povzetek", validators=[Optional(), Length(max=1000)])
     body = TextAreaField("Vsebina", validators=[DataRequired()])
+    image = FileField("Slika")
+    image_alt = StringField("Opis slike", validators=[Optional(), Length(max=255)])
+    image_caption = StringField("Napis ob sliki", validators=[Optional(), Length(max=255)])
+    remove_image = BooleanField("Odstrani trenutno sliko")
     save_draft = SubmitField("Shrani osnutek")
     publish = SubmitField("Objavi")
     archive = SubmitField("Arhiviraj")

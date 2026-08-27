@@ -365,6 +365,7 @@ Next:
 3. Add uploads, Bootstrap assets, security headers, SEO metadata, sitemap, and robots file.
 4. Replace production SQLite with Opalstack PostgreSQL.
 5. Add the explicit SSH deployment script and deployment checks.
+6. Uploaded image resizing.
 
 ## Current Status
 

@@ -16,4 +16,4 @@ def inject_navigation_pages():
     ).all()
     return {"navigation_pages": pages}
 
-from app.main import views  # noqa: E402,F401
+from app.main import errors, views  # noqa: E402,F401
