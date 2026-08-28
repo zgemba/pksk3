@@ -1,9 +1,7 @@
 {% extends "base.html" %}
 
-{% block title %}Strani ni – PKSK{% endblock %}
+{% block title %}Stran ne obstaja – {{ site_settings.site_name }}{% endblock %}
 
 {% block content %}
-  <h1>Strani ni mogoče najti</h1>
-  <p>Naslov morda ni pravilen ali pa je bila stran odstranjena.</p>
-  <p><a href="{{ url_for('main.index') }}">Nazaj na začetno stran</a></p>
+  <h1>Hmmm, strežnik se je izgubil. Stran ne obstaja!</h1>
 {% endblock %}

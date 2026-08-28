@@ -16,6 +16,10 @@ class Config:
     MAX_CONTENT_LENGTH = int(os.environ.get("MAX_CONTENT_LENGTH", 5 * 1024 * 1024))
     MEDIA_ROOT = Path(os.environ.get("MEDIA_ROOT", BASE_DIR / "instance" / "uploads"))
     MEDIA_URL = os.environ.get("MEDIA_URL", "/media/")
+    TIMETABLE_API_URL = os.environ.get(
+        "TIMETABLE_API_URL", "https://pksk.klubko.si/admin/dogodki/urnikAPI"
+    )
+    TIMETABLE_API_TIMEOUT = float(os.environ.get("TIMETABLE_API_TIMEOUT", 5))
     SESSION_COOKIE_HTTPONLY = True
     SESSION_COOKIE_SAMESITE = "Lax"
     SECURITY_HEADERS_HSTS = False

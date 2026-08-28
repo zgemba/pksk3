@@ -95,3 +95,55 @@ def test_published_static_pages_render_and_fill_navigation(client, app):
     assert public_page.status_code == 200
     assert "Vsebina strani" in public_page.get_data(as_text=True)
     assert draft_page.status_code == 404
+
+
+def test_timetable_renders_api_data_and_reserved_friday(client, monkeypatch):
+    monkeypatch.setattr(
+        "app.main.views.fetch_timetable",
+        lambda *args: [
+            {
+                "dan": 1,
+                "dan_naziv": "Ponedeljek",
+                "termini": [
+                    {
+                        "skupina": "Mladinci",
+                        "od": "16:00",
+                        "do": "17:15",
+                        "vaditelji": ["Špela Levart"],
+                    }
+                ],
+                "is_pending": False,
+            },
+            {
+                "dan": 5,
+                "dan_naziv": "Petek",
+                "termini": [],
+                "is_pending": True,
+            },
+        ],
+    )
+
+    response = client.get("/urnik")
+    page = response.get_data(as_text=True)
+
+    assert response.status_code == 200
+    assert "Mladinci" in page
+    assert "16:00–17:15" in page
+    assert "Špela Levart" in page
+    assert "Petek" in page
+    assert "Urnik še ni določen." in page
+    assert 'href="/urnik"' in page
+
+
+def test_timetable_reports_unavailable_api(client, monkeypatch):
+    def unavailable(*args):
+        from app.timetable import TimetableUnavailable
+
+        raise TimetableUnavailable
+
+    monkeypatch.setattr("app.main.views.fetch_timetable", unavailable)
+
+    response = client.get("/urnik")
+
+    assert response.status_code == 503
+    assert "Urnik trenutno ni dosegljiv" in response.get_data(as_text=True)

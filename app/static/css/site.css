@@ -2,6 +2,33 @@ body {
   min-height: 100vh;
 }
 
+.footer-text {
+  white-space: pre-line;
+}
+
+.site-banner {
+  background: var(--bs-tertiary-bg);
+}
+
+.site-banner img {
+  display: block;
+  width: 100%;
+  max-width: 1024px;
+  height: auto;
+  margin: 0 auto;
+}
+
+.timetable-term + .timetable-term {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--bs-border-color);
+}
+
+.timetable-time {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
 main a:not(.btn) {
   text-underline-offset: 0.18em;
 }

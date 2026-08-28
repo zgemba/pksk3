@@ -5,6 +5,7 @@ from flask import Response, abort, current_app, jsonify, render_template, reques
 from app.extensions import db
 from app.main import main
 from app.models import Post, StaticPage
+from app.timetable import TimetableUnavailable, fetch_timetable
 
 
 def published_posts():
@@ -30,6 +31,19 @@ def news():
     page_number = request.args.get("page", 1, type=int)
     page_obj = db.paginate(published_posts(), page=page_number, per_page=10, error_out=False)
     return render_template("main/news.html", page_obj=page_obj)
+
+
+@main.get("/urnik")
+def timetable():
+    try:
+        days = fetch_timetable(
+            current_app.config["TIMETABLE_API_URL"], current_app.config["TIMETABLE_API_TIMEOUT"]
+        )
+    except TimetableUnavailable:
+        current_app.logger.warning("Timetable API is unavailable")
+        return render_template("main/timetable.html", days=[], timetable_unavailable=True), 503
+
+    return render_template("main/timetable.html", days=days, timetable_unavailable=False)
 
 
 @main.get("/novice/<slug>")
@@ -69,6 +83,7 @@ def sitemap():
     urls = [
         {"location": url_for("main.index", _external=True), "lastmod": None},
         {"location": url_for("main.news", _external=True), "lastmod": None},
+        {"location": url_for("main.timetable", _external=True), "lastmod": None},
     ]
     urls.extend(
         {

@@ -1,8 +1,9 @@
 {% extends "base.html" %}
 
-{% block title %}Napaka strežnika – PKSK{% endblock %}
+{% block title %}Napaka na strežniku – {{ site_settings.site_name }}{% endblock %}
 
 {% block content %}
-  <h1>Prišlo je do napake</h1>
-  <p>Poskusite znova pozneje.</p>
+  <h1>Napaka na strežniku</h1>
+  <p>Strežnik se je zaplezal in ne more ne naprej ne nazaj! Obvestili smo reševalce (administratorja).</p>
+  <p>Lahko pa poskusite čez nekaj minut, včasih kaka komoponenta zadrema zaradi premalo uporabe.</p>
 {% endblock %}

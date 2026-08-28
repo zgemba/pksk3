@@ -1,12 +1,60 @@
 """PKSK Flask application factory."""
 
 import os
+import random
+import re
 from logging import Formatter, StreamHandler
+from pathlib import Path
 
 from flask import Flask
+from markupsafe import Markup, escape
 
 from config import CONFIGS
 from app.extensions import csrf, db, login_manager, migrate
+
+
+BANNER_FILENAME_PATTERN = re.compile(r"^\d\d?\.jpg$")
+MAILTO_PATTERN = re.compile(
+    r"mailto:(?P<address>[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9.-]+)",
+    re.IGNORECASE,
+)
+
+
+def discover_banner_filenames(static_folder):
+    banner_directory = Path(static_folder) / "banners"
+    if not banner_directory.is_dir():
+        return ()
+
+    filenames = [
+        path.name
+        for path in banner_directory.iterdir()
+        if path.is_file() and BANNER_FILENAME_PATTERN.fullmatch(path.name)
+    ]
+    return tuple(
+        sorted(filenames, key=lambda filename: (int(filename.removesuffix(".jpg")), filename))
+    )
+
+
+def linkify_mailto(text):
+    """Convert valid mailto email targets to safe links without allowing HTML."""
+    if not text:
+        return Markup("")
+
+    output = []
+    position = 0
+    for match in MAILTO_PATTERN.finditer(text):
+        output.append(escape(text[position : match.start()]))
+        address = match.group("address")
+        output.append(
+            Markup('<a href="')
+            + escape(match.group(0))
+            + Markup('">')
+            + escape(address)
+            + Markup("</a>")
+        )
+        position = match.end()
+    output.append(escape(text[position:]))
+    return Markup("").join(output)
 
 
 def create_app(config_name=None):
@@ -28,7 +76,13 @@ def create_app(config_name=None):
     @app.context_processor
     def inject_site_settings():
         settings = db.session.get(models.SiteSettings, 1)
-        return {"site_settings": settings or models.SiteSettings(site_name="PKSK")}
+        settings = settings or models.SiteSettings(site_name="PKSK")
+        return {"site_settings": settings, "footer_text": linkify_mailto(settings.footer_text)}
+
+    @app.context_processor
+    def inject_banner():
+        filenames = discover_banner_filenames(app.static_folder)
+        return {"banner_filename": random.choice(filenames) if filenames else None}
 
     @login_manager.user_loader
     def load_user(user_id):
