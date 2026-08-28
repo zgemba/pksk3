@@ -31,9 +31,20 @@
             <li class="nav-item"><a class="nav-link" href="{{ url_for('main.index') }}">Domov</a></li>
             <li class="nav-item"><a class="nav-link" href="{{ url_for('main.news') }}">Novice</a></li>
             <li class="nav-item"><a class="nav-link" href="{{ url_for('main.timetable') }}">Urnik</a></li>
-            {% for page in navigation_pages %}
-              <li class="nav-item"><a class="nav-link" href="{{ url_for('main.page', slug=page.slug) }}">{{ page.title }}</a></li>
-            {% endfor %}
+            {% if navigation_pages %}
+              <li class="nav-item dropdown">
+                <button class="nav-link dropdown-toggle" type="button" id="information-menu" data-bs-toggle="dropdown" aria-expanded="false">
+                  Informacije
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="information-menu">
+                  {% for page in navigation_pages %}
+                    <li><a class="dropdown-item" href="{{ url_for('main.page', slug=page.slug) }}">{{ page.title }}</a></li>
+                  {% endfor %}
+                {# tlelele dodamo rocne strani, npr spodaj #}
+{#                <li><a class="dropdown-item" href="{{ url_for('main.my_page') }}">My page</a></li>#}
+                </ul>
+              </li>
+            {% endif %}
             {% if current_user.is_authenticated %}
               {% if current_user.role in ('admin', 'editor') %}
                 <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.index') }}">Upravljanje</a></li>

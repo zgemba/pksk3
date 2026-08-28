@@ -23,6 +23,7 @@
       {{ form.body(rows=18, cols=80) }}
       {% for error in form.body.errors %}<span>{{ error }}</span>{% endfor %}
     </p>
+    <p>{{ form.show_full_on_home() }} {{ form.show_full_on_home.label }}</p>
     <p>
       {{ form.image.label }}<br>
       {{ form.image(accept="image/jpeg,image/png,image/webp") }}

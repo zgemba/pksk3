@@ -51,6 +51,47 @@ def test_home_and_news_only_show_current_published_posts(client, app):
     assert "Prihodnost" not in news.get_data(as_text=True)
 
 
+def test_home_can_show_full_post_content_and_image(client, app):
+    author_id = add_author(app)
+    with app.app_context():
+        db.session.add_all(
+            [
+                Post(
+                    title="Povzetek",
+                    slug="povzetek",
+                    summary="Prikaži samo povzetek",
+                    body="Celotna vsebina povzetka",
+                    body_html="<p>Celotna vsebina povzetka</p>",
+                    status="published",
+                    published_at=datetime.now(timezone.utc),
+                    author_id=author_id,
+                ),
+                Post(
+                    title="Celotna novica",
+                    slug="celotna-novica",
+                    summary="Tega povzetka ne prikaži",
+                    body="Celotna vsebina novice",
+                    body_html="<p>Celotna vsebina novice</p>",
+                    show_full_on_home=True,
+                    image="celotna.jpg",
+                    image_alt="Plezalna stena",
+                    status="published",
+                    published_at=datetime.now(timezone.utc),
+                    author_id=author_id,
+                ),
+            ]
+        )
+        db.session.commit()
+
+    page = client.get("/").get_data(as_text=True)
+
+    assert "Prikaži samo povzetek" in page
+    assert "Celotna vsebina povzetka" not in page
+    assert "Tega povzetka ne prikaži" not in page
+    assert "Celotna vsebina novice" in page
+    assert 'src="/media/posts/celotna.jpg"' in page
+
+
 def test_public_post_route_hides_non_public_content(client, app):
     author_id = add_author(app)
     now = datetime.now(timezone.utc)
@@ -90,8 +131,12 @@ def test_published_static_pages_render_and_fill_navigation(client, app):
     public_page = client.get("/o-klubu")
     draft_page = client.get("/osnutek-strani")
 
-    assert 'href="/o-klubu"' in home.get_data(as_text=True)
-    assert "Osnutek strani" not in home.get_data(as_text=True)
+    home_html = home.get_data(as_text=True)
+    assert "Informacije" in home_html
+    assert 'data-bs-toggle="dropdown"' in home_html
+    assert 'aria-expanded="false"' in home_html
+    assert 'href="/o-klubu"' in home_html
+    assert "Osnutek strani" not in home_html
     assert public_page.status_code == 200
     assert "Vsebina strani" in public_page.get_data(as_text=True)
     assert draft_page.status_code == 404

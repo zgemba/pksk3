@@ -9,7 +9,7 @@
     <article>
       <h2><a href="{{ url_for('main.post', slug=post.slug) }}">{{ post.title }}</a></h2>
       {% if post.published_at %}<p><time datetime="{{ post.published_at.isoformat() }}">{{ post.published_at.strftime('%d. %m. %Y') }}</time></p>{% endif %}
-      <p>{{ post.summary }}</p>
+{#      <p>{{ post.summary }}</p>#}
     </article>
   {% else %}
     <p>Novic še ni.</p>

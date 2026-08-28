@@ -55,6 +55,7 @@ class Post(db.Model):
     summary = db.Column(db.Text, nullable=True)
     body = db.Column(db.Text, nullable=False, default="")
     body_html = db.Column(db.Text, nullable=False, default="")
+    show_full_on_home = db.Column(db.Boolean, nullable=False, default=False, server_default=false())
     image = db.Column(db.String(255), nullable=True)
     image_alt = db.Column(db.String(255), nullable=True)
     image_caption = db.Column(db.String(255), nullable=True)

@@ -2,7 +2,7 @@ def test_home_page(client):
     response = client.get("/")
 
     assert response.status_code == 200
-    assert "Nova spletna stran" in response.get_data(as_text=True)
+    assert "PKSK" in response.get_data(as_text=True)
 
 
 def test_health(client):

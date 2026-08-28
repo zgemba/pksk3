@@ -65,6 +65,7 @@ def update_post(post, form):
     post.summary = (form.summary.data or "").strip() or make_excerpt(form.body.data)
     post.body = form.body.data
     post.body_html = render_markdown(post.body)
+    post.show_full_on_home = form.show_full_on_home.data
     if post.status == "draft":
         post.slug = post_slug(post.title, post.id)
 
@@ -211,6 +212,7 @@ def edit_post(post_id):
         form.title.data = post.title
         form.summary.data = post.summary
         form.body.data = post.body
+        form.show_full_on_home.data = post.show_full_on_home
         form.image_alt.data = post.image_alt
         form.image_caption.data = post.image_caption
     delete_form = ConfirmDeleteForm()

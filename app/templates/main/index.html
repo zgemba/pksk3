@@ -4,25 +4,27 @@
 {% block meta_description %}{{ site_settings.site_description or 'Plezalni klub Slovenske Konjice' }}{% endblock %}
 
 {% block content %}
-  <section class="p-4 p-md-5 mb-5 rounded-3 bg-body-tertiary">
-    <h1 class="display-5">Plezalni klub Slovenske Konjice</h1>
-    <p class="lead mb-0">{{ site_settings.tagline or 'Nova spletna stran je v pripravi.' }}</p>
-  </section>
-
   {% if posts %}
     <section aria-labelledby="latest-news">
-      <h2 id="latest-news">Najnovejše novice</h2>
+{#      <h2 id="latest-news">Najnovejše novice</h2>#}
       {% for post in posts %}
         <article class="mb-4">
           <h3 class="h4"><a href="{{ url_for('main.post', slug=post.slug) }}">{{ post.title }}</a></h3>
-          <p class="mb-0">{{ post.summary }}</p>
+            {% if post.published_at %}<p class="small"><time datetime="{{ post.published_at.isoformat() }}">{{ post.published_at.strftime('%d. %m. %Y') }}</time></p>{% endif %}
+          {% if post.show_full_on_home %}
+            {% if post.image %}
+              <figure>
+                <img src="{{ url_for('main.media', filename=post.image) }}" alt="{{ post.image_alt }}">
+                {% if post.image_caption %}<figcaption>{{ post.image_caption }}</figcaption>{% endif %}
+              </figure>
+            {% endif %}
+            <div>{{ post.body_html|safe }}</div>
+          {% else %}
+            <p class="mb-0">{{ post.summary }}</p>
+          {% endif %}
         </article>
       {% endfor %}
       <p><a href="{{ url_for('main.news') }}">Vse novice</a></p>
     </section>
   {% endif %}
-
-  <h2>Kontakt</h2>
-  <p>Za plezalno šolo in treninge otrok nam pišite na <a href="mailto:plezalnasola@pksk.si">plezalnasola@pksk.si</a>.</p>
-  <p>Za ostalo v zvezi s klubom nam pišite na <a href="mailto:info@pksk.si">info@pksk.si</a>.</p>
 {% endblock %}

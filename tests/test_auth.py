@@ -127,7 +127,12 @@ def test_editor_can_create_publish_archive_and_delete_post(client, app):
 
     response = client.post(
         "/admin/posts/new",
-        data={"title": "Čas za Šolo", "body": "## Pozdrav\n\nTo je **vsebina**.", "publish": True},
+        data={
+            "title": "Čas za Šolo",
+            "body": "## Pozdrav\n\nTo je **vsebina**.",
+            "show_full_on_home": True,
+            "publish": True,
+        },
     )
     assert response.status_code == 302
 
@@ -137,6 +142,7 @@ def test_editor_can_create_publish_archive_and_delete_post(client, app):
         assert post.status == "published"
         assert post.published_at is not None
         assert "<h2>Pozdrav</h2>" in post.body_html
+        assert post.show_full_on_home
         post_id = post.id
 
     response = client.post(
@@ -148,6 +154,7 @@ def test_editor_can_create_publish_archive_and_delete_post(client, app):
         post = db.get_or_404(Post, post_id)
         assert post.slug == "cas-za-solo"
         assert post.status == "archived"
+        assert not post.show_full_on_home
 
     response = client.post(f"/admin/posts/{post_id}/delete", data={"confirm": True})
     assert response.status_code == 302

@@ -8,6 +8,7 @@ class PostForm(FlaskForm):
     title = StringField("Naslov", validators=[DataRequired(), Length(max=255)])
     summary = TextAreaField("Kratek povzetek", validators=[Optional(), Length(max=1000)])
     body = TextAreaField("Vsebina", validators=[DataRequired()])
+    show_full_on_home = BooleanField("Objavi vso vsebino na prvi strani")
     image = FileField("Slika")
     image_alt = StringField("Opis slike", validators=[Optional(), Length(max=255)])
     image_caption = StringField("Napis ob sliki", validators=[Optional(), Length(max=255)])
