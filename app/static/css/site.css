@@ -25,6 +25,30 @@ body {
   }
 }
 
+.site-navbar .navbar-toggler-icon {
+  position: relative;
+  background-image: none;
+}
+
+.site-navbar .navbar-toggler-icon::before,
+.site-navbar .navbar-toggler-icon::after {
+  position: absolute;
+  right: 0;
+  left: 0;
+  height: 2px;
+  content: "";
+  background: #212529;
+}
+
+.site-navbar .navbar-toggler-icon::before {
+  top: 0.25em;
+  box-shadow: 0 0.5em #212529;
+}
+
+.site-navbar .navbar-toggler-icon::after {
+  bottom: 0.25em;
+}
+
 .timetable-term + .timetable-term {
   margin-top: 1rem;
   padding-top: 1rem;
