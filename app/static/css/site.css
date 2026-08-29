@@ -18,6 +18,13 @@ body {
   margin: 0 auto;
 }
 
+@media (max-width: 991.98px) {
+  .site-navbar {
+    padding-right: 1rem;
+    padding-left: 1rem;
+  }
+}
+
 .timetable-term + .timetable-term {
   margin-top: 1rem;
   padding-top: 1rem;

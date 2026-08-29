@@ -21,7 +21,7 @@
           <img src="{{ url_for('static', filename='banners/' ~ banner_filename) }}" width="1024" height="200" alt="">
         </div>
       {% endif %}
-      <nav class="navbar navbar-expand-lg container py-3" aria-label="Glavna navigacija">
+      <nav class="navbar navbar-expand-lg container py-3 site-navbar" data-bs-theme="light" aria-label="Glavna navigacija">
         <a class="navbar-brand fw-semibold" href="{{ url_for('main.index') }}">{{ site_settings.site_name }}</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#site-navigation" aria-controls="site-navigation" aria-expanded="false" aria-label="Odpri navigacijo">
           <span class="navbar-toggler-icon"></span>

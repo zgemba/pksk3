@@ -25,7 +25,7 @@ app_root="/home/zgemba/apps/pksk-ng"
 project_dir="$app_root/project"
 python_bin="$app_root/env/bin/python"
 uwsgi_entrypoint="$project_dir/wsgi.py"
-log_dir="/home/zgemba/logs/deployments"
+log_dir="$app_root/logs/deployments"
 lock_dir="$app_root/tmp/deploy.lock"
 
 mkdir -p "$log_dir" "$app_root/tmp"
